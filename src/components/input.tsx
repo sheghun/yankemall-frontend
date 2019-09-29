@@ -14,6 +14,7 @@ const InputNative = styled.input`
     border-radius: 2.5%;
     padding: 0.8rem 4px;
     color: white;
+    font-weight: 600;
     font-size: 14px;
     &:focus {
         outline: none;

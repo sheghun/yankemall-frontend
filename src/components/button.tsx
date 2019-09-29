@@ -10,8 +10,12 @@ const Buton = styled.button`
     background-color: black;
     border: none;
     color: white;
+    cursor: pointer;
     padding: 1rem 5rem;
     font-family: 'Lato';
+    &:focus {
+        outline: none;
+    }
 `;
 
 const Button = ({children}: props) => {
