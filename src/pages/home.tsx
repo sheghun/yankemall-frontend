@@ -279,7 +279,7 @@ const Home = () => {
                         </div>
                     </div>
                     <div className={'all-stores-button'}>
-                        <Button>View All Stores</Button>
+                        <Button color={'black'}>View All Stores</Button>
                     </div>
                     <div className={'recently-sold-items-wrapper'}>
                         {/*<h3>Recently Sold Items</h3>*/}

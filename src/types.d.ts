@@ -28,3 +28,12 @@ declare interface Location {
     id: number;
     country: string;
 }
+
+declare interface Product {
+    link: string;
+    title: string;
+    quantity: string;
+    price: number;
+    condition: string;
+    image?: string;
+}

@@ -4,11 +4,14 @@ import styled from 'styled-components';
 type props = React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement
-> & {};
+> & {
+    color: string;
+};
 
 const Buton = styled.button`
     background-color: black;
     border: none;
+    font-size: 16px;
     color: white;
     cursor: pointer;
     padding: 1rem 5rem;
@@ -18,10 +21,15 @@ const Buton = styled.button`
     }
 `;
 
-const Button = ({children}: props) => {
+const Button = ({children, color, ...restProps}: props) => {
     return (
         <>
-            <Buton>{children}</Buton>
+            {
+                // @ts-ignore
+                <Buton {...restProps} style={{backgroundColor: color}}>
+                    {children}
+                </Buton>
+            }
         </>
     );
 };

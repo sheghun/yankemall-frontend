@@ -5,3 +5,4 @@ import Axios from 'axios';
  */
 
 Axios.defaults.baseURL = 'http://localhost:8080';
+Axios.defaults.withCredentials = true;
