@@ -62,9 +62,6 @@ const TopBar = () => {
                     <i className={'ion-ios-person-outline icons'} />
                     My Profile
                 </li>
-                <li>
-                    <i className={'ion-bag icons'} /> 0 Items <span className={'money'}>$0.00</span>
-                </li>
             </ul>
         </NativeNav>
     );
