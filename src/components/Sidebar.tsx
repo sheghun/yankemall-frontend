@@ -1,0 +1,82 @@
+import React from 'react';
+import Paper from '@material-ui/core/Paper';
+import clx from 'classnames';
+import {NavLink, RouteComponentProps, withRouter} from 'react-router-dom';
+import {makeStyles} from '@material-ui/styles';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import PersonIcon from '@material-ui/icons/PersonOutline';
+import OrderIcon from '@material-ui/icons/AllInbox';
+import Divider from '@material-ui/core/Divider';
+
+const links = [
+    {
+        path: '/dashboard/overview',
+        text: 'My Account',
+        icon: <PersonIcon fontSize={'large'} style={{marginRight: '1rem'}} />,
+    },
+    {
+        path: '/dashboard/orders',
+        text: 'Orders',
+        icon: <OrderIcon fontSize={'large'} style={{marginRight: '1rem'}} />,
+    },
+    {path: '/dashboard/details', text: 'Details'},
+    {path: '/dashboard/address', text: 'Address'},
+];
+
+const useStyles = makeStyles(_ => ({
+    active: {
+        backgroundColor: '#EDEDED',
+    },
+    paper: {
+        overflow: 'hidden',
+        padding: '2rem 0',
+    },
+    link: {
+        width: '100%',
+        padding: '1rem 0rem 1rem 2rem !important',
+        color: '#282828',
+        '& a': {
+            textDecoration: 'none !important',
+        },
+    },
+    linkText: {
+        display: 'flex',
+        fontWeight: 600,
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+    },
+}));
+
+type props = RouteComponentProps & {};
+
+const Sidebar = ({location}: props) => {
+    const classes = useStyles();
+
+    const applyCssClass = (path: string) => {
+        console.log(location);
+        return clx({[classes.link]: true, [classes.active]: location.pathname === path});
+    };
+
+    return (
+        <Paper className={classes.paper}>
+            <Grid direction={'column'} alignContent={'center'} container={true} spacing={3}>
+                {links.map((l, i) => (
+                    <>
+                        {i === 1 && <Divider />}
+                        <Grid key={i} item={true} className={applyCssClass(l.path)}>
+                            <NavLink to={'#'}>
+                                <Typography className={classes.linkText} variant={'body1'}>
+                                    <span>{l.icon}</span>
+                                    <span>{l.text}</span>
+                                </Typography>
+                            </NavLink>
+                        </Grid>
+                    </>
+                ))}
+            </Grid>
+        </Paper>
+    );
+};
+
+export default withRouter(Sidebar);

@@ -5,12 +5,10 @@ import Input from '../components/input';
 import Button from '../components/button';
 import heroImage from '../assets/images/carousel@2x.png';
 import Select from '../components/select';
-import featuredProductsImage from '../assets/images/featured-product.png';
-import facebookImage from '../assets/images/facebook-logo.svg';
 import Axios from 'axios';
-
 import whyUsImage from '../assets/images/why-us.png';
 import styled from 'styled-components';
+import Footer from '../components/Footer';
 
 const Style = styled.div`
     margin-top: 2rem;
@@ -99,45 +97,6 @@ const Style = styled.div`
     }
     & .shipping-infos img {
         width: 80%;
-    }
-    & .pre-footer {
-        margin-top: 5rem;
-        display: flex;
-        color: rgba(0, 0, 0, 0.6);
-        line-height: 2;
-        font-size: 14px;
-        text-transform: capitalize;
-        align-items: start;
-        justify-content: center;
-    }
-    & .pre-footer-blocks {
-        flex-basis: 300px;
-    }
-    & .pre-footer .follow-us {
-        margin-right: 100px;
-    }
-    & .pre-footer .follow-us {
-    }
-    & .pre-footer .follow-us img {
-        margin-top: 1rem;
-        height: 24px;
-    }
-    & .pre-footer .follow-us img:first-child {
-        margin-right: 50px;
-    }
-    & .footer {
-        padding: 2rem;
-        color: rgba(0, 0, 0, 0.7);
-        display: flex;
-        justify-content: space-around;
-    }
-    & .footer-blocks-links-wrapper {
-        display: flex;
-        flex-direction: column;
-    }
-    & .footer-blocks-links-wrapper a {
-        font-size: 14px;
-        margin-bottom: 1rem;
     }
 `;
 const Home = () => {
@@ -354,53 +313,7 @@ const Home = () => {
                     <div className={'shipping-infos'}>
                         <img src={whyUsImage} alt={'why us image'} />
                     </div>
-                    <div className={'pre-footer'}>
-                        <div className={'pre-footer-blocks follow-us'}>
-                            <h3>Follow Us</h3>
-                            <p>
-                                Join us and keep up to date with us on any of these social media
-                                platforms
-                                <div>
-                                    <img
-                                        alt={'twitter link'}
-                                        src="https://img.icons8.com/color/48/000000/twitter.png"
-                                    />
-                                    <img alt={'facebook link'} src={facebookImage} />
-                                </div>
-                            </p>
-                        </div>
-                        <div className={'pre-footer-blocks, contact-us'}>
-                            <h3>Contact Us</h3>
-                            <p>
-                                Yankeemall, 18 IG Maryson Byazhin,
-                                <br />
-                                Kubwa Abuja
-                                <br />
-                                Call Us Now: 081-2332-2389
-                                <br />
-                                Email: yankeemall@gmail.com
-                            </p>
-                        </div>
-                    </div>
-                    <hr style={{borderColor: 'rgba(0, 0, 0, 0.05)'}} />
-                    <div className={'footer'}>
-                        <div className={'footer-blocks'}>
-                            <h3>Information</h3>
-                            <div className={'footer-blocks-links-wrapper'}>
-                                <a>About Us</a>
-                                <a>Privacy Policy</a>
-                                <a>Term &amp; Conditions</a>
-                            </div>
-                        </div>
-                        <div className={'footer-blocks'}>
-                            <h3>Information</h3>
-                            <div className={'footer-blocks-links-wrapper'}>
-                                <a>About Us</a>
-                                <a>Privacy Policy</a>
-                                <a>Term &amp; Conditions</a>
-                            </div>
-                        </div>
-                    </div>
+                    <Footer />
                 </Style>
             </Wrapper>
         </>

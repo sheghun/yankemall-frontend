@@ -8,6 +8,7 @@ import styled from 'styled-components';
 
 const NativeNav = styled.nav`
     border-bottom: solid 1px rgba(0, 0, 0, 0.09);
+    background-color: white;
     & ul {
         display: flex;
         justify-content: flex-end;

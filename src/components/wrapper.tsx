@@ -10,10 +10,6 @@ const Wrapper = ({children}: any) => {
                     href={'http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css'}
                     rel={'stylesheet'}
                 />
-                <link
-                    href="https://fonts.googleapis.com/css?family=Lato|Open+Sans|Quicksand&display=swap"
-                    rel="stylesheet"
-                />
             </Helmet>
             {children}
         </>
