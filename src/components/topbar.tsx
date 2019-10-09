@@ -1,5 +1,15 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import {Link} from 'react-router-dom';
+import PersonIcon from '@material-ui/icons/PersonOutline';
+import OrderIcon from '@material-ui/icons/AllInbox';
 
 /**
  * The top bar component that comes before the nav bar
@@ -48,8 +58,48 @@ const NativeNav = styled.nav`
         margin-left: 0.8rem;
         margin-right: 1rem;
     }
+    & .my-profile {
+        position: relative;
+    }
+    & .my-profile-dropdown {
+        position: absolute;
+        position: absolute;
+        top: 2.5rem;
+        padding: 0.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 180px;
+        text-align: center;
+    }
+    & .my-profile-dropdown:after {
+        content: ' ';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        margin-left: -15px;
+        margin-top: -1.8rem;
+        filter: drop-shadow(0 -2px 1px rgba(0, 0, 0, 0.07));
+        border-width: 15px;
+        border-style: solid;
+        border-color: transparent transparent white;
+    }
 `;
 const TopBar = () => {
+    const [showDropDown, setShowDropDown] = useState(false);
+
+    useEffect(() => {
+        const listener = () => {
+            if (showDropDown) {
+                setShowDropDown(false);
+            }
+        };
+        document.addEventListener('click', listener);
+
+        return () => {
+            document.removeEventListener('click', listener);
+        };
+    }, [showDropDown]);
+
     return (
         <NativeNav>
             <ul>
@@ -59,9 +109,57 @@ const TopBar = () => {
                 <li className={'faint'}>
                     USD <div className={'caret'} />
                 </li>
-                <li>
+                <li className={'my-profile'} onClick={_ => setShowDropDown(true)}>
                     <i className={'ion-ios-person-outline icons'} />
                     My Profile
+                    {showDropDown && (
+                        <Paper className={'my-profile-dropdown'}>
+                            <Link to={'/auth/signin'}>
+                                <Button color={'primary'} fullWidth variant={'contained'}>
+                                    Signin
+                                </Button>
+                            </Link>
+                            <Divider variant={'inset'} style={{margin: '2rem 0 1rem'}} />
+                            <Link to={'/auth/signup'}>
+                                <Button fullWidth color={'primary'}>
+                                    Create An Account
+                                </Button>
+                            </Link>
+                            <Divider style={{margin: '1rem 0'}} />
+                            <List component="nav" aria-label="main mailbox folders">
+                                <Link to={'/dashboard/overview'}>
+                                    <ListItem button>
+                                        <ListItemIcon>
+                                            <PersonIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            style={{
+                                                fontSize: 14,
+                                                textTransform: 'capitalize',
+                                                fontWeight: 600,
+                                            }}
+                                            primary={'Account'}
+                                        />
+                                    </ListItem>
+                                </Link>
+                                <Link to={'/dashboard/orders'}>
+                                    <ListItem button>
+                                        <ListItemIcon>
+                                            <OrderIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            style={{
+                                                fontSize: 14,
+                                                textTransform: 'capitalize',
+                                                fontWeight: 600,
+                                            }}
+                                            primary={'Orders'}
+                                        />
+                                    </ListItem>
+                                </Link>
+                            </List>
+                        </Paper>
+                    )}
                 </li>
             </ul>
         </NativeNav>
