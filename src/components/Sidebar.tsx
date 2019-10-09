@@ -2,7 +2,7 @@ import React from 'react';
 import Paper from '@material-ui/core/Paper';
 import clx from 'classnames';
 import {NavLink, RouteComponentProps, withRouter} from 'react-router-dom';
-import {makeStyles} from '@material-ui/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import PersonIcon from '@material-ui/icons/PersonOutline';
@@ -24,9 +24,12 @@ const links = [
     {path: '/dashboard/address', text: 'Address'},
 ];
 
-const useStyles = makeStyles(_ => ({
+const useStyles = makeStyles(theme => ({
     active: {
         backgroundColor: '#EDEDED',
+        '& p': {
+            color: `${theme.palette.primary.main} !important`,
+        },
     },
     paper: {
         overflow: 'hidden',
@@ -62,17 +65,17 @@ const Sidebar = ({location}: props) => {
         <Paper className={classes.paper}>
             <Grid direction={'column'} alignContent={'center'} container={true} spacing={3}>
                 {links.map((l, i) => (
-                    <>
-                        {i === 1 && <Divider />}
-                        <Grid key={i} item={true} className={applyCssClass(l.path)}>
-                            <NavLink to={'#'}>
+                    <React.Fragment key={i}>
+                        {i === 2 && <Divider />}
+                        <Grid item={true} className={applyCssClass(l.path)}>
+                            <NavLink to={l.path}>
                                 <Typography className={classes.linkText} variant={'body1'}>
                                     <span>{l.icon}</span>
                                     <span>{l.text}</span>
                                 </Typography>
                             </NavLink>
                         </Grid>
-                    </>
+                    </React.Fragment>
                 ))}
             </Grid>
         </Paper>

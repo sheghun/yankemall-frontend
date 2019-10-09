@@ -110,7 +110,6 @@ const Overview = () => {
                             <Typography variant="h6" component="h2">
                                 20
                             </Typography>
-                            <Typography className={classes.pos} color="textSecondary"></Typography>
                         </CardContent>
                         <CardActions>
                             <Button size="small" color={'primary'}>
