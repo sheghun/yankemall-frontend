@@ -18,6 +18,9 @@ const Orders = loadable(() => import('../Views/Dashboard/Orders'), {
 const Details = loadable(() => import('../Views/Dashboard/Details'), {
     fallback: <Loading show={true} />,
 });
+const Address = loadable(() => import('../Views/Dashboard/Address'), {
+    fallback: <Loading show={true} />,
+});
 
 const useStyles = makeStyles(theme => ({
     body: {
@@ -57,6 +60,7 @@ const Dashboard = ({}: Props) => {
                         <Route path={'/dashboard/overview'} component={Overview} />
                         <Route path={'/dashboard/orders'} component={Orders} />
                         <Route path={'/dashboard/details'} component={Details} />
+                        <Route path={'/dashboard/address'} component={Address} />
                     </Grid>
                 </Grid>
                 <Footer />
