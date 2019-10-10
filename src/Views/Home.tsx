@@ -262,7 +262,7 @@ const Home = () => {
                                 Download
                             </Button>
                         </div>
-                        <div className={'inputs-rectangle'}>
+                        <div id={'stores'} className={'inputs-rectangle'}>
                             <h1>Select a Logo To Start Shopping. Click Our Button To CheckOut.</h1>
                             <div className={'inputs'}>
                                 <Input

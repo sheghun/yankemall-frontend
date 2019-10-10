@@ -331,7 +331,7 @@ const SignUp = ({history}: RouteComponentProps) => {
                             disabled={loading}
                             className={classes.submit}
                         >
-                            {loading ? <CircularProgress /> : 'Sign in'}
+                            {loading ? <CircularProgress /> : 'Sign Up'}
                         </Button>
                         <Grid container>
                             <Grid item>

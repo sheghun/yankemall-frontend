@@ -1,8 +1,8 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
 import TopBar from './topbar';
 import logo from '../assets/images/pp.png';
 import styled from 'styled-components';
+import {Link} from 'react-scroll';
 
 const NativeNav = styled.nav`
     display: flex;
@@ -18,6 +18,7 @@ const NativeNav = styled.nav`
     }
     & li {
         display: flex;
+        cursor: pointer;
         text-transform: uppercase;
         color: black;
         padding: 6px 8px;
@@ -42,23 +43,21 @@ const Nav = () => (
             <img src={logo} alt={'Yankeemall Logo'} />
             <div className={'navigation-wrapper'}>
                 <TopBar />
-                {/*<ul>*/}
-                {/*    <li>*/}
-                {/*        <Link to="/">Home</Link>*/}
-                {/*    </li>*/}
-                {/*    <li>*/}
-                {/*        <Link to="/">stores</Link>*/}
-                {/*    </li>*/}
-                {/*    <li>*/}
-                {/*        <Link to="/">custom orders</Link>*/}
-                {/*    </li>*/}
-                {/*    <li>*/}
-                {/*        <Link to="/">pickup locations</Link>*/}
-                {/*    </li>*/}
-                {/*    <li>*/}
-                {/*        <Link to="/">contact us</Link>*/}
-                {/*    </li>*/}
-                {/*</ul>*/}
+                <ul>
+                    <li>
+                        <Link to="/">Home</Link>
+                    </li>
+                    <li>
+                        <Link to="stores" spy={true} smooth={true} duration={500}>
+                            Stores
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="contact-us" spy={true} smooth={true} duration={500}>
+                            Contact Us
+                        </Link>
+                    </li>
+                </ul>
             </div>
         </NativeNav>
     </div>

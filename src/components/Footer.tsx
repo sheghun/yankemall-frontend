@@ -47,7 +47,7 @@ const Wrapper = styled.div`
 const Footer = () => {
     return (
         <Wrapper>
-            <div className={'pre-footer'}>
+            <div id={'contact-us'} className={'pre-footer'}>
                 <div className={'pre-footer-blocks follow-us'}>
                     <h3>Follow Us</h3>
                     <p>
