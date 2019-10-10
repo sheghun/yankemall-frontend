@@ -5,26 +5,25 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import {Helmet} from 'react-helmet';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import backgroundImage from '../../assets/images/multiple-shipping-partners.png';
 import Axios, {AxiosError} from 'axios';
 import Snack from '../../components/snack';
+import {Link} from 'react-router-dom';
 import {RouteComponentProps} from 'react-router';
 
 function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
-                Your Website
-            </Link>{' '}
+            Yankeemall
             {new Date().getFullYear()}
             {'.'}
         </Typography>
@@ -60,9 +59,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-interface Props extends RouteComponentProps {}
-
-export default function SignInSide({history}: Props) {
+export default function SignInSide({history}: RouteComponentProps) {
     const classes = useStyles();
 
     const [email, setEmail] = useState('');
@@ -138,6 +135,9 @@ export default function SignInSide({history}: Props) {
 
     return (
         <Grid container component="main" className={classes.root}>
+            <Helmet>
+                <title>Sign in</title>
+            </Helmet>
             <Snack
                 variant={snackbar.variant as any}
                 open={snackbar.open}
@@ -197,13 +197,17 @@ export default function SignInSide({history}: Props) {
                         </Button>
                         <Grid container>
                             <Grid item xs>
-                                <Link href="#" variant="body2">
-                                    Forgot password?
+                                <Link to="#">
+                                    <Typography variant="body2" color={'primary'}>
+                                        Forgot password?
+                                    </Typography>
                                 </Link>
                             </Grid>
                             <Grid item>
-                                <Link href="#" variant="body2">
-                                    {"Don't have an account? Sign Up"}
+                                <Link to={'/auth/signup'}>
+                                    <Typography color={'primary'} variant="body2">
+                                        {"Don't have an account? Sign Up"}
+                                    </Typography>
                                 </Link>
                             </Grid>
                         </Grid>
