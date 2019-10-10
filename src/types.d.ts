@@ -37,3 +37,13 @@ declare interface Product {
     condition: string;
     image?: string;
 }
+
+declare interface DashboardContext {
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    email: string;
+    address: Array<any>;
+    gender: string;
+    birthDate: string;
+}

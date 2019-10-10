@@ -12,6 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import {Helmet} from 'react-helmet';
 import Typography from '@material-ui/core/Typography';
+import queryString from 'query-string';
 import {makeStyles} from '@material-ui/core/styles';
 import backgroundImage from '../../assets/images/multiple-shipping-partners.png';
 import Axios, {AxiosError} from 'axios';
@@ -59,11 +60,12 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function SignInSide({history}: RouteComponentProps) {
+export default function SignIn({history, location}: RouteComponentProps) {
     const classes = useStyles();
 
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
+    const [returnUrl, setReturnUrl] = useState('');
     const [snackbar, setSnackbar] = useState({
         open: false,
         message: '',
@@ -75,6 +77,35 @@ export default function SignInSide({history}: RouteComponentProps) {
         email: '',
         password: '',
     });
+
+    useEffect(() => {
+        /**
+         * Next line of code gets the returnUrl parameter and redirects to it
+         */
+        // Check if the former url is the logout url redirect to the dashboard
+        const queryUrl = queryString.parse(location.search);
+        let url = !queryUrl.returnUrl
+            ? '/dashboard/overview'
+            : queryUrl.returnUrl === '/dashboard/logout'
+            ? '/dashboard'
+            : queryUrl.returnUrl;
+
+        /**
+         * Check if the queryUrl contains other parameters e.g ?return=/dashboard/overview&name=segun
+         */
+        if (Object.keys(queryUrl).length > 1 && typeof queryUrl === 'object') {
+            url += '?';
+            for (const fragments in queryUrl) {
+                if (fragments === 'returnUrl') {
+                    continue;
+                }
+                // @ts-ignore
+                url += fragments + '=' + queryUrl[fragments] + '&';
+            }
+        }
+
+        setReturnUrl(url as string);
+    }, []);
 
     const validate = () => {
         let pass = true;

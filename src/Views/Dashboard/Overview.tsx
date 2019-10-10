@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import Paper from '@material-ui/core/Paper';
 import {makeStyles} from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -8,6 +8,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import EditIcon from '@material-ui/icons/Edit';
+import {DashboardContext} from '../../Context';
 
 const useStyles = makeStyles(theme => ({
     pageTitle: {
@@ -42,6 +43,43 @@ const useStyles = makeStyles(theme => ({
 const Overview = () => {
     const classes = useStyles();
 
+    const {firstName, lastName, address, email} = useContext(DashboardContext);
+
+    const renderAddress = () => {
+        return (
+            <Card raised={false} elevation={0} className={classes.card}>
+                <CardContent>
+                    <Typography className={classes.title} color="textSecondary" gutterBottom>
+                        Address Book
+                    </Typography>
+                    <Typography variant="body2" style={{fontWeight: 500}}>
+                        Default Shipping address
+                    </Typography>
+                    <Typography
+                        className={classes.pos}
+                        color="textSecondary"
+                        style={{fontSize: '12px'}}
+                    >
+                        {address.length === 0 ? (
+                            'You have not added an address yet'
+                        ) : (
+                            <>
+                                Segun Oladiran
+                                <br />
+                                NO 18 IG Maryson Street Byazhin
+                            </>
+                        )}
+                    </Typography>
+                </CardContent>
+                <CardActions>
+                    <Button size="small" color={'primary'}>
+                        Learn More
+                    </Button>
+                </CardActions>
+            </Card>
+        );
+    };
+
     return (
         <Paper className={classes.paper}>
             <Typography variant={'h5'} className={classes.pageTitle}>
@@ -59,11 +97,11 @@ const Overview = () => {
                                 Account Details
                                 <EditIcon className={classes.icon} />
                             </Typography>
-                            <Typography variant="h6" component="h2">
-                                Oladiran Segun
+                            <Typography variant="body2" style={{fontWeight: 500}}>
+                                {firstName} {lastName}
                             </Typography>
                             <Typography className={classes.pos} color="textSecondary">
-                                sheghunoladiran9@gmail.com
+                                {email}
                             </Typography>
                         </CardContent>
                         <CardActions>
@@ -74,28 +112,7 @@ const Overview = () => {
                     </Card>
                 </Grid>
                 <Grid item xs={12} sm={5}>
-                    <Card raised={false} elevation={0} className={classes.card}>
-                        <CardContent>
-                            <Typography
-                                className={classes.title}
-                                color="textSecondary"
-                                gutterBottom
-                            >
-                                Address Book
-                            </Typography>
-                            <Typography variant="h6" component="h2">
-                                Your default Shipping address
-                            </Typography>
-                            <Typography className={classes.pos} color="textSecondary">
-                                adjective
-                            </Typography>
-                        </CardContent>
-                        <CardActions>
-                            <Button size="small" color={'primary'}>
-                                Learn More
-                            </Button>
-                        </CardActions>
-                    </Card>
+                    {renderAddress()}
                 </Grid>
                 <Grid item xs={12} sm={5}>
                     <Card raised={false} elevation={0} className={classes.card}>

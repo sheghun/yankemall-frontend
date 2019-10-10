@@ -13,14 +13,15 @@ const links = [
     {
         path: '/dashboard/overview',
         text: 'My Account',
-        icon: <PersonIcon fontSize={'large'} style={{marginRight: '1rem'}} />,
+        icon: <PersonIcon style={{marginRight: '1rem'}} />,
     },
     {
         path: '/dashboard/orders',
         text: 'Orders',
-        icon: <OrderIcon fontSize={'large'} style={{marginRight: '1rem'}} />,
+        icon: <OrderIcon style={{marginRight: '1rem'}} />,
     },
     {path: '/dashboard/details', text: 'Details'},
+    {path: '/dashboard/change-password', text: 'Change Password'},
     {path: '/dashboard/address', text: 'Address'},
 ];
 
@@ -45,8 +46,7 @@ const useStyles = makeStyles(theme => ({
     },
     linkText: {
         display: 'flex',
-        fontWeight: 600,
-        alignItems: 'center',
+        fontWeight: 500,
         justifyContent: 'flex-start',
     },
 }));
@@ -70,7 +70,7 @@ const Sidebar = ({location}: props) => {
                         <Grid item={true} className={applyCssClass(l.path)}>
                             <NavLink to={l.path}>
                                 <Typography className={classes.linkText} variant={'body1'}>
-                                    <span>{l.icon}</span>
+                                    {l.icon && <span>{l.icon}</span>}
                                     <span>{l.text}</span>
                                 </Typography>
                             </NavLink>

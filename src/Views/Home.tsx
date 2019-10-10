@@ -6,7 +6,6 @@ import Button from '../components/button';
 import heroImage from '../assets/images/carousel@2x.png';
 import Select from '../components/select';
 import Axios from 'axios';
-import whyUsImage from '../assets/images/why-us.png';
 import styled from 'styled-components';
 import Footer from '../components/Footer';
 
