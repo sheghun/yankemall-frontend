@@ -84,8 +84,7 @@ const SignUp = ({history}: RouteComponentProps) => {
     const emailTestString = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const [password, setPassword] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
-    const [zipCode, setZipCode] = useState('');
-    const [birthDate, setBirthDate] = useState(moment().format('YYYY-MM-DD'));
+    const [birthDate, setBirthDate] = useState('YYY-MM-DD');
     const [gender, setGender] = useState('');
     const [address, setAddress] = useState('');
     const [errors, setErrors] = useState({
@@ -94,8 +93,7 @@ const SignUp = ({history}: RouteComponentProps) => {
         email: '',
         password: '',
         phoneNumber: '',
-        zipCode: '',
-        address: '',
+        birthDate: '',
         gender: '',
     });
 
@@ -113,10 +111,9 @@ const SignUp = ({history}: RouteComponentProps) => {
             firstName: '',
             lastName: '',
             email: '',
+            birthDate: '',
             password: '',
             phoneNumber: '',
-            zipCode: '',
-            address: '',
             gender: '',
         };
 
@@ -136,21 +133,17 @@ const SignUp = ({history}: RouteComponentProps) => {
             pass = false;
             errors.password = 'Password is required and must be at least six characters';
         }
-        if (phoneNumber.length !== 11) {
+        if (phoneNumber.length !== 10) {
             pass = false;
             errors.phoneNumber = 'Phone number is required and must be eleven digits';
         }
-        if (zipCode.length <= 1) {
-            pass = false;
-            errors.zipCode = 'Zip Code is required';
-        }
-        if (address.length <= 10) {
-            pass = false;
-            errors.address = 'Address is required';
-        }
         if (gender === '') {
             pass = false;
-            errors.address = 'Gender is required';
+            errors.gender = 'Gender is required';
+        }
+        if (birthDate === '') {
+            pass = false;
+            errors.birthDate = 'Date is incorrect';
         }
         setErrors(e => ({...e, ...errors}));
         return pass;
@@ -168,11 +161,16 @@ const SignUp = ({history}: RouteComponentProps) => {
         const d = {
             email,
             password,
+            firstName,
+            lastName,
+            birthDate,
+            phoneNumber: '234' + phoneNumber,
+            gender,
         };
         try {
             const {status, data} = await Axios.post('/user', d);
             if (status === 201 && data.status === 'success') {
-                setSnackbar({open: true, variant: 'success', message: 'Sign in Successful'});
+                setSnackbar({open: true, variant: 'success', message: 'Sign up Successful'});
                 setTimeout(() => {
                     history.push('/dashboard/overview');
                 }, 2000);
@@ -249,6 +247,7 @@ const SignUp = ({history}: RouteComponentProps) => {
                             margin={'normal'}
                             error={!!errors.email}
                             value={email}
+                            helperText={errors.email}
                             onChange={e => setEmail(e.target.value)}
                             type={'email'}
                             label={'E-mail'}
@@ -276,21 +275,11 @@ const SignUp = ({history}: RouteComponentProps) => {
                             fullWidth
                             name="password"
                             label="Password"
+                            helperText={errors.password}
                             type="password"
                             id="password"
                             autoComplete="current-password"
                             onChange={e => setPassword(e.target.value)}
-                        />
-                        <TextField
-                            margin={'normal'}
-                            required={true}
-                            id={'zip-code'}
-                            type={'text'}
-                            value={zipCode}
-                            error={!!errors.zipCode}
-                            onChange={e => setZipCode(e.target.value)}
-                            fullWidth
-                            label={'Zip Code'}
                         />
                         <MuiPickersUtilsProvider utils={MomentUtils}>
                             <KeyboardDatePicker
@@ -301,6 +290,8 @@ const SignUp = ({history}: RouteComponentProps) => {
                                 label="Birthday"
                                 onFocus={e => e.target.blur()}
                                 format="YYYY-MM-DD"
+                                error={!!errors.birthDate}
+                                helperText={errors.birthDate}
                                 value={birthDate}
                                 onChange={birthDate =>
                                     setBirthDate((birthDate as Moment).format('YYYY-MM-DD'))
@@ -315,6 +306,9 @@ const SignUp = ({history}: RouteComponentProps) => {
                             label="Gender"
                             fullWidth
                             margin={'normal'}
+                            required
+                            error={!!errors.gender}
+                            helperText={errors.gender}
                             value={gender}
                             onChange={e => setGender(e.target.value)}
                             InputProps={{
