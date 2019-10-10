@@ -27,7 +27,7 @@ const Style = styled.div`
         background-attachment: fixed;
         background-color: #ff4252;
         padding-top: 5rem;
-        padding-bottom: 5rem;
+        padding-bottom: 2rem;
     }
     & .download-our-extension-div > h1 {
         text-align: center;
@@ -249,6 +249,18 @@ const Home = () => {
                         />
                         <div className={'download-our-extension-div'}>
                             <h1>Download Our Chrome Extension</h1>
+                            <Button
+                                style={{
+                                    textAlign: 'center',
+                                    left: '50%',
+                                    marginTop: '3rem',
+                                    position: 'relative',
+                                    transform: 'translateX(-50%)',
+                                }}
+                                color={'black'}
+                            >
+                                Download
+                            </Button>
                         </div>
                         <div className={'inputs-rectangle'}>
                             <h1>Select a Logo To Start Shopping. Click Our Button To CheckOut.</h1>
@@ -309,9 +321,6 @@ const Home = () => {
                     </div>
                     <div className={'all-stores-button'}>
                         <Button color={'black'}>View All Stores</Button>
-                    </div>
-                    <div className={'shipping-infos'}>
-                        <img src={whyUsImage} alt={'why us image'} />
                     </div>
                     <Footer />
                 </Style>

@@ -23,7 +23,7 @@ const NativeNav = styled.nav`
         padding: 6px 8px;
     }
     & img {
-        height: 128px;
+        height: 100px;
     }
     & .navigation-wrapper {
         flex-basis: 80%;
@@ -42,23 +42,23 @@ const Nav = () => (
             <img src={logo} alt={'Yankeemall Logo'} />
             <div className={'navigation-wrapper'}>
                 <TopBar />
-                <ul>
-                    <li>
-                        <Link to="/">Home</Link>
-                    </li>
-                    <li>
-                        <Link to="/">stores</Link>
-                    </li>
-                    <li>
-                        <Link to="/">custom orders</Link>
-                    </li>
-                    <li>
-                        <Link to="/">pickup locations</Link>
-                    </li>
-                    <li>
-                        <Link to="/">contact us</Link>
-                    </li>
-                </ul>
+                {/*<ul>*/}
+                {/*    <li>*/}
+                {/*        <Link to="/">Home</Link>*/}
+                {/*    </li>*/}
+                {/*    <li>*/}
+                {/*        <Link to="/">stores</Link>*/}
+                {/*    </li>*/}
+                {/*    <li>*/}
+                {/*        <Link to="/">custom orders</Link>*/}
+                {/*    </li>*/}
+                {/*    <li>*/}
+                {/*        <Link to="/">pickup locations</Link>*/}
+                {/*    </li>*/}
+                {/*    <li>*/}
+                {/*        <Link to="/">contact us</Link>*/}
+                {/*    </li>*/}
+                {/*</ul>*/}
             </div>
         </NativeNav>
     </div>

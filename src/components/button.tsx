@@ -21,12 +21,12 @@ const Buton = styled.button`
     }
 `;
 
-const Button = ({children, color, ...restProps}: props) => {
+const Button = ({children, color, style, ...restProps}: props) => {
     return (
         <>
             {
                 // @ts-ignore
-                <Buton {...restProps} style={{backgroundColor: color}}>
+                <Buton {...restProps} style={{backgroundColor: color, ...style}}>
                     {children}
                 </Buton>
             }
