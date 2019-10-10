@@ -16,7 +16,6 @@ import {DashboardContext} from '../../Context';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Axios, {AxiosError} from 'axios';
 import Snack from '../../components/snack';
-import {Helmet} from 'react-helmet';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -141,8 +140,12 @@ const Details = () => {
         };
         try {
             const {status, data} = await Axios.put('/user', d);
-            if (status === 201 && data.status === 'success') {
-                setSnackbar({open: true, variant: 'success', message: 'Sign up Successful'});
+            if (status === 200 && data.status === 'success') {
+                setSnackbar({
+                    open: true,
+                    variant: 'success',
+                    message: 'Details updated successfully',
+                });
             }
         } catch (e) {
             const {response} = e as AxiosError;
@@ -206,6 +209,10 @@ const Details = () => {
                         margin={'normal'}
                         required={true}
                         helperText={errors.email}
+                        disabled={true}
+                        style={{
+                            cursor: 'not-allowed',
+                        }}
                         error={!!errors.email}
                         value={email}
                         onChange={e => setEmail(e.target.value)}
