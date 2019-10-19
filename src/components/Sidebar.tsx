@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import Paper from '@material-ui/core/Paper';
 import clx from 'classnames';
 import {NavLink, RouteComponentProps, withRouter} from 'react-router-dom';
@@ -21,7 +21,7 @@ const links = [
         icon: <OrderIcon style={{marginRight: '1rem'}} />,
     },
     {path: '/dashboard/details', text: 'Details'},
-    {path: '/dashboard/change-password', text: 'Change Password'},
+    {path: '/dashboard/changepass', text: 'Change Password'},
     {path: '/dashboard/address', text: 'Address'},
 ];
 
@@ -56,10 +56,12 @@ type props = RouteComponentProps & {};
 const Sidebar = ({location}: props) => {
     const classes = useStyles();
 
-    const applyCssClass = (path: string) => {
-        console.log(location);
-        return clx({[classes.link]: true, [classes.active]: location.pathname === path});
-    };
+    const applyCssClass = useCallback(
+        (path: string) => {
+            return clx({[classes.link]: true, [classes.active]: !!location.pathname.match(path)});
+        },
+        [location],
+    );
 
     return (
         <Paper className={classes.paper}>

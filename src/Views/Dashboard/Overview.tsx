@@ -47,22 +47,31 @@ const Overview = () => {
     const classes = useStyles();
 
     const {firstName, lastName, address, email} = useContext(DashboardContext);
+    console.log(address);
 
     const renderAddress = () => {
+        const defaultAddress = address.find(ad => ad.default);
+
         return (
             <Card raised={false} elevation={0} className={classes.card}>
                 <CardContent>
-                    <Typography className={classes.title} color="textSecondary" gutterBottom>
+                    <Typography className={classes.title} gutterBottom>
                         Address Book
+                        {defaultAddress && (
+                            <Link
+                                to={`/dashboard/address/edit?id=${defaultAddress.id}`}
+                                className={classes.icon}
+                            >
+                                <IconButton color={'primary'} aria-label={'Edit your address book'}>
+                                    <EditIcon />
+                                </IconButton>
+                            </Link>
+                        )}
                     </Typography>
                     <Typography variant="body2" style={{fontWeight: 500}}>
                         Default Shipping address
                     </Typography>
-                    <Typography
-                        className={classes.pos}
-                        color="textSecondary"
-                        style={{fontSize: '12px'}}
-                    >
+                    <Typography className={classes.pos} style={{fontSize: '12px'}}>
                         {address.length === 0 ? (
                             'You have not added an address yet'
                         ) : (
@@ -75,9 +84,13 @@ const Overview = () => {
                     </Typography>
                 </CardContent>
                 <CardActions>
-                    <Button size="small" color={'primary'}>
-                        Learn More
-                    </Button>
+                    {address.length === 0 && (
+                        <Link to={'/dashboard/address/add'}>
+                            <Button size="small" color={'primary'}>
+                                Add Address
+                            </Button>
+                        </Link>
+                    )}
                 </CardActions>
             </Card>
         );
@@ -92,11 +105,7 @@ const Overview = () => {
                 <Grid item={true} xs={12} sm={5}>
                     <Card raised={false} elevation={0} className={classes.card}>
                         <CardContent>
-                            <Typography
-                                className={classes.title}
-                                color="textSecondary"
-                                gutterBottom
-                            >
+                            <Typography className={classes.title} gutterBottom>
                                 Account Details
                                 <Link to={'/dashboard/details'} className={classes.icon}>
                                     <IconButton color={'primary'} aria-label={'Edit your details'}>
@@ -107,9 +116,7 @@ const Overview = () => {
                             <Typography variant="body2" style={{fontWeight: 500}}>
                                 {firstName} {lastName}
                             </Typography>
-                            <Typography className={classes.pos} color="textSecondary">
-                                {email}
-                            </Typography>
+                            <Typography className={classes.pos}>{email}</Typography>
                         </CardContent>
                         <CardActions>
                             <Button size="small" color={'primary'}>
@@ -124,11 +131,7 @@ const Overview = () => {
                 <Grid item xs={12} sm={5}>
                     <Card raised={false} elevation={0} className={classes.card}>
                         <CardContent>
-                            <Typography
-                                className={classes.title}
-                                color="textSecondary"
-                                gutterBottom
-                            >
+                            <Typography className={classes.title} gutterBottom>
                                 Total Orders
                             </Typography>
                             <Typography variant="h6" component="h2">

@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference types="react" />
+
 /**
  * The site interface
  * A representation of the site object at the backend
@@ -43,7 +46,21 @@ declare interface DashboardContext {
     lastName: string;
     phoneNumber: string;
     email: string;
-    address: Array<any>;
+    address: Array<Address>;
     gender: string;
     birthDate: string;
+    setUserObject: Dispatch<SetStateAction<DashboardContext>>;
+}
+
+declare interface Address {
+    id: number;
+    default: boolean;
+    region: string;
+    state: string;
+    userId: number;
+    zipCode: string;
+    address: string;
+    firstName: string;
+    phoneNumber: string;
+    lastName: string;
 }

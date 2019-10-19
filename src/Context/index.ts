@@ -1,6 +1,15 @@
-import {createContext} from 'react';
+import {createContext, Dispatch, SetStateAction} from 'react';
 
-export const DashboardContext = createContext({
+interface UserObject {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    address: Array<Address>;
+    gender: string;
+    birthDate: string;
+}
+const userObject = {
     firstName: '',
     lastName: '',
     email: '',
@@ -8,4 +17,8 @@ export const DashboardContext = createContext({
     address: [],
     gender: '',
     birthDate: '',
+};
+export const DashboardContext = createContext({
+    ...userObject,
+    setUserObject: (() => {}) as Dispatch<SetStateAction<UserObject>>,
 } as DashboardContext);

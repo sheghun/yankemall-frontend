@@ -144,7 +144,7 @@ export default function SignIn({history, location}: RouteComponentProps) {
             if (status === 200 && data.status === 'success') {
                 setSnackbar({open: true, variant: 'success', message: 'Sign in Successful'});
                 setTimeout(() => {
-                    history.push('/dashboard/overview');
+                    history.push(returnUrl);
                 }, 2000);
             }
         } catch (e) {

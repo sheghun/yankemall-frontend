@@ -24,6 +24,9 @@ const Details = loadable(() => import('../Views/Dashboard/Details'), {
 const Address = loadable(() => import('../Views/Dashboard/Address'), {
     fallback: <Loading show={true} />,
 });
+const ChangePass = loadable(() => import('../Views/Dashboard/ChangePass'), {
+    fallback: <Loading show={true} />,
+});
 
 const useStyles = makeStyles(theme => ({
     body: {
@@ -92,16 +95,13 @@ const Dashboard = ({location, history}: Props) => {
 
     return (
         <>
-            <DashboardContext.Provider value={userObject}>
+            <DashboardContext.Provider value={{...userObject, setUserObject}}>
                 <div style={{backgroundColor: 'white', padding: '.5rem 2rem'}}>
                     <Nav />
                 </div>
                 <div className={classes.body}>
-                    <div className={classes.logo}>
-                        <img src={logoImage} alt={'Logo'} />
-                    </div>
                     <Grid container={true} justify={'center'} alignContent={'stretch'} spacing={2}>
-                        <Grid item md={3}>
+                        <Grid item md={2}>
                             <Sidebar />
                         </Grid>
                         <Grid item md={8}>
@@ -109,6 +109,7 @@ const Dashboard = ({location, history}: Props) => {
                             <Route path={'/dashboard/orders'} component={Orders} />
                             <Route path={'/dashboard/details'} component={Details} />
                             <Route path={'/dashboard/address'} component={Address} />
+                            <Route path={'/dashboard/changepass'} component={ChangePass} />
                         </Grid>
                     </Grid>
                     <Footer />

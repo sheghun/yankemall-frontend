@@ -85,7 +85,6 @@ const SignUp = ({history}: RouteComponentProps) => {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [birthDate, setBirthDate] = useState('YYY-MM-DD');
     const [gender, setGender] = useState('');
-    const [address, setAddress] = useState('');
     const [errors, setErrors] = useState({
         firstName: '',
         lastName: '',
