@@ -74,12 +74,16 @@ const Overview = () => {
                     <Typography className={classes.pos} style={{fontSize: '12px'}}>
                         {address.length === 0 ? (
                             'You have not added an address yet'
-                        ) : (
+                        ) : defaultAddress ? (
                             <>
-                                Segun Oladiran
+                                {defaultAddress.firstName} {defaultAddress.lastName}
                                 <br />
-                                NO 18 IG Maryson Street Byazhin
+                                {defaultAddress.address}
+                                <br />
+                                {defaultAddress.phoneNumber}
                             </>
+                        ) : (
+                            <>You have not set your default address</>
                         )}
                     </Typography>
                 </CardContent>
@@ -119,9 +123,11 @@ const Overview = () => {
                             <Typography className={classes.pos}>{email}</Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small" color={'primary'}>
-                                Change Password
-                            </Button>
+                            <Link to={'/dashboard/changepass'}>
+                                <Button size="small" color={'primary'}>
+                                    Change Password
+                                </Button>
+                            </Link>
                         </CardActions>
                     </Card>
                 </Grid>

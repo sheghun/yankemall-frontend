@@ -128,7 +128,7 @@ const ShowAddress = ({}: RouteComponentProps) => {
                     </Grid>
                 ) : (
                     address.map((ad, i) => (
-                        <Grid item xs={12} md={5}>
+                        <Grid key={i} item xs={12} md={5}>
                             <Card raised={false} elevation={0} className={classes.card}>
                                 <CardContent>
                                     <Typography className={classes.pos} style={{fontSize: '12px'}}>
@@ -505,6 +505,7 @@ const EditAddress = ({location}: RouteComponentProps) => {
         message: '',
         variant: 'success',
     });
+    const [id, setId] = useState(0);
     const [phoneNumber, setPhoneNumber] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -527,15 +528,20 @@ const EditAddress = ({location}: RouteComponentProps) => {
     useEffect(() => {
         const id = Number(queryString.parse(location.search).id);
         // Retrieve current address from the address array;
-        const curAddress = contextAddress.find(address => address.id === id) as Address;
-        setFirstName(curAddress.firstName);
-        setLastName(curAddress.lastName);
-        setPhoneNumber(curAddress.phoneNumber);
-        setRegion(curAddress.region);
-        setState(curAddress.state);
-        setZipCode(curAddress.zipCode);
-        setSetAsDefault(curAddress.default);
-    }, []);
+        const curAddress = contextAddress.find(address => address.id === id);
+        console.log(curAddress);
+        if (curAddress) {
+            setId(id);
+            setFirstName(curAddress.firstName);
+            setLastName(curAddress.lastName);
+            setPhoneNumber(curAddress.phoneNumber.slice(3));
+            setAddress(curAddress.address);
+            setRegion(curAddress.region);
+            setState(curAddress.state);
+            setZipCode(curAddress.zipCode);
+            setSetAsDefault(curAddress.default);
+        }
+    }, [contextAddress]);
 
     const changePhoneNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -600,6 +606,7 @@ const EditAddress = ({location}: RouteComponentProps) => {
 
         try {
             const d = {
+                id,
                 firstName,
                 lastName,
                 phoneNumber,
@@ -609,8 +616,8 @@ const EditAddress = ({location}: RouteComponentProps) => {
                 state,
                 makeDefault: setAsDefault,
             };
-            const {status, data} = await Axios.post('/user/address', d);
-            if (status === 201 && data.status === 'success') {
+            const {status, data} = await Axios.put('/user/address', d);
+            if (status === 200 && data.status === 'success') {
                 setSnackbar({
                     open: true,
                     variant: 'success',
@@ -664,6 +671,7 @@ const EditAddress = ({location}: RouteComponentProps) => {
                         id={'first-name'}
                         margin={'normal'}
                         required
+                        value={firstName}
                         type={'text'}
                         error={!!errors.firstName}
                         onChange={e => setFirstName(e.target.value)}
@@ -677,6 +685,7 @@ const EditAddress = ({location}: RouteComponentProps) => {
                         id={'last-name'}
                         margin={'normal'}
                         required
+                        value={lastName}
                         type={'text'}
                         error={!!errors.lastName}
                         onChange={e => setLastName(e.target.value)}
