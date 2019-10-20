@@ -625,7 +625,7 @@ const EditAddress = ({location}: RouteComponentProps) => {
                         open: true,
                         variant: 'error',
                         message:
-                            'An error occurred from our end please bear with us, while we fix this',
+                            'An error occurred from our end please bear with us while we fix this',
                     });
                 }
             }

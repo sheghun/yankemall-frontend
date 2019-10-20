@@ -178,7 +178,7 @@ const SignUp = ({history}: RouteComponentProps) => {
             if (response) {
                 const {status, data} = response;
                 if (status === 422 && data.status === 'error') {
-                    const err = data.error as Array<{msg: string; param: string}>;
+                    const err = data.errors as Array<{msg: string; param: string}>;
                     err.forEach(er => setErrors(e => ({...e, [er.param]: er.msg})));
                 }
             }
