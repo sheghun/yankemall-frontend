@@ -47,7 +47,6 @@ const Overview = () => {
     const classes = useStyles();
 
     const {firstName, lastName, address, email} = useContext(DashboardContext);
-    console.log(address);
 
     const renderAddress = () => {
         const defaultAddress = address.find(ad => ad.default);

@@ -74,7 +74,7 @@ export default Address;
 const ShowAddress = ({}: RouteComponentProps) => {
     const classes = useStyles();
 
-    const {address, phoneNumber, firstName, lastName} = useContext(DashboardContext);
+    const {address} = useContext(DashboardContext);
 
     return (
         <Paper className={classes.paper}>
@@ -136,11 +136,11 @@ const ShowAddress = ({}: RouteComponentProps) => {
                                             'You have not added an address yet'
                                         ) : (
                                             <>
-                                                {firstName} {lastName}
+                                                {ad.firstName} {ad.lastName}
                                                 <br />
                                                 {ad.address}
                                                 <br />
-                                                {'+' + phoneNumber}
+                                                {'+' + ad.phoneNumber}
                                                 <br />
                                                 {ad.zipCode}
                                             </>
@@ -159,9 +159,11 @@ const ShowAddress = ({}: RouteComponentProps) => {
                                 </CardContent>
                                 <CardActions style={{borderTop: 'solid 1px #ededed'}}>
                                     <Typography className={classes.title}>
-                                        <Button color={'primary'} disabled={ad.default}>
-                                            Set as Default
-                                        </Button>
+                                        <Link to={`/dashboard/address/edit?id=${ad.id}`}>
+                                            <Button color={'primary'}>
+                                                Edit Address
+                                            </Button>
+                                        </Link>
                                         <Link
                                             to={`/dashboard/address/edit?id=${ad.id}`}
                                             className={classes.icon}
@@ -280,7 +282,7 @@ const AddAddress = ({}: RouteComponentProps) => {
             const d = {
                 firstName,
                 lastName,
-                phoneNumber: `234${phoneNumber}`,
+                phoneNumber: phoneNumber.match(/^234/) ? phoneNumber : `234${phoneNumber}`,
                 zipCode,
                 address,
                 region,
@@ -293,14 +295,27 @@ const AddAddress = ({}: RouteComponentProps) => {
                     id: data.data.id,
                     firstName,
                     lastName,
-                    phoneNumber,
+                    phoneNumber: phoneNumber.match(/^234/) ? phoneNumber : `234${phoneNumber}`,
                     zipCode,
                     state,
                     region,
                     address,
                     default: data.data.default,
                 } as Address;
-                const updatedAddresses = [...contextAddress, newAddress];
+                let newContextAddress = contextAddress.slice();
+                if (setAsDefault) {
+                    /**
+                     * This next line of code gets the previous default and turns the default field to false
+                     */
+                    const formerDefaultAddress = contextAddress.find(ad => ad.default);
+                    if (formerDefaultAddress) {
+                        const filteredContextAddress = contextAddress.filter(ad => !ad.default);
+                        formerDefaultAddress.default = false;
+                        filteredContextAddress.push(formerDefaultAddress);
+                        newContextAddress = filteredContextAddress;
+                    }
+                }
+                const updatedAddresses = [...newContextAddress, newAddress];
                 // @ts-ignore
                 setContextObject(s => ({...s, address: updatedAddresses}));
 
@@ -529,8 +544,8 @@ const EditAddress = ({location}: RouteComponentProps) => {
         const id = Number(queryString.parse(location.search).id);
         // Retrieve current address from the address array;
         const curAddress = contextAddress.find(address => address.id === id);
-        console.log(curAddress);
         if (curAddress) {
+            console.log(curAddress);
             setId(id);
             setFirstName(curAddress.firstName);
             setLastName(curAddress.lastName);
@@ -618,6 +633,35 @@ const EditAddress = ({location}: RouteComponentProps) => {
             };
             const {status, data} = await Axios.put('/user/address', d);
             if (status === 200 && data.status === 'success') {
+                const editedAddress = {
+                    id,
+                    firstName,
+                    lastName,
+                    phoneNumber: phoneNumber.match(/^234/) ? phoneNumber : `234${phoneNumber}`,
+                    zipCode,
+                    state,
+                    region,
+                    address,
+                    default: setAsDefault,
+                } as Address;
+                let newContextAddress = contextAddress.slice();
+                if (setAsDefault) {
+                    /**
+                     * This next line of code gets the previous default and turns the default field to false
+                     */
+                    const formerDefaultAddress = newContextAddress.find(ad => ad.default);
+                    if (formerDefaultAddress) {
+                        const filteredContextAddress = newContextAddress.filter(ad => !ad.default);
+                        formerDefaultAddress.default = false;
+                        filteredContextAddress.push(formerDefaultAddress);
+                        newContextAddress = filteredContextAddress.slice();
+                    }
+                }
+                newContextAddress = newContextAddress.filter(address => address.id !== id);
+                newContextAddress.push(editedAddress);
+                // @ts-ignore
+                setContextObject(s => ({...s, address: newContextAddress}));
+
                 setSnackbar({
                     open: true,
                     variant: 'success',

@@ -49,7 +49,7 @@ const ChangePass = () => {
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [show, setShow] = useState({old: false, new: false});
-    const [loading, setLoding] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({
         oldPassword: '',
         newPassword: {
@@ -113,6 +113,7 @@ const ChangePass = () => {
         if (!validate()) {
             return;
         }
+        setLoading(true);
         const d = {
             newPassword,
             oldPassword,
@@ -147,9 +148,8 @@ const ChangePass = () => {
                 }
             }
         }
+        setLoading(false);
     };
-
-    console.log(errors.newPassword);
 
     return (
         <Paper className={classes.paper}>

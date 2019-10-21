@@ -3,6 +3,7 @@ import TopBar from './topbar';
 import logo from '../assets/images/pp.png';
 import styled from 'styled-components';
 import {Link} from 'react-scroll';
+import {Link as RouterLink} from 'react-router-dom'
 
 const NativeNav = styled.nav`
     display: flex;
@@ -45,7 +46,7 @@ const Nav = () => (
                 <TopBar />
                 <ul>
                     <li>
-                        <Link to="/">Home</Link>
+                        <RouterLink to="/">Home</RouterLink>
                     </li>
                     <li>
                         <Link to="stores" spy={true} smooth={true} duration={500}>
