@@ -27,6 +27,9 @@ const Address = loadable(() => import('../Views/Dashboard/Address'), {
 const ChangePass = loadable(() => import('../Views/Dashboard/ChangePass'), {
     fallback: <Loading show={true} />,
 });
+const NotFound = loadable(() => import('../Views/404'), {
+    fallback: <Loading show={true} />,
+});
 
 const useStyles = makeStyles(theme => ({
     body: {

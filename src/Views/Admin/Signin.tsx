@@ -228,7 +228,7 @@ export default function SignIn({history, location}: RouteComponentProps) {
                         </Button>
                         <Grid container>
                             <Grid item xs>
-                                <Link to="/auth/forgotpass">
+                                <Link to="#">
                                     <Typography variant="body2" color={'primary'}>
                                         Forgot password?
                                     </Typography>
