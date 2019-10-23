@@ -11,7 +11,7 @@ import {Helmet} from 'react-helmet';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import backgroundImage from '../../assets/images/multiple-shipping-partners.png';
-import Axios, {AxiosError} from 'axios';
+import Axios from 'axios';
 import Snack from '../../components/snack';
 import {Link} from 'react-router-dom';
 import {RouteComponentProps} from 'react-router';
@@ -94,7 +94,7 @@ export default function SignIn({}: RouteComponentProps) {
             email,
         };
         try {
-            const {status, data} = await Axios.post('/user/login', d);
+            const {status, data} = await Axios.post('/user/forgotpass', d);
             if (status === 200 && data.status === 'success') {
                 setSnackbar({open: true, variant: 'success', message: 'Sign in Successful'});
             }
