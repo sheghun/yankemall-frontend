@@ -34,7 +34,7 @@ const App: React.FC = () => {
             response => Promise.resolve(response),
             err => {
                 if (err.response) {
-                    if (String(err.esponse.status).match(/^5/)) {
+                    if (String(err.response.status).match(/^5/)) {
                         setSnackbar({
                             open: true,
                             variant: 'error',
@@ -49,6 +49,7 @@ const App: React.FC = () => {
                         message: 'Oops network error try again',
                     });
                 }
+                return Promise.reject(err);
             },
         );
     }, []);
