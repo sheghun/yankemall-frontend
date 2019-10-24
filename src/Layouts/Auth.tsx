@@ -12,6 +12,9 @@ const Signup = loadable(() => import('../Views/Auth/Signup'), {
 const ForgotPassword = loadable(() => import('../Views/Auth/ForgotPassword'), {
     fallback: <Loading show={true} />,
 });
+const ResetPass = loadable(() => import('../Views/Auth/ResetPass'), {
+    fallback: <Loading show={true} />,
+});
 
 const Auth = () => {
     return (
@@ -20,6 +23,7 @@ const Auth = () => {
                 <Route path={'/auth/signin'} component={SignIn} />
                 <Route path={'/auth/signup'} component={Signup} />
                 <Route path={'/auth/forgotpass'} component={ForgotPassword} />
+                <Route path={'/auth/resetpass'} component={ResetPass} />
             </Switch>
         </>
     );

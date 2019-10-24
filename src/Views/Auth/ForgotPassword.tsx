@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from 'react';
-import Avatar from '@material-ui/core/Avatar';
+import React, {useState} from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -11,7 +10,7 @@ import {Helmet} from 'react-helmet';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import backgroundImage from '../../assets/images/multiple-shipping-partners.png';
-import Axios from 'axios';
+import Axios, {AxiosError} from 'axios';
 import Snack from '../../components/snack';
 import {Link} from 'react-router-dom';
 import {RouteComponentProps} from 'react-router';
@@ -96,10 +95,26 @@ export default function SignIn({}: RouteComponentProps) {
         try {
             const {status, data} = await Axios.post('/user/forgotpass', d);
             if (status === 200 && data.status === 'success') {
-                setSnackbar({open: true, variant: 'success', message: 'Sign in Successful'});
+                setSnackbar({
+                    open: true,
+                    variant: 'success',
+                    message: 'Link sent to email if it exists',
+                });
             }
         } catch (e) {
-            /* Do nothing */
+            const {response} = e as AxiosError;
+            if (response) {
+                const {status, data} = response;
+                console.log(status, data);
+                if (status === 400 && data.status === 'error') {
+                    alert('working');
+                    setSnackbar({
+                        open: true,
+                        variant: 'error',
+                        message: "Link couldn't send check your network connection",
+                    });
+                }
+            }
         }
         setLoading(false);
     };

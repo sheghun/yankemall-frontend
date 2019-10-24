@@ -149,6 +149,7 @@ export default function SignIn({history, location}: RouteComponentProps) {
             }
         } catch (e) {
             const err = e as AxiosError;
+            alert('here');
             const {response} = err;
             if (response) {
                 const {status} = response;
