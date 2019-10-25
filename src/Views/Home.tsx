@@ -2,8 +2,8 @@ import React, {ChangeEvent, useEffect, useMemo, useRef, useState} from 'react';
 import Nav from '../components/nav';
 import Wrapper from '../components/wrapper';
 import Input from '../components/input';
-import Button from '../components/button';
-import heroImage from '../assets/images/carousel@2x.png';
+import Button from '@material-ui/core/Button';
+import heroImage from '../assets/images/eromalls-banner.png';
 import Select from '../components/select';
 import Axios from 'axios';
 import styled from 'styled-components';
@@ -24,7 +24,7 @@ const Style = styled.div`
     }
     & .download-our-extension-div {
         background-attachment: fixed;
-        background-color: #ff4252;
+        background-color: #D10065;
         padding-top: 5rem;
         padding-bottom: 2rem;
     }
@@ -35,7 +35,7 @@ const Style = styled.div`
         font-family: 'Quicksand';
     }
     & .inputs-rectangle {
-        background-color: #ff4252;
+        background-color: #D10065;
         padding: 2rem;
         display: flex;
         flex-direction: column;
@@ -256,7 +256,9 @@ const Home = () => {
                                     position: 'relative',
                                     transform: 'translateX(-50%)',
                                 }}
-                                color={'black'}
+                                color={'secondary'}
+                                variant={'contained'}
+                                size={'large'}
                             >
                                 Download
                             </Button>
@@ -319,9 +321,11 @@ const Home = () => {
                         </div>
                     </div>
                     <div className={'all-stores-button'}>
-                        <Button color={'black'}>View All Stores</Button>
+                        <Button color={'secondary'} variant={'contained'} size={'large'}>
+                            View All Stores
+                        </Button>
                     </div>
-                    <Footer />
+                    <Footer  />
                 </Style>
             </Wrapper>
         </>

@@ -64,18 +64,14 @@ const Footer = () => {
                 <div className={'pre-footer-blocks, contact-us'}>
                     <h3>Contact Us</h3>
                     <p>
-                        Yankeemall, 18 IG Maryson Byazhin,
+                        Call Us Now: +234-812-332-2389
                         <br />
-                        Kubwa Abuja
-                        <br />
-                        Call Us Now: 081-2332-2389
-                        <br />
-                        Email: yankeemall@gmail.com
+                        Email: <span style={{textTransform: 'lowercase'}}>info@eromalls.com</span>
                     </p>
                 </div>
             </div>
             <hr style={{borderColor: 'rgba(0, 0, 0, 0.05)'}} />
-            <div className={'footer'}>
+            {/*<div className={'footer'}>
                 <div className={'footer-blocks'}>
                     <h3>Information</h3>
                     <div className={'footer-blocks-links-wrapper'}>
@@ -92,7 +88,7 @@ const Footer = () => {
                         <a>Term &amp; Conditions</a>
                     </div>
                 </div>
-            </div>
+            </div>*/}
         </Wrapper>
     );
 };

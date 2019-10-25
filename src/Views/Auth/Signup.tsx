@@ -21,7 +21,7 @@ import {KeyboardDatePicker, MuiPickersUtilsProvider} from '@material-ui/pickers'
 import {Moment} from 'moment';
 import useMediaQuery from '@material-ui/core/useMediaQuery/useMediaQuery';
 import MenuItem from '@material-ui/core/MenuItem';
-import logoImage from '../../assets/images/pp.png';
+import logoImage from '../../assets/images/eromalls-logo.png';
 
 function Copyright() {
     return (
@@ -203,7 +203,7 @@ const SignUp = ({history}: RouteComponentProps) => {
                 <div className={classes.paper}>
                     <Link to={'/'}>
                         <Avatar className={classes.avatar}>
-                            <img src={logoImage} alt={'Yankeemall Logo'} />
+                            <img width={'100px'} src={logoImage} alt={'Yankeemall Logo'} />
                         </Avatar>
                     </Link>
                     <Typography component="h1" variant="h5">
@@ -335,7 +335,7 @@ const SignUp = ({history}: RouteComponentProps) => {
                             <Grid item>
                                 <Link to={'/auth/signin'}>
                                     <Typography color={'primary'} variant="body2">
-                                        {'Already have an account? Sign In'}
+                                        {'Already have an account?     Sign In'}
                                     </Typography>
                                 </Link>
                             </Grid>

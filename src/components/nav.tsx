@@ -1,9 +1,9 @@
 import React from 'react';
 import TopBar from './topbar';
-import logo from '../assets/images/pp.png';
+import logo from '../assets/images/eromalls-logo.png';
 import styled from 'styled-components';
 import {Link} from 'react-scroll';
-import {Link as RouterLink} from 'react-router-dom'
+import {Link as RouterLink} from 'react-router-dom';
 
 const NativeNav = styled.nav`
     display: flex;
@@ -28,7 +28,7 @@ const NativeNav = styled.nav`
         height: 100px;
     }
     & .navigation-wrapper {
-        flex-basis: 80%;
+        flex-basis: 90%;
     }
     & a {
         color: black;
