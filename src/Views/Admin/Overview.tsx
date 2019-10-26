@@ -12,6 +12,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import {DashboardContext} from '../../Context';
 import {Link} from 'react-router-dom';
 
+
 const useStyles = makeStyles(theme => ({
     pageTitle: {
         marginBottom: '3rem',
@@ -49,7 +50,7 @@ const Overview = () => {
     const {firstName, lastName, address, email} = useContext(DashboardContext);
 
     const renderAddress = () => {
-        console.log(address);
+        console.log(firstName);
         const defaultAddress = address.find(ad => ad.default);
 
         return (
@@ -103,36 +104,50 @@ const Overview = () => {
     return (
         <Paper className={classes.paper}>
             <Typography variant={'h5'} className={classes.pageTitle}>
-                Account Overview
+                Overview
             </Typography>
             <Grid container={true} justify={'space-evenly'} spacing={3}>
                 <Grid item={true} xs={12} sm={5}>
                     <Card raised={false} elevation={0} className={classes.card}>
                         <CardContent>
                             <Typography className={classes.title} gutterBottom>
-                                Account Details
+                                Exchange Rate
                                 <Link to={'/dashboard/details'} className={classes.icon}>
                                     <IconButton color={'primary'} aria-label={'Edit your details'}>
                                         <EditIcon />
                                     </IconButton>
                                 </Link>
                             </Typography>
-                            <Typography variant="body2" style={{fontWeight: 500}}>
-                                {firstName} {lastName}
+                            <Typography
+                                align={'center'}
+                                variant="h4"
+                                style={{fontWeight: 500, marginTop: '1rem'}}
+                            >
+                                ₦361.34
                             </Typography>
-                            <Typography className={classes.pos}>{email}</Typography>
                         </CardContent>
-                        <CardActions>
-                            <Link to={'/dashboard/changepass'}>
-                                <Button size="small" color={'primary'}>
-                                    Change Password
-                                </Button>
-                            </Link>
-                        </CardActions>
                     </Card>
                 </Grid>
                 <Grid item xs={12} sm={5}>
-                    {renderAddress()}
+                    <Card raised={false} elevation={0} className={classes.card}>
+                        <CardContent>
+                            <Typography className={classes.title} gutterBottom>
+                                Total Users
+                            </Typography>
+                            <Typography
+                                align={'center'}
+                                variant="h4"
+                                style={{fontWeight: 500, marginTop: '1rem'}}
+                            >
+                                100
+                            </Typography>
+                        </CardContent>
+                        <CardActions>
+                            <Button size="small" color={'primary'}>
+                                View Users
+                            </Button>
+                        </CardActions>
+                    </Card>
                 </Grid>
                 <Grid item xs={12} sm={5}>
                     <Card raised={false} elevation={0} className={classes.card}>

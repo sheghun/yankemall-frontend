@@ -5,7 +5,7 @@ const Wrapper = ({children}: any) => {
     return (
         <>
             <Helmet>
-                <title>Home</title>
+                <title>Eromalls HomePage</title>
                 <link
                     href={'http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css'}
                     rel={'stylesheet'}

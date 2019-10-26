@@ -5,25 +5,8 @@ import {NavLink, RouteComponentProps, withRouter} from 'react-router-dom';
 import {makeStyles} from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import PersonIcon from '@material-ui/icons/PersonOutline';
-import OrderIcon from '@material-ui/icons/AllInbox';
-import Divider from '@material-ui/core/Divider';
 
-const links = [
-    {
-        path: '/dashboard/overview',
-        text: 'My Account',
-        icon: <PersonIcon style={{marginRight: '1rem'}} />,
-    },
-    {
-        path: '/dashboard/orders',
-        text: 'Orders',
-        icon: <OrderIcon style={{marginRight: '1rem'}} />,
-    },
-    {path: '/dashboard/details', text: 'Details'},
-    {path: '/dashboard/changepass', text: 'Change Password'},
-    {path: '/dashboard/address', text: 'Address'},
-];
+import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles(theme => ({
     active: {
@@ -51,9 +34,15 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-type props = RouteComponentProps & {};
+type props = RouteComponentProps & {
+    links: Array<{
+        path: string;
+        text: string;
+        icon?: any;
+    }>;
+};
 
-const Sidebar = ({location}: props) => {
+const Sidebar = ({location, links}: props) => {
     const classes = useStyles();
 
     const applyCssClass = useCallback(

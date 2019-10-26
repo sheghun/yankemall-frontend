@@ -1,26 +1,19 @@
 import React from 'react';
 import facebookImage from '../assets/images/facebook-logo.svg';
 import styled from 'styled-components';
+import Grid from '@material-ui/core/Grid';
 
 const Wrapper = styled.div`
     background-color: white;
     .pre-footer {
         margin-top: 5rem;
-        display: flex;
+        width: 100%;
         color: rgba(0, 0, 0, 0.6);
         line-height: 2;
         font-size: 14px;
         text-transform: capitalize;
         align-items: start;
         justify-content: center;
-    }
-    & .pre-footer-blocks {
-        flex-basis: 300px;
-    }
-    & .pre-footer .follow-us {
-        margin-right: 100px;
-    }
-    & .pre-footer .follow-us {
     }
     & .pre-footer .follow-us img {
         margin-top: 1rem;
@@ -48,47 +41,37 @@ const Footer = () => {
     return (
         <Wrapper>
             <div id={'contact-us'} className={'pre-footer'}>
-                <div className={'pre-footer-blocks follow-us'}>
-                    <h3>Follow Us</h3>
-                    <p>
-                        Join us and keep up to date with us on any of these social media platforms
-                        <div>
-                            <img
-                                alt={'twitter link'}
-                                src="https://img.icons8.com/color/48/000000/twitter.png"
-                            />
-                            <img alt={'facebook link'} src={facebookImage} />
+                <Grid container justify={'center'} spacing={3}>
+                    <Grid item xs={10} sm={4} md={3}>
+                        <div className={'pre-footer-blocks follow-us'}>
+                            <h3>Follow Us</h3>
+                            <p>
+                                Join us and keep up to date with us on any of these social media
+                                platforms
+                                <div>
+                                    <img
+                                        alt={'twitter link'}
+                                        src="https://img.icons8.com/color/48/000000/twitter.png"
+                                    />
+                                    <img alt={'facebook link'} src={facebookImage} />
+                                </div>
+                            </p>
                         </div>
-                    </p>
-                </div>
-                <div className={'pre-footer-blocks, contact-us'}>
-                    <h3>Contact Us</h3>
-                    <p>
-                        Call Us Now: +234-812-332-2389
-                        <br />
-                        Email: <span style={{textTransform: 'lowercase'}}>info@eromalls.com</span>
-                    </p>
-                </div>
+                    </Grid>
+                    <Grid item xs={10} sm={4} md={3}>
+                        <div className={'pre-footer-blocks, contact-us'}>
+                            <h3>Contact Us</h3>
+                            <p>
+                                Call Us Now: +234-812-332-2389
+                                <br />
+                                Email:{' '}
+                                <span style={{textTransform: 'lowercase'}}>info@eromalls.com</span>
+                            </p>
+                        </div>
+                    </Grid>
+                </Grid>
             </div>
             <hr style={{borderColor: 'rgba(0, 0, 0, 0.05)'}} />
-            {/*<div className={'footer'}>
-                <div className={'footer-blocks'}>
-                    <h3>Information</h3>
-                    <div className={'footer-blocks-links-wrapper'}>
-                        <a>About Us</a>
-                        <a>Privacy Policy</a>
-                        <a>Term &amp; Conditions</a>
-                    </div>
-                </div>
-                <div className={'footer-blocks'}>
-                    <h3>Information</h3>
-                    <div className={'footer-blocks-links-wrapper'}>
-                        <a>About Us</a>
-                        <a>Privacy Policy</a>
-                        <a>Term &amp; Conditions</a>
-                    </div>
-                </div>
-            </div>*/}
         </Wrapper>
     );
 };

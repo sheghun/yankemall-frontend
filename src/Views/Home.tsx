@@ -8,6 +8,7 @@ import Select from '../components/select';
 import Axios from 'axios';
 import styled from 'styled-components';
 import Footer from '../components/Footer';
+import Grid from '@material-ui/core/Grid';
 
 const Style = styled.div`
     margin-top: 2rem;
@@ -266,48 +267,58 @@ const Home = () => {
                         <div id={'stores'} className={'inputs-rectangle'}>
                             <h1>Select a Logo To Start Shopping. Click Our Button To CheckOut.</h1>
                             <div className={'inputs'}>
-                                <Input
-                                    width={14}
-                                    onChange={filterSites('search')}
-                                    name={'search'}
-                                    placeholder={'Search for site'}
-                                />
-                                <Select
-                                    width={12}
-                                    defaultValue={''}
-                                    onChange={filterSites('categories')}
-                                    name={'categories'}
-                                    options={
-                                        <>
-                                            <option value={''}>All Categories</option>
-                                            {categoriesElement}
-                                        </>
-                                    }
-                                />
-                                <Select
-                                    width={12}
-                                    name={'stores'}
-                                    defaultValue={'0'}
-                                    options={
-                                        <>
-                                            <option disabled value={'0'}>
-                                                All Stores
-                                            </option>
-                                        </>
-                                    }
-                                />
-                                <Select
-                                    width={12}
-                                    defaultValue={''}
-                                    onChange={filterSites('locations')}
-                                    name={'locations'}
-                                    options={
-                                        <>
-                                            <option value={''}>All Locations</option>
-                                            {locationsElement}
-                                        </>
-                                    }
-                                />
+                                <Grid container justify={'center'} spacing={3}>
+                                    <Grid item xs={10} sm={6} md={3}>
+                                        <Input
+                                            width={'100%'}
+                                            onChange={filterSites('search')}
+                                            name={'search'}
+                                            placeholder={'Search for site'}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={10} sm={6} md={3}>
+                                        <Select
+                                            width={'100%'}
+                                            defaultValue={''}
+                                            onChange={filterSites('categories')}
+                                            name={'categories'}
+                                            options={
+                                                <>
+                                                    <option value={''}>All Categories</option>
+                                                    {categoriesElement}
+                                                </>
+                                            }
+                                        />
+                                    </Grid>
+                                    <Grid item xs={10} sm={6} md={3}>
+                                        <Select
+                                            width={'100%'}
+                                            name={'stores'}
+                                            defaultValue={'0'}
+                                            options={
+                                                <>
+                                                    <option disabled value={'0'}>
+                                                        All Stores
+                                                    </option>
+                                                </>
+                                            }
+                                        />
+                                    </Grid>
+                                    <Grid item xs={10} sm={6} md={3}>
+                                        <Select
+                                            width={'100%'}
+                                            defaultValue={''}
+                                            onChange={filterSites('locations')}
+                                            name={'locations'}
+                                            options={
+                                                <>
+                                                    <option value={''}>All Locations</option>
+                                                    {locationsElement}
+                                                </>
+                                            }
+                                        />
+                                    </Grid>
+                                </Grid>
                             </div>
                             <div className={'supported-sites-logo'}>
                                 <div>
@@ -325,7 +336,7 @@ const Home = () => {
                             View All Stores
                         </Button>
                     </div>
-                    <Footer  />
+                    <Footer />
                 </Style>
             </Wrapper>
         </>

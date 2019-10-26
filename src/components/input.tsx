@@ -5,7 +5,7 @@ type Props = React.DetailedHTMLProps<
     React.InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
 > & {
-    width: number;
+    width: string;
 };
 
 const InputNative = styled.input`
@@ -13,6 +13,7 @@ const InputNative = styled.input`
     border: solid 1.5px rgba(255, 255, 255, 0.8);
     border-radius: 2.5%;
     padding: 0.8rem 4px;
+    height: 2.8rem;
     color: white;
     font-weight: 600;
     font-size: 14px;
@@ -29,7 +30,7 @@ const Input = ({width, ...rest}: Props) => {
         <div>
             {
                 // @ts-ignore
-                <InputNative style={{width: `${width * 1}rem`}} {...rest} />
+                <InputNative style={{width: `${width}`}} {...rest} />
             }
         </div>
     );

@@ -22,17 +22,7 @@ import {Moment} from 'moment';
 import useMediaQuery from '@material-ui/core/useMediaQuery/useMediaQuery';
 import MenuItem from '@material-ui/core/MenuItem';
 import logoImage from '../../assets/images/eromalls-logo.png';
-
-function Copyright() {
-    return (
-        <Typography variant="body2" color="textSecondary" align="center">
-            {'Copyright © '}
-            Yankeemall
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
+import Copyright from '../../components/Copyright';
 
 const useStyles = makeStyles(theme => ({
     root: {

@@ -3,13 +3,10 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import {Helmet} from 'react-helmet';
 import Typography from '@material-ui/core/Typography';
 import queryString from 'query-string';
@@ -19,17 +16,8 @@ import Axios, {AxiosError} from 'axios';
 import Snack from '../../components/snack';
 import {Link} from 'react-router-dom';
 import {RouteComponentProps} from 'react-router';
-
-function Copyright() {
-    return (
-        <Typography variant="body2" color="textSecondary" align="center">
-            {'Copyright © '}
-            Yankeemall
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
+import Copyright from '../../components/Copyright';
+import logoImage from '../../assets/images/eromalls-logo.png';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -50,6 +38,8 @@ const useStyles = makeStyles(theme => ({
     avatar: {
         margin: theme.spacing(1),
         backgroundColor: theme.palette.secondary.main,
+        width: 100,
+        height: 100,
     },
     form: {
         width: '100%', // Fix IE 11 issue.
@@ -85,9 +75,9 @@ export default function SignIn({history, location}: RouteComponentProps) {
         // Check if the former url is the logout url redirect to the dashboard
         const queryUrl = queryString.parse(location.search);
         let url = !queryUrl.returnUrl
-            ? '/dashboard/overview'
+            ? '/superAdmin/tl/overview'
             : queryUrl.returnUrl === '/dashboard/logout'
-            ? '/dashboard'
+            ? '/superAdmin/tl/overview'
             : queryUrl.returnUrl;
 
         /**
@@ -140,7 +130,7 @@ export default function SignIn({history, location}: RouteComponentProps) {
             password,
         };
         try {
-            const {status, data} = await Axios.post('/user/login', d);
+            const {status, data} = await Axios.post('/admin/login', d);
             if (status === 200 && data.status === 'success') {
                 setSnackbar({open: true, variant: 'success', message: 'Sign in Successful'});
                 setTimeout(() => {
@@ -149,7 +139,6 @@ export default function SignIn({history, location}: RouteComponentProps) {
             }
         } catch (e) {
             const err = e as AxiosError;
-            alert('here');
             const {response} = err;
             if (response) {
                 const {status} = response;
@@ -180,11 +169,13 @@ export default function SignIn({history, location}: RouteComponentProps) {
             <Grid item xs={false} sm={4} md={7} className={classes.image} />
             <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
                 <div className={classes.paper}>
-                    <Avatar className={classes.avatar}>
-                        <LockOutlinedIcon />
-                    </Avatar>
+                    <Link to={'/'}>
+                        <Avatar className={classes.avatar}>
+                            <img width={'100px'} src={logoImage} alt={'Yankeemall Logo'} />
+                        </Avatar>
+                    </Link>
                     <Typography component="h1" variant="h5">
-                        Sign in
+                        Sign In
                     </Typography>
                     <form className={classes.form} onSubmit={submit}>
                         <TextField
@@ -213,10 +204,6 @@ export default function SignIn({history, location}: RouteComponentProps) {
                             autoComplete="current-password"
                             onChange={e => setPassword(e.target.value)}
                         />
-                        <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
-                        />
                         <Button
                             type="submit"
                             fullWidth
@@ -227,22 +214,24 @@ export default function SignIn({history, location}: RouteComponentProps) {
                         >
                             {loading ? <CircularProgress /> : 'Sign in'}
                         </Button>
-                        <Grid container>
-                            <Grid item xs>
-                                <Link to="#">
-                                    <Typography variant="body2" color={'primary'}>
-                                        Forgot password?
-                                    </Typography>
-                                </Link>
+                        <div style={{width: '100%'}}>
+                            <Grid container spacing={3}>
+                                <Grid item xs={12} sm={6}>
+                                    <Link to="#">
+                                        <Typography variant="body2" color={'primary'}>
+                                            Forgot password?
+                                        </Typography>
+                                    </Link>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Link to={'/auth/signup'}>
+                                        <Typography color={'primary'} variant="body2">
+                                            {"Don't have an account? Sign Up"}
+                                        </Typography>
+                                    </Link>
+                                </Grid>
                             </Grid>
-                            <Grid item>
-                                <Link to={'/auth/signup'}>
-                                    <Typography color={'primary'} variant="body2">
-                                        {"Don't have an account? Sign Up"}
-                                    </Typography>
-                                </Link>
-                            </Grid>
-                        </Grid>
+                        </div>
                         <Box mt={5}>
                             <Copyright />
                         </Box>

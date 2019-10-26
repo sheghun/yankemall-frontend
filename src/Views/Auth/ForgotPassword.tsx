@@ -14,17 +14,7 @@ import Axios, {AxiosError} from 'axios';
 import Snack from '../../components/snack';
 import {Link} from 'react-router-dom';
 import {RouteComponentProps} from 'react-router';
-
-function Copyright() {
-    return (
-        <Typography variant="body2" color="textSecondary" align="center">
-            {'Copyright © '}
-            Yankeemall
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
+import Copyright from '../../components/Copyright';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -107,7 +97,6 @@ export default function SignIn({}: RouteComponentProps) {
                 const {status, data} = response;
                 console.log(status, data);
                 if (status === 400 && data.status === 'error') {
-                    alert('working');
                     setSnackbar({
                         open: true,
                         variant: 'error',

@@ -3,7 +3,7 @@ import Wrapper from '../components/wrapper';
 import styled from 'styled-components';
 import {Helmet} from 'react-helmet';
 import TopBar from '../components/topbar';
-import logoImage from '../assets/images/pp.png';
+import logoImage from '../assets/images/eromalls-logo.png';
 import Button from '../components/button';
 import classNames from 'classnames';
 import queryString from 'query-string';

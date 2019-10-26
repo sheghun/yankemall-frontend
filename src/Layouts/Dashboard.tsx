@@ -2,15 +2,15 @@ import React, {useEffect, useState} from 'react';
 import {Route, RouteComponentProps} from 'react-router';
 import loadable from '@loadable/component';
 import Loading from '../components/loading';
-import TopBar from '../components/topbar';
 import {makeStyles} from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Sidebar from '../components/Sidebar';
-import logoImage from '../assets/images/pp.png';
 import Footer from '../components/Footer';
 import {DashboardContext} from '../Context';
 import Axios, {AxiosError} from 'axios';
 import Nav from '../components/nav';
+import PersonIcon from '@material-ui/icons/PersonOutline';
+import OrderIcon from '@material-ui/icons/AllInbox';
 
 const Overview = loadable(() => import('../Views/Dashboard/Overview'), {
     fallback: <Loading show={true} />,
@@ -30,6 +30,22 @@ const ChangePass = loadable(() => import('../Views/Dashboard/ChangePass'), {
 const NotFound = loadable(() => import('../Views/404'), {
     fallback: <Loading show={true} />,
 });
+
+const links = [
+    {
+        path: '/dashboard/overview',
+        text: 'My Account',
+        icon: <PersonIcon style={{marginRight: '1rem'}} />,
+    },
+    {
+        path: '/dashboard/orders',
+        text: 'Orders',
+        icon: <OrderIcon style={{marginRight: '1rem'}} />,
+    },
+    {path: '/dashboard/details', text: 'Details'},
+    {path: '/dashboard/changepass', text: 'Change Password'},
+    {path: '/dashboard/address', text: 'Address'},
+];
 
 const useStyles = makeStyles(theme => ({
     body: {
@@ -90,6 +106,13 @@ const Dashboard = ({location, history}: Props) => {
             try {
                 const {status, data} = await Axios.get('/user');
                 if (status === 200 && data.status === 'success') {
+                    if (data.data.data === null) {
+                        const queryParams = `?returnUrl=${
+                            location.pathname
+                        }&${location.search.replace('?', '')}`;
+                        history.push(`/auth/signin${queryParams}`);
+                        return;
+                    }
                     setUserObject(data.data.data);
                 }
             } catch (e) {}
@@ -105,7 +128,7 @@ const Dashboard = ({location, history}: Props) => {
                 <div className={classes.body}>
                     <Grid container={true} justify={'center'} alignContent={'stretch'} spacing={2}>
                         <Grid item md={2}>
-                            <Sidebar />
+                            <Sidebar links={links} />
                         </Grid>
                         <Grid item md={8}>
                             <Route path={'/dashboard/overview'} component={Overview} />
