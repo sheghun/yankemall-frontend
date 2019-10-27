@@ -17,17 +17,7 @@ import {RouteComponentProps} from 'react-router';
 import CancelIcon from '@material-ui/icons/Cancel';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import queryString from 'query-string';
-
-function Copyright() {
-    return (
-        <Typography variant="body2" color="textSecondary" align="center">
-            {'Copyright © '}
-            Yankeemall
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
+import Copyright from '../../components/Copyright';
 
 const useStyles = makeStyles(theme => ({
     root: {
