@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import {makeStyles} from '@material-ui/core';
@@ -24,6 +24,7 @@ import CardActions from '@material-ui/core/CardActions';
 import Card from '@material-ui/core/Card';
 import EditIcon from '@material-ui/icons/Edit';
 import queryString from 'query-string';
+import states from '../../data/states.json';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -160,9 +161,7 @@ const ShowAddress = ({}: RouteComponentProps) => {
                                 <CardActions style={{borderTop: 'solid 1px #ededed'}}>
                                     <Typography className={classes.title}>
                                         <Link to={`/dashboard/address/edit?id=${ad.id}`}>
-                                            <Button color={'primary'}>
-                                                Edit Address
-                                            </Button>
+                                            <Button color={'primary'}>Edit Address</Button>
                                         </Link>
                                         <Link
                                             to={`/dashboard/address/edit?id=${ad.id}`}
@@ -216,6 +215,14 @@ const AddAddress = ({}: RouteComponentProps) => {
         state,
         phoneNumber,
     });
+
+    const renderStates = useMemo(() => {
+        return states.map((state, i) => (
+            <MenuItem key={i} value={state.name}>
+                {state.name}
+            </MenuItem>
+        ));
+    }, []);
 
     const changePhoneNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -472,11 +479,7 @@ const AddAddress = ({}: RouteComponentProps) => {
                             ),
                         }}
                     >
-                        {['Male', 'Female'].map((g, i) => (
-                            <MenuItem key={i} value={g}>
-                                {g}
-                            </MenuItem>
-                        ))}
+                        {renderStates}
                     </TextField>
                 </Grid>
                 <Grid item xs={10}>
@@ -557,6 +560,14 @@ const EditAddress = ({location}: RouteComponentProps) => {
             setSetAsDefault(curAddress.default);
         }
     }, [contextAddress]);
+
+    const renderStates = useMemo(() => {
+        return states.map((state, i) => (
+            <MenuItem key={i} value={state.name}>
+                {state.name}
+            </MenuItem>
+        ));
+    }, []);
 
     const changePhoneNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -706,7 +717,7 @@ const EditAddress = ({location}: RouteComponentProps) => {
                         <ArrowBackIcon style={{marginRight: '1rem'}} fontSize={'large'} />
                     </IconButton>
                 </Link>
-                Add Address
+                Edit Address
             </Typography>
             <Grid container spacing={3} justify={'center'} component={'form'} onSubmit={submit}>
                 <Grid item xs={12} sm={5}>
@@ -817,11 +828,7 @@ const EditAddress = ({location}: RouteComponentProps) => {
                             ),
                         }}
                     >
-                        {['Male', 'Female'].map((g, i) => (
-                            <MenuItem key={i} value={g}>
-                                {g}
-                            </MenuItem>
-                        ))}
+                        {renderStates}
                     </TextField>
                 </Grid>
                 <Grid item xs={10}>

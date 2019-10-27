@@ -8,6 +8,8 @@ import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
 import {DashboardContext} from '../Context';
 import Axios, {AxiosError} from 'axios';
+import {useTheme} from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Nav from '../components/nav';
 import PersonIcon from '@material-ui/icons/PersonOutline';
 import OrderIcon from '@material-ui/icons/AllInbox';
@@ -60,6 +62,11 @@ const useStyles = makeStyles(theme => ({
         marginBottom: '1rem',
         '& img': {
             height: '100px',
+        },
+    },
+    main: {
+        [theme.breakpoints.down('sm')]: {
+            marginTop: '-4rem',
         },
     },
 }));
@@ -130,7 +137,7 @@ const Dashboard = ({location, history}: Props) => {
                         <Grid item md={2}>
                             <Sidebar links={links} />
                         </Grid>
-                        <Grid item md={8}>
+                        <Grid item md={8} className={classes.main}>
                             <Route path={'/dashboard/overview'} component={Overview} />
                             <Route path={'/dashboard/orders'} component={Orders} />
                             <Route path={'/dashboard/details'} component={Details} />
