@@ -128,7 +128,7 @@ const Checkout = ({location}: props) => {
                 }
             }
         })();
-    }, []);
+    }, [location.search]);
 
     const placeOrder = async () => {
         setLoading(true);

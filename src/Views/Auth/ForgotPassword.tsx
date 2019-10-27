@@ -13,7 +13,6 @@ import backgroundImage from '../../assets/images/multiple-shipping-partners.png'
 import Axios, {AxiosError} from 'axios';
 import Snack from '../../components/snack';
 import {Link} from 'react-router-dom';
-import {RouteComponentProps} from 'react-router';
 import Copyright from '../../components/Copyright';
 
 const useStyles = makeStyles(theme => ({
@@ -41,7 +40,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function SignIn({}: RouteComponentProps) {
+export default function ForgotPassword() {
     const classes = useStyles();
 
     const [email, setEmail] = useState('');

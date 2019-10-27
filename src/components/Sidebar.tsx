@@ -64,13 +64,13 @@ const Sidebar = ({location, links}: props) => {
 
     useEffect(() => {
         setLink(location.pathname);
-    }, []);
+    }, [location.pathname]);
 
     const applyCssClass = useCallback(
         (path: string) => {
             return clx({[classes.link]: true, [classes.active]: !!location.pathname.match(path)});
         },
-        [location],
+        [location, classes.link, classes.active],
     );
 
     return (

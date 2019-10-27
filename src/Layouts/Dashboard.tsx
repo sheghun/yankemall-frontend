@@ -8,8 +8,6 @@ import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
 import {DashboardContext} from '../Context';
 import Axios, {AxiosError} from 'axios';
-import {useTheme} from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Nav from '../components/nav';
 import PersonIcon from '@material-ui/icons/PersonOutline';
 import OrderIcon from '@material-ui/icons/AllInbox';
@@ -27,9 +25,6 @@ const Address = loadable(() => import('../Views/Dashboard/Address'), {
     fallback: <Loading show={true} />,
 });
 const ChangePass = loadable(() => import('../Views/Dashboard/ChangePass'), {
-    fallback: <Loading show={true} />,
-});
-const NotFound = loadable(() => import('../Views/404'), {
     fallback: <Loading show={true} />,
 });
 
@@ -106,7 +101,7 @@ const Dashboard = ({location, history}: Props) => {
                 return Promise.reject(error);
             },
         );
-    }, []);
+    }, [history, location.pathname, location.search]);
 
     useEffect(() => {
         (async () => {
@@ -124,7 +119,7 @@ const Dashboard = ({location, history}: Props) => {
                 }
             } catch (e) {}
         })();
-    }, []);
+    }, [history, location.pathname, location.search]);
 
     return (
         <>

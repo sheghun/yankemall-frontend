@@ -97,7 +97,7 @@ export default function SignIn({history, location}: RouteComponentProps) {
         }
 
         setReturnUrl(url as string);
-    }, []);
+    }, [location.search]);
 
     const validate = () => {
         let pass = true;

@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import Paper from '@material-ui/core/Paper';
 import {makeStyles} from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -9,9 +9,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import EditIcon from '@material-ui/icons/Edit';
-import {DashboardContext} from '../../Context';
 import {Link} from 'react-router-dom';
-
 
 const useStyles = makeStyles(theme => ({
     pageTitle: {
@@ -46,60 +44,6 @@ const useStyles = makeStyles(theme => ({
 
 const Overview = () => {
     const classes = useStyles();
-
-    const {firstName, lastName, address, email} = useContext(DashboardContext);
-
-    const renderAddress = () => {
-        console.log(firstName);
-        const defaultAddress = address.find(ad => ad.default);
-
-        return (
-            <Card raised={false} elevation={0} className={classes.card}>
-                <CardContent>
-                    <Typography className={classes.title} gutterBottom>
-                        Address Book
-                        {defaultAddress && (
-                            <Link
-                                to={`/dashboard/address/edit?id=${defaultAddress.id}`}
-                                className={classes.icon}
-                            >
-                                <IconButton color={'primary'} aria-label={'Edit your address book'}>
-                                    <EditIcon />
-                                </IconButton>
-                            </Link>
-                        )}
-                    </Typography>
-                    <Typography variant="body2" style={{fontWeight: 500}}>
-                        Default Shipping address
-                    </Typography>
-                    <Typography className={classes.pos} style={{fontSize: '12px'}}>
-                        {address.length === 0 ? (
-                            'You have not added an address yet'
-                        ) : defaultAddress ? (
-                            <>
-                                {defaultAddress.firstName} {defaultAddress.lastName}
-                                <br />
-                                {defaultAddress.address}
-                                <br />
-                                {defaultAddress.phoneNumber}
-                            </>
-                        ) : (
-                            <>You have not set your default address</>
-                        )}
-                    </Typography>
-                </CardContent>
-                <CardActions>
-                    {address.length === 0 && (
-                        <Link to={'/dashboard/address/add'}>
-                            <Button size="small" color={'primary'}>
-                                Add Address
-                            </Button>
-                        </Link>
-                    )}
-                </CardActions>
-            </Card>
-        );
-    };
 
     return (
         <Paper className={classes.paper}>

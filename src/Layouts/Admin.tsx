@@ -15,9 +15,6 @@ const SignIn = loadable(() => import('../Views/Admin/Signin'), {
 const Overview = loadable(() => import('../Views/Admin/Overview'), {
     fallback: <Loading show={true} />,
 });
-const NotFound = loadable(() => import('../Views/404'), {
-    fallback: <Loading show={true} />,
-});
 
 const links = [
     {
