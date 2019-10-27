@@ -62,7 +62,8 @@ const Footer = () => {
                         <div className={'pre-footer-blocks, contact-us'}>
                             <h3>Contact Us</h3>
                             <p>
-                                Call Us Now: +234-812-332-2389
+                                Call Us Now: +234 703 155 1583 <br />
+                                Or: +234 905 767 3787
                                 <br />
                                 Email:{' '}
                                 <span style={{textTransform: 'lowercase'}}>info@eromalls.com</span>
