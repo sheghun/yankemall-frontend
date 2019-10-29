@@ -1,14 +1,5 @@
 import {createContext, Dispatch, SetStateAction} from 'react';
 
-interface UserObject {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phoneNumber: string;
-    address: Array<Address>;
-    gender: string;
-    birthDate: string;
-}
 const userObject = {
     firstName: '',
     lastName: '',
@@ -20,5 +11,16 @@ const userObject = {
 };
 export const DashboardContext = createContext({
     ...userObject,
-    setUserObject: (() => {}) as Dispatch<SetStateAction<UserObject>>,
+    setUserObject: (() => {}) as Dispatch<SetStateAction<User>>,
 } as DashboardContext);
+
+const adminObject: AdminContext = {
+    users: [],
+    orders: [],
+    exchangeRate: 0,
+};
+
+export const AdminContext = createContext({
+    ...adminObject,
+    setAdminObject: (() => {}) as Dispatch<SetStateAction<AdminContext>>,
+});

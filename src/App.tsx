@@ -21,6 +21,9 @@ const Admin = loadable(() => import('./Layouts/Admin'), {
 const NotFound = loadable(() => import('./Views/404'), {
     fallback: <Loading show={true} />,
 });
+const AdminSignIn = loadable(() => import('./Views/Admin/Signin'), {
+    fallback: <Loading show={true} />,
+});
 
 const App: React.FC = () => {
     const [snackbar, setSnackbar] = useState({
@@ -68,6 +71,7 @@ const App: React.FC = () => {
                     <Route path={'/checkout'} component={Checkout} />
                     <Route path={'/auth/*'} component={Auth} />
                     <Route path={'/dashboard/*'} component={Dashboard} />
+                    <Route path={'/superAdmin/signin'} component={AdminSignIn} />
                     <Route path={'/superAdmin/*'} component={Admin} />
                     <Route component={NotFound} />
                 </Switch>

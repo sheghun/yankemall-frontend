@@ -15,6 +15,17 @@ declare interface Site {
     logo: string;
 }
 
+declare interface User {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    address: Array<Address>;
+    gender: string;
+    orders: Array<Order>;
+    birthDate: string;
+}
+
 /**
  * The category
  * A representation of the category object retrieved at the backend
@@ -63,4 +74,15 @@ declare interface Address {
     firstName: string;
     phoneNumber: string;
     lastName: string;
+}
+
+declare interface AdminContext {
+    users: Array<User>;
+    orders: Array<Order>;
+    exchangeRate: number;
+}
+
+declare interface Order {
+    id: number;
+    userId: number;
 }

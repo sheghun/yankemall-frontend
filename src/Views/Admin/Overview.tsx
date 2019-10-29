@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
 import Paper from '@material-ui/core/Paper';
 import {makeStyles} from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -10,6 +10,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import EditIcon from '@material-ui/icons/Edit';
 import {Link} from 'react-router-dom';
+import {AdminContext} from '../../Context';
 
 const useStyles = makeStyles(theme => ({
     pageTitle: {
@@ -45,6 +46,8 @@ const useStyles = makeStyles(theme => ({
 const Overview = () => {
     const classes = useStyles();
 
+    const {users, orders, exchangeRate} = useContext(AdminContext);
+
     return (
         <Paper className={classes.paper}>
             <Typography variant={'h5'} className={classes.pageTitle}>
@@ -67,7 +70,7 @@ const Overview = () => {
                                 variant="h4"
                                 style={{fontWeight: 500, marginTop: '1rem'}}
                             >
-                                ₦361.34
+                                ₦{exchangeRate}
                             </Typography>
                         </CardContent>
                     </Card>
@@ -83,7 +86,7 @@ const Overview = () => {
                                 variant="h4"
                                 style={{fontWeight: 500, marginTop: '1rem'}}
                             >
-                                100
+                                {users.length}
                             </Typography>
                         </CardContent>
                         <CardActions>
@@ -100,7 +103,7 @@ const Overview = () => {
                                 Total Orders
                             </Typography>
                             <Typography variant="h6" component="h2">
-                                20
+                                {orders.length}
                             </Typography>
                         </CardContent>
                         <CardActions>

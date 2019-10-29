@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import loadable from '@loadable/component';
 import Loading from '../components/loading';
 import {Route, RouteComponentProps} from 'react-router';
@@ -6,31 +6,32 @@ import Grid from '@material-ui/core/Grid';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
 import {makeStyles} from '@material-ui/core';
-import PersonIcon from '@material-ui/icons/PersonOutline';
-import OrderIcon from '@material-ui/icons/AllInbox';
+import PeopleAltOutlinedIcon from '@material-ui/icons/PeopleAltOutlined';
+import HomeIcon from '@material-ui/icons/HomeOutlined';
+import AllInboxOutlinedIcon from '@material-ui/icons/AllInboxOutlined';
 import Axios, {AxiosError} from 'axios';
+import {AdminContext} from '../Context';
 
-const SignIn = loadable(() => import('../Views/Admin/Signin'), {
-    fallback: <Loading show={true} />,
-});
 const Overview = loadable(() => import('../Views/Admin/Overview'), {
     fallback: <Loading show={true} />,
 });
 
 const links = [
     {
-        path: '/dashboard/overview',
-        text: 'My Account',
-        icon: <PersonIcon style={{marginRight: '1rem'}} />,
+        path: '/superAdmin/tl/overview',
+        text: 'Overview',
+        icon: <HomeIcon style={{marginRight: '1rem'}} />,
     },
     {
-        path: '/dashboard/orders',
-        text: 'Orders',
-        icon: <OrderIcon style={{marginRight: '1rem'}} />,
+        path: '/superAdmin/tl/users',
+        text: 'Users',
+        icon: <PeopleAltOutlinedIcon style={{marginRight: '1rem'}} />,
     },
-    {path: '/dashboard/details', text: 'Details'},
-    {path: '/dashboard/changepass', text: 'Change Password'},
-    {path: '/dashboard/address', text: 'Address'},
+    {
+        path: '/superAdmin/tl/orders',
+        text: 'Orders',
+        icon: <AllInboxOutlinedIcon style={{marginRight: '1rem'}} />,
+    },
 ];
 
 const useStyles = makeStyles(theme => ({
@@ -54,6 +55,12 @@ type Props = RouteComponentProps & {};
 
 const Admin = ({history, location}: Props) => {
     const classes = useStyles();
+
+    const [adminObject, setAdminObject] = useState({
+        users: [],
+        orders: [],
+        exchangeRate: 0,
+    } as AdminContext);
 
     /**
      * Listen for 403 status error code and redirect to the login page
@@ -81,7 +88,17 @@ const Admin = ({history, location}: Props) => {
             try {
                 const {status, data} = await Axios.get('/admin/users');
                 if (status === 200 && data.status === 'success') {
-                    console.log(data.data.users);
+                    const users = data.data.users as Array<User>;
+                    const orders = users.flatMap(user => user.orders);
+                    setAdminObject(s => ({...s, users, orders}));
+                }
+            } catch (e) {}
+        })();
+        (async () => {
+            try {
+                const {status, data} = await Axios.get('/admin/exchangeRate');
+                if (status === 200 && data.status === 'success') {
+                    setAdminObject(s => ({...s, exchangeRate: data.data.exchangeRate}));
                 }
             } catch (e) {}
         })();
@@ -89,18 +106,19 @@ const Admin = ({history, location}: Props) => {
 
     return (
         <>
-            <Route path={'/superAdmin/signin'} component={SignIn} />
-            <div className={classes.body}>
-                <Grid container={true} justify={'center'} alignContent={'stretch'} spacing={2}>
-                    <Grid item md={2}>
-                        <Sidebar links={links} />
+            <AdminContext.Provider value={{...adminObject, setAdminObject}}>
+                <div className={classes.body}>
+                    <Grid container={true} justify={'center'} alignContent={'stretch'} spacing={2}>
+                        <Grid item md={2}>
+                            <Sidebar links={links} />
+                        </Grid>
+                        <Grid item md={8}>
+                            <Route path={'/superAdmin/tl/overview'} component={Overview} />
+                        </Grid>
                     </Grid>
-                    <Grid item md={8}>
-                        <Route path={'/superAdmin/tl/overview'} component={Overview} />
-                    </Grid>
-                </Grid>
-                <Footer />
-            </div>
+                    <Footer />
+                </div>
+            </AdminContext.Provider>
         </>
     );
 };
