@@ -16,6 +16,10 @@ const Overview = loadable(() => import('../Views/Admin/Overview'), {
     fallback: <Loading show={true} />,
 });
 
+const Orders = loadable(() => import('../Views/Admin/Orders'), {
+    fallback: <Loading show={true} />,
+});
+
 const links = [
     {
         path: '/superAdmin/tl/overview',
@@ -112,8 +116,9 @@ const Admin = ({history, location}: Props) => {
                         <Grid item md={2}>
                             <Sidebar links={links} />
                         </Grid>
-                        <Grid item md={8}>
+                        <Grid item md={8} xs={12}>
                             <Route path={'/superAdmin/tl/overview'} component={Overview} />
+                            <Route path={'/superAdmin/tl/orders'} component={Orders} />
                         </Grid>
                     </Grid>
                     <Footer />
