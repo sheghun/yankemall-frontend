@@ -88,34 +88,38 @@ const ViewUsers = ({history, classes}: RouteComponentProps & {classes: any}) => 
             <Typography variant={'h5'} className={classes.pageTitle}>
                 Users
             </Typography>
-            <Table className={classes.table} aria-label="simple table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Name</TableCell>
-                        <TableCell align="left">Email</TableCell>
-                        <TableCell align="left">Phone Number</TableCell>
-                        <TableCell align="left">Orders</TableCell>
-                        <TableCell align="left">Gender</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {rows.map((user: User) => (
-                        <TableRow
-                            key={user.id}
-                            hover
-                            onClick={() => history.push(`/superAdmin/tl/users/detail/${user.id}`)}
-                        >
-                            <TableCell scope="row">
-                                {user.firstName} {user.lastName}
-                            </TableCell>
-                            <TableCell align="left">{user.email}</TableCell>
-                            <TableCell align="left">{user.phoneNumber}</TableCell>
-                            <TableCell align="center">{user.orders.length}</TableCell>
-                            <TableCell align="left">{user.gender}</TableCell>
+            <div style={{paddingLeft: '-2rem', paddingRight: '-2rem'}}>
+                <Table className={classes.table} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Name</TableCell>
+                            <TableCell align="left">Email</TableCell>
+                            <TableCell align="left">Phone Number</TableCell>
+                            <TableCell align="left">Orders</TableCell>
+                            <TableCell align="left">Gender</TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+                    </TableHead>
+                    <TableBody>
+                        {rows.map((user: User) => (
+                            <TableRow
+                                key={user.id}
+                                hover
+                                onClick={() =>
+                                    history.push(`/superAdmin/tl/users/detail/${user.id}`)
+                                }
+                            >
+                                <TableCell scope="row">
+                                    {user.firstName} {user.lastName}
+                                </TableCell>
+                                <TableCell align="left">{user.email}</TableCell>
+                                <TableCell align="left">{user.phoneNumber}</TableCell>
+                                <TableCell align="center">{user.orders.length}</TableCell>
+                                <TableCell align="left">{user.gender}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
         </>
     );
 };
