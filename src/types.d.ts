@@ -18,6 +18,7 @@ declare interface Site {
 declare interface User {
     firstName: string;
     lastName: string;
+    id: number;
     email: string;
     phoneNumber: string;
     address: Array<Address>;

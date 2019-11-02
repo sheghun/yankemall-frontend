@@ -53,10 +53,6 @@ const Orders = ({location, history}: RouteComponentProps) => {
     const classes = useStyles();
 
     const navigateBackArrow = () => {
-        if (!location.pathname.includes('item')) {
-            history.push('/superAdmin/tl/orders');
-            return;
-        }
         history.goBack();
     };
 
@@ -150,13 +146,14 @@ const ViewOrders = ({history}: RouteComponentProps) => {
                     </Grid>
                     <Grid item xs={12} sm={6} style={{textAlign: 'center'}}>
                         <Typography variant={'body2'}>
-                            Cleansing Detox Foot Pads, iPhone 6s, Tecno Camon X, iphone 7plus...
+                            Cleansing Detox Foot Pads, iPhone 6s, Tecno Camon X, iPhone 7...
                         </Typography>
-                        <Typography variant={'caption'}>Placed on 25-08-2019</Typography>
                         <br />
                         <Typography variant={'body2'}>Items: 10</Typography>
                         <br />
-                        <Typography variant={'caption'}>DELIVERED ON 02-09-2019</Typography>
+                        <Typography variant={'body2'}>User: Oladiran Segun</Typography>
+                        <br />
+                        <Typography variant={'caption'}>Placed ON 02-09-2019</Typography>
                     </Grid>
                     <Grid item xs={12} sm={3} style={{textAlign: 'center'}}>
                         <Button color={'primary'}>See details</Button>
