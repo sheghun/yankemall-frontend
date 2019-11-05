@@ -25,6 +25,7 @@ import Card from '@material-ui/core/Card';
 import EditIcon from '@material-ui/icons/Edit';
 import queryString from 'query-string';
 import states from '../../data/states.json';
+import {getReturnUrl} from '../../_helpers';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -185,7 +186,7 @@ const ShowAddress = ({}: RouteComponentProps) => {
     );
 };
 
-const AddAddress = ({}: RouteComponentProps) => {
+const AddAddress = ({location, history}: RouteComponentProps) => {
     const classes = useStyles();
 
     const context = useContext(DashboardContext);
@@ -331,6 +332,12 @@ const AddAddress = ({}: RouteComponentProps) => {
                     variant: 'success',
                     message: 'Address Created Successfully',
                 });
+                setTimeout(() => {
+                    const returnUrl = getReturnUrl(location);
+                    if (returnUrl) {
+                        history.push(returnUrl);
+                    }
+                }, 2000);
             }
         } catch (e) {
             const {response} = e as AxiosError;
@@ -511,7 +518,7 @@ const AddAddress = ({}: RouteComponentProps) => {
     );
 };
 
-const EditAddress = ({location}: RouteComponentProps) => {
+const EditAddress = ({location, history}: RouteComponentProps) => {
     const classes = useStyles();
 
     const context = useContext(DashboardContext);
@@ -546,7 +553,7 @@ const EditAddress = ({location}: RouteComponentProps) => {
     useEffect(() => {
         const id = Number(queryString.parse(location.search).id);
         // Retrieve current address from the address array;
-        const curAddress = contextAddress.find(address => address.id === id);
+        const curAddress = contextAddress.find(address => Number(address.id) === Number(id));
         if (curAddress) {
             console.log(curAddress);
             setId(id);
@@ -678,6 +685,12 @@ const EditAddress = ({location}: RouteComponentProps) => {
                     variant: 'success',
                     message: 'Address Created Successfully',
                 });
+                setTimeout(() => {
+                    const returnUrl = getReturnUrl(location);
+                    if (returnUrl) {
+                        history.push(returnUrl);
+                    }
+                }, 2000);
             }
         } catch (e) {
             const {response} = e as AxiosError;

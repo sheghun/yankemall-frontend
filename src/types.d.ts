@@ -48,6 +48,8 @@ declare interface Product {
     link: string;
     title: string;
     quantity: string;
+    dollar: number;
+    naira: number;
     price: number;
     condition: string;
     image?: string;
@@ -85,5 +87,26 @@ declare interface AdminContext {
 
 declare interface Order {
     id: number;
+    siteId: number;
+    status: string;
+    shippingFee: number;
     userId: number;
+    total: number;
+    paid: Date;
+    products: Array<OrderProduct>;
+    paymentInfo: string;
+    createdAt: string;
+}
+
+declare interface OrderProduct {
+    id: number;
+    name: string;
+    link: string;
+    image: string;
+    trackingNumber: string;
+    trackingLink: string;
+    status: string;
+    quantity: string;
+    site: string;
+    orderId: number;
 }

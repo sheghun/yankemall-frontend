@@ -94,7 +94,7 @@ const Admin = ({history, location}: Props) => {
     useEffect(() => {
         (async () => {
             try {
-                const {status, data} = await Axios.get('/admin/users');
+                const {status, data} = await Axios.get('/admin/user');
                 if (status === 200 && data.status === 'success') {
                     const users = data.data.users as Array<User>;
                     const orders = users.flatMap(user => user.orders);

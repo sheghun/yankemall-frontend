@@ -88,11 +88,13 @@ export default function SignIn({history, location}: RouteComponentProps) {
         if (Object.keys(queryUrl).length > 1 && typeof queryUrl === 'object') {
             url += '?';
             for (const fragments in queryUrl) {
-                if (fragments === 'returnUrl') {
-                    continue;
+                if (queryUrl[fragments] && queryUrl[fragments] != null) {
+                    if (fragments === 'returnUrl') {
+                        continue;
+                    }
+                    // @ts-ignore
+                    url += fragments + '=' + queryUrl[fragments] + '&';
                 }
-                // @ts-ignore
-                url += fragments + '=' + queryUrl[fragments] + '&';
             }
         }
 
@@ -205,10 +207,6 @@ export default function SignIn({history, location}: RouteComponentProps) {
                             id="password"
                             autoComplete="current-password"
                             onChange={e => setPassword(e.target.value)}
-                        />
-                        <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
                         />
                         <Button
                             type="submit"

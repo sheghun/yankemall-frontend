@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import {makeStyles} from '@material-ui/core';
+import {makeStyles, useTheme} from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -16,6 +16,15 @@ import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/core/SvgIcon/SvgIcon';
+import Snack from '../../components/snack';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import TextField from '@material-ui/core/TextField';
+import MenuItem from '@material-ui/core/MenuItem';
+import Axios from 'axios';
+import {KeyboardDatePicker, MuiPickersUtilsProvider} from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
+import moment, {Moment} from 'moment';
+import useMediaQuery from '@material-ui/core/useMediaQuery/useMediaQuery';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -32,6 +41,9 @@ const useStyles = makeStyles(theme => ({
     card: {
         width: '100%',
         border: 'solid 1px #EDEDED',
+    },
+    inputs: {
+        marginBottom: '1rem',
     },
     orders: {
         border: '1px solid #ededed',
@@ -125,13 +137,27 @@ const ViewUsers = ({history, classes}: RouteComponentProps & {classes: any}) => 
 };
 
 const UsersDetails = ({match, classes}: RouteComponentProps & {classes: any}) => {
-    const {users} = useContext(AdminContext);
+    const {users, setAdminObject} = useContext(AdminContext);
+    const theme = useTheme();
+    const bigScreen = useMediaQuery(theme.breakpoints.up('sm'));
 
     const [user, setUser] = useState({} as User);
+    const [editDetails, setEditDetails] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        variant: 'success',
+    });
+
+    const [id, setId] = useState(0);
     const [firstName, setFirstName] = useState('');
+    const [email, setEmail] = useState('');
     const [lastName, setLastName] = useState('');
     const [orders, setOrders] = useState([] as Array<Order>);
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [gender, setGender] = useState();
+    const [birthDate, setBirthDate] = useState('YYY-MM-DD');
     const [addresses, setAddresses] = useState('');
     const [address, setAddress] = useState([] as Array<Address>);
     const [adFirstName, setAdFirstName] = useState('');
@@ -147,35 +173,223 @@ const UsersDetails = ({match, classes}: RouteComponentProps & {classes: any}) =>
         if (userId) {
             const u = users.find(user => Number(user.id) === Number(userId));
             if (u) {
+                setId(userId);
                 setUser(u);
                 setAddress(u.address);
+                setFirstName(u.firstName);
+                setLastName(u.lastName);
+                setPhoneNumber(u.phoneNumber);
+                setOrders(u.orders);
+                setEmail(u.email);
+                setGender(u.gender.toLowerCase());
+                setBirthDate(u.birthDate);
             }
         }
     }, [users]);
 
+    const updateDetails = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        // Check if the edit details flag has not been set
+        if (!editDetails) {
+            return;
+        }
+        setLoading(true);
+        try {
+            const d = {
+                id,
+                email,
+                firstName,
+                lastName,
+                phoneNumber,
+                gender,
+                birthDate,
+            };
+            const {status, data} = await Axios.put('/admin/user', d);
+            if (status === 200 && data.status === 'success') {
+                setSnackbar({
+                    open: true,
+                    variant: 'success',
+                    message: 'User details updated successfully',
+                });
+            }
+            const usersArray = users.slice();
+            const currentUser = usersArray.find(u => Number(u.id) === Number(id));
+            if (!currentUser) return;
+            const newUsersArray = usersArray.filter(u => Number(u.id) !== Number(id));
+            // Add to the new Users Array
+            newUsersArray.push({
+                firstName,
+                lastName,
+                id,
+                email,
+                phoneNumber,
+                address: currentUser.address,
+                gender,
+                orders: currentUser.orders,
+                birthDate: currentUser.birthDate,
+            });
+            setAdminObject(s => ({...s, users: newUsersArray}));
+        } catch (e) {}
+        setEditDetails(false);
+        setLoading(false);
+    };
+
     return (
         <>
+            <Snack
+                variant={snackbar.variant as any}
+                open={snackbar.open}
+                message={snackbar.message}
+                onClose={() => setSnackbar(s => ({...s, open: false}))}
+            />
             <Typography align={'center'} variant={'h5'} className={classes.pageTitle}>
                 {user.firstName} {user.lastName} Details
             </Typography>
             <Grid container justify={'center'}>
-                <Grid item xs={12} sm={6}>
+                <Grid
+                    item
+                    xs={12}
+                    sm={6}
+                    component={editDetails ? 'form' : 'div'}
+                    onSubmit={updateDetails}
+                >
                     <Typography align={'center'}>
-                        Name:
-                        <strong>
-                            {user.firstName} {user.lastName}
-                        </strong>
+                        {editDetails ? (
+                            <>
+                                <TextField
+                                    fullWidth
+                                    label={'First name'}
+                                    value={firstName}
+                                    name={'first-name'}
+                                    onChange={e => setFirstName(e.target.value)}
+                                    id={'first-name'}
+                                    required
+                                    style={{marginBottom: '2rem'}}
+                                />
+                                <TextField
+                                    fullWidth
+                                    label={'Last name'}
+                                    value={lastName}
+                                    name={'last-name'}
+                                    onChange={e => setLastName(e.target.value)}
+                                    id={'last-name'}
+                                    required
+                                    style={{marginBottom: '2rem'}}
+                                />
+                            </>
+                        ) : (
+                            <>
+                                Name:
+                                <strong>
+                                    {user.firstName} {user.lastName}
+                                </strong>
+                            </>
+                        )}
                         <br />
-                        Phone Number: <strong>{user.phoneNumber}</strong>
+                        {editDetails ? (
+                            <TextField
+                                fullWidth
+                                label={'Phone Number'}
+                                value={phoneNumber}
+                                name={'phone-number'}
+                                onChange={e => setPhoneNumber(e.target.value)}
+                                id={'phone-number'}
+                                required
+                                style={{marginBottom: '2rem'}}
+                            />
+                        ) : (
+                            <>
+                                Phone Number:
+                                <strong>{user.phoneNumber}</strong>
+                            </>
+                        )}
                         <br />
-                        E-mail: <strong>{user.email}</strong>
+                        {editDetails ? (
+                            <TextField
+                                fullWidth
+                                label={'email'}
+                                value={email}
+                                name={'email'}
+                                onChange={e => setEmail(e.target.value)}
+                                id={'email'}
+                                required
+                                style={{marginBottom: '2rem'}}
+                            />
+                        ) : (
+                            <>
+                                Email:
+                                <strong>
+                                    <strong>{user.email}</strong>
+                                </strong>
+                            </>
+                        )}
                         <br />
-                        Gender: <strong>{user.gender}</strong>
+                        {editDetails ? (
+                            <MuiPickersUtilsProvider utils={MomentUtils}>
+                                <KeyboardDatePicker
+                                    style={{width: '100%'}}
+                                    margin="normal"
+                                    variant={bigScreen ? 'inline' : 'dialog'}
+                                    id="birthDate-picker-dialog"
+                                    label="Birthday"
+                                    onFocus={e => e.target.blur()}
+                                    required
+                                    format="YYYY-MM-DD"
+                                    value={birthDate}
+                                    onChange={birthDate =>
+                                        setBirthDate((birthDate as Moment).format('YYYY-MM-DD'))
+                                    }
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change birthDate',
+                                    }}
+                                />
+                            </MuiPickersUtilsProvider>
+                        ) : (
+                            <>
+                                Birth Date:
+                                <strong>{moment(user.birthDate).format('lll')}</strong>
+                            </>
+                        )}
+                        <br />
+                        {editDetails ? (
+                            <TextField
+                                fullWidth
+                                label={'gender'}
+                                value={gender}
+                                name={'gender'}
+                                onChange={e => setGender(e.target.value)}
+                                id={'gender'}
+                                required
+                                style={{marginBottom: '2rem'}}
+                                select
+                            >
+                                <MenuItem value={'male'}>Male</MenuItem>
+                                <MenuItem value={'female'}>Female</MenuItem>
+                            </TextField>
+                        ) : (
+                            <>
+                                Gender:
+                                <strong>
+                                    <strong>{user.gender}</strong>
+                                </strong>
+                            </>
+                        )}
                         <br />
                     </Typography>
-                    <Button fullWidth color={'primary'}>
-                        Edit Details
-                    </Button>
+                    {editDetails ? (
+                        <Button fullWidth type={'submit'} disabled={loading} color={'primary'}>
+                            {loading ? <CircularProgress /> : 'Save'}
+                        </Button>
+                    ) : (
+                        <Button
+                            fullWidth
+                            type={'button'}
+                            onClick={() => setEditDetails(true)}
+                            color={'primary'}
+                        >
+                            Edit Details
+                        </Button>
+                    )}
                 </Grid>
             </Grid>
             <Typography variant={'h5'} style={{margin: '2rem 0'}} align={'center'}>
@@ -235,65 +449,44 @@ const UsersDetails = ({match, classes}: RouteComponentProps & {classes: any}) =>
                 ))}
             </Grid>
             <Typography variant={'h5'} style={{margin: '2rem 0'}} align={'center'}>
-                Orders (0)
+                Orders ({user.orders ? user.orders.length : '0'})
             </Typography>
             <Grid container justify={'center'} spacing={3}>
                 <Grid item xs={12} className={classes.orders}>
-                    <Grid container justify={'center'}>
-                        <Grid item xs={4} sm={3}>
-                            <img
-                                height={'80px'}
-                                alt={'Order Product'}
-                                src={
-                                    'https://ng.jumia.is/unsafe/fit-in/150x150/filters:fill(white)/product/99/098663/1.jpg?1043'
-                                }
-                            />
-                            <img
-                                height={'80px'}
-                                alt={'Order Product'}
-                                src={
-                                    'https://ng.jumia.is/unsafe/fit-in/150x150/filters:fill(white)/product/99/098663/1.jpg?1043'
-                                }
-                            />
-                            <img
-                                height={'80px'}
-                                alt={'Order Product'}
-                                src={
-                                    'https://ng.jumia.is/unsafe/fit-in/150x150/filters:fill(white)/product/99/098663/1.jpg?1043'
-                                }
-                            />
-                            <img
-                                height={'80px'}
-                                alt={'Order Product'}
-                                src={
-                                    'https://ng.jumia.is/unsafe/fit-in/150x150/filters:fill(white)/product/99/098663/1.jpg?1043'
-                                }
-                            />
-                            <img
-                                height={'80px'}
-                                alt={'Order Product'}
-                                src={
-                                    'https://ng.jumia.is/unsafe/fit-in/150x150/filters:fill(white)/product/99/098663/1.jpg?1043'
-                                }
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6} style={{textAlign: 'center'}}>
-                            <Typography variant={'h6'}>Items (10)</Typography>
-                            <br />
-                            <Typography variant={'body2'}>
-                                Cleansing Detox Foot Pads, iPhone 6s, Tecno Camon X, iPhone 7...
-                            </Typography>
-                            <br />
-                            <Typography variant={'body2'}>User: Oladiran Segun</Typography>
-                            <br />
-                            <Typography variant={'caption'}>Placed ON 02-09-2019</Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={3} style={{textAlign: 'center'}}>
-                            <Link to={'/superAdmin/tl/orders/detail/123'}>
-                                <Button color={'primary'}>See details</Button>
-                            </Link>
-                        </Grid>
-                    </Grid>
+                    {user.orders &&
+                        user.orders.map(or => (
+                            <Grid style={{marginTop: '2rem'}} container justify={'center'}>
+                                <Grid item xs={4} sm={3}>
+                                    {or.products.map(p => (
+                                        <img height={'80px'} alt={'Order Product'} src={p.image} />
+                                    ))}
+                                </Grid>
+                                <Grid item xs={12} sm={6} style={{textAlign: 'center'}}>
+                                    <Typography variant={'h6'}>
+                                        Items {or.products.length}
+                                    </Typography>
+                                    <br />
+                                    <Typography variant={'body2'}>
+                                        {or.products.map(p => (
+                                            <>{p.name},</>
+                                        ))}
+                                    </Typography>
+                                    <br />
+                                    <Typography variant={'body2'}>
+                                        User: {user.firstName} {user.lastName}{' '}
+                                    </Typography>
+                                    <br />
+                                    <Typography variant={'caption'}>
+                                        {moment(or.createdAt).format('lll')}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={3} style={{textAlign: 'center'}}>
+                                    <Link to={'/superAdmin/tl/orders/detail/123'}>
+                                        <Button color={'primary'}>See details</Button>
+                                    </Link>
+                                </Grid>
+                            </Grid>
+                        ))}
                 </Grid>
             </Grid>
         </>

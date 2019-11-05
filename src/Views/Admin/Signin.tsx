@@ -86,11 +86,13 @@ export default function SignIn({history, location}: RouteComponentProps) {
         if (Object.keys(queryUrl).length > 1 && typeof queryUrl === 'object') {
             url += '?';
             for (const fragments in queryUrl) {
-                if (fragments === 'returnUrl') {
-                    continue;
-                }
                 // @ts-ignore
-                url += fragments + '=' + queryUrl[fragments] + '&';
+                if (queryUrl[fragments] && queryUrl[fragments] != null) {
+                    if (fragments === 'returnUrl') {
+                        continue;
+                    }
+                    url += fragments + '=' + queryUrl[fragments] + '&';
+                }
             }
         }
 
