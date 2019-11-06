@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import {makeStyles} from '@material-ui/core';
@@ -12,6 +12,8 @@ import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import MenuItem from '@material-ui/core/MenuItem';
+import {AdminContext} from '../../Context';
+import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -102,78 +104,84 @@ const Orders = ({location, history}: RouteComponentProps) => {
     );
 };
 
-const ViewOrders = ({history}: RouteComponentProps) => {
+const ViewOrders = ({}: RouteComponentProps) => {
     const classes = useStyles();
+
+    const {orders, users} = useContext(AdminContext);
+
+    /**
+     * The order's user firstname and lastname
+     * @param id - of the order
+     */
+    const getUserFirstAndLastName = (id: string | number) => {
+        // get the user
+        const user = users.find(user => user.orders.find(order => order.id == id));
+
+        if (user) {
+            return `${user.firstName} ${user.lastName}`;
+        }
+        return '';
+    };
 
     return (
         <>
-            <Grid item xs={12} className={classes.orders}>
-                <Grid container justify={'center'}>
-                    <Grid item xs={4} sm={3}>
-                        <img
-                            className={classes.image}
-                            alt={'Order Product'}
-                            src={
-                                'https://ng.jumia.is/unsafe/fit-in/150x150/filters:fill(white)/product/99/098663/1.jpg?1043'
-                            }
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} style={{textAlign: 'center'}}>
-                        <Typography variant={'body2'}>Cleansing Detox Foot Pads</Typography>
-                        <Typography variant={'caption'}>Placed on 25-08-2019</Typography>
-                        <br />
-                        <br />
-                        <br />
-                        <Typography variant={'caption'}>DELIVERED ON 02-09-2019</Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={3} style={{textAlign: 'center'}}>
-                        <Link to={'/superAdmin/tl/orders/detail/123'}>
-                            <Button color={'primary'}>See details</Button>
-                        </Link>
-                    </Grid>
-                </Grid>
-            </Grid>
-            <Grid item xs={12} className={classes.orders}>
-                <Grid container justify={'center'}>
-                    <Grid item xs={4} sm={3}>
-                        <img
-                            className={classes.image}
-                            alt={'Order Product'}
-                            src={
-                                'https://ng.jumia.is/unsafe/fit-in/150x150/filters:fill(white)/product/99/098663/1.jpg?1043'
-                            }
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} style={{textAlign: 'center'}}>
-                        <Typography variant={'body2'}>
-                            Cleansing Detox Foot Pads, iPhone 6s, Tecno Camon X, iPhone 7...
-                        </Typography>
-                        <br />
-                        <Typography variant={'body2'}>Items: 10</Typography>
-                        <br />
-                        <Typography variant={'body2'}>User: Oladiran Segun</Typography>
-                        <br />
-                        <Typography variant={'caption'}>Placed ON 02-09-2019</Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={3} style={{textAlign: 'center'}}>
-                        <Button color={'primary'}>See details</Button>
+            {orders.map((or, i) => (
+                <Grid key={i} item xs={12} className={classes.orders}>
+                    <Grid container justify={'center'}>
+                        <Grid item xs={4} sm={3}>
+                            {or.products.map((p, i) => (
+                                <img key={i} height={'80px'} alt={`${p.name}`} src={p.image} />
+                            ))}
+                        </Grid>
+                        <Grid item xs={12} sm={6} style={{textAlign: 'center'}}>
+                            <Typography variant={'body2'}>
+                                {or.products.map((p, i) => {
+                                    if (i === 4) {
+                                        return;
+                                    }
+                                    return `${p.name.slice(0, 20)}... `;
+                                })}
+                            </Typography>
+                            <Typography variant={'body2'}>Items: {or.products.length}</Typography>
+                            <Typography variant={'body2'}>
+                                Price: ₦<span style={{fontWeight: 600}}>{or.total}</span>
+                            </Typography>
+                            <Typography variant={'body2'}>
+                                {getUserFirstAndLastName(or.id)}
+                            </Typography>
+                            <br />
+                            <Typography variant={'caption'}>
+                                {moment(or.createdAt).format('lll')}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={3} style={{textAlign: 'center'}}>
+                            <Link to={`/superAdmin/tl/orders/detail/${or.id}`}>
+                                <Button color={'primary'}>See details</Button>
+                            </Link>
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
+            ))}
         </>
     );
 };
 
 const OrderDetails = ({history, match}: RouteComponentProps) => {
     const classes = useStyles();
-    const [orderId, setOrderId] = useState(0);
-    const [trackingNumber, setTrackingNumber] = useState('');
-    const [status, setStatus] = useState('');
+
+    const {orders} = useContext(AdminContext);
+
+    const [order, setOrder] = useState(({products: [], total: 0} as unknown) as Order);
 
     useEffect(() => {
         const {orderId} = match.params as any;
+        console.log(orderId);
         if (orderId) {
-            setOrderId(Number(orderId));
+            const currentOrder = orders.find(or => or.id == orderId);
+            console.log(currentOrder);
+            if (currentOrder) {
+                setOrder(oldObj => ({...oldObj, ...currentOrder}));
+            }
         }
     }, []);
 
@@ -184,54 +192,63 @@ const OrderDetails = ({history, match}: RouteComponentProps) => {
                 <Grid container>
                     <Grid item xs={12}>
                         <Typography variant={'body2'} style={{fontWeight: 600}}>
-                            Order no {2323134}
+                            Order no {order.id}
                         </Typography>
                         <Typography variant={'subtitle2'}>
-                            1 items
+                            Item(s) {order.products && order.products.length}
                             <br />
-                            Placed on 25-08-2019
-                            <br />
-                            Total: ₦ 90,000
+                            {moment(order.createdAt).format('lll')}
+                        </Typography>
+                        <Typography variant={'h5'} component={'h5'}>
+                            Total: ₦ {order.total.toLocaleString()}
                         </Typography>
                         <Divider />
                         <Typography variant={'overline'} style={{fontWeight: 600}}>
-                            Items In User Order
+                            Item(s) {order.products && order.products.length}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} className={classes.orders}>
-                        <Grid container justify={'center'}>
-                            <Grid item xs={4} sm={3}>
-                                <img
-                                    className={classes.image}
-                                    alt={'Order Product'}
-                                    src={
-                                        'https://ng.jumia.is/unsafe/fit-in/150x150/filters:fill(white)/product/99/098663/1.jpg?1043'
-                                    }
-                                />
+                    {order.products &&
+                        order.products.map((pro, i) => (
+                            <Grid key={i} item xs={12} className={classes.orders}>
+                                <Grid container justify={'center'}>
+                                    <Grid item xs={4} sm={3}>
+                                        <img
+                                            className={classes.image}
+                                            alt={pro.name}
+                                            src={pro.image}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} style={{textAlign: 'center'}}>
+                                        <Typography variant={'body2'}>{pro.name}</Typography>
+                                        <Typography variant={'overline'}>
+                                            Qty: {pro.quantity}
+                                            <br />
+                                            Site: <span style={{fontWeight: 600}}>ebay</span>
+                                            <br />
+                                            Tracking Number: {pro.trackingNumber || 'Not set yet'}
+                                            <br />
+                                            Tracking Link:{' '}
+                                            <a href={pro.trackingLink}>pro.trackingLink</a>
+                                            <br />
+                                            STATUS: {pro.status}
+                                        </Typography>
+                                        <Typography variant={'body2'}>
+                                            Amount: ₦{pro.naira.toLocaleString()}
+                                        </Typography>
+                                        <Typography variant={'caption'}>
+                                            {moment(order.createdAt).format('lll')}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12} sm={3} style={{textAlign: 'center'}}>
+                                        <Link
+                                            to={`/superAdmin/tl/orders/detail/${order.id}/item/${pro.id}`}
+                                        >
+                                            <Button color={'primary'}>Edit Item</Button>
+                                        </Link>
+                                    </Grid>
+                                </Grid>
                             </Grid>
-                            <Grid item xs={12} sm={6} style={{textAlign: 'center'}}>
-                                <Typography variant={'body2'}>Cleansing Detox Foot Pads</Typography>
-                                <Typography variant={'overline'}>
-                                    Qty: 1
-                                    <br />
-                                    Site: <span style={{fontWeight: 600}}>ebay</span>
-                                    <br />
-                                    Tracking Number: <a href={'#'}>none</a>
-                                    <br />
-                                    Tracking Link: <a href={'#'}>none</a>
-                                    <br />
-                                    STATUS: Awaiting shipment
-                                </Typography>
-                                <Typography variant={'body2'}>Amount: ₦ 1,150</Typography>
-                                <Typography variant={'caption'}>PLACED ON 02-09-2019</Typography>
-                            </Grid>
-                            <Grid item xs={12} sm={3} style={{textAlign: 'center'}}>
-                                <Link to={`/superAdmin/tl/orders/detail/${orderId}/item/456`}>
-                                    <Button color={'primary'}>Edit Item</Button>
-                                </Link>
-                            </Grid>
-                        </Grid>
-                    </Grid>
+                        ))}
                 </Grid>
             </Grid>
         </>
@@ -241,25 +258,40 @@ const OrderDetails = ({history, match}: RouteComponentProps) => {
 const OrderItem = ({match}: RouteComponentProps) => {
     const classes = useStyles();
 
+    const {orders} = useContext(AdminContext);
+    const [item, setItem] = useState({} as OrderProduct);
+    const [status, setStatus] = useState('');
+    const [trackingNumber, setTrackingNumber] = useState('');
+    const [trackingLink, setTrackingLink] = useState('');
+
+    useEffect(() => {
+        const {orderId, itemId} = match.params as any;
+        if (orderId) {
+            const currentOrder = orders.find(order => order.id == orderId);
+            if (currentOrder) {
+                const currentItem = currentOrder.products.find(product => product.id == itemId);
+                if (currentItem) {
+                    setItem(currentItem);
+                }
+            }
+        }
+    }, []);
+
     return (
         <>
             <Grid item xs={12}>
                 <Grid container component={'form'} alignContent={'center'} direction={'column'}>
                     <Grid item xs={12}>
-                        <img
-                            className={classes.image}
-                            alt={'Order Product'}
-                            src={
-                                'https://ng.jumia.is/unsafe/fit-in/150x150/filters:fill(white)/product/99/098663/1.jpg?1043'
-                            }
-                        />
+                        <img className={classes.image} alt={item.name} src={item.image} />
                     </Grid>
                     <Grid item xs={12} sm={6} md={4}>
+                        <Typography variant={'h6'}>{item.name}</Typography>
                         <TextField
                             select
                             label="Status"
                             fullWidth
                             margin={'normal'}
+                            value={item.status}
                             required
                             InputProps={{
                                 startAdornment: (
@@ -267,8 +299,8 @@ const OrderItem = ({match}: RouteComponentProps) => {
                                 ),
                             }}
                         >
-                            <MenuItem key={'pending'}>Pending</MenuItem>
-                            <MenuItem key={'shipped'}>Shipped</MenuItem>
+                            <MenuItem key={'paid'}>Payment successfull await shippment</MenuItem>
+                            <MenuItem key={'shipped'}>Shipped awaiting delivery</MenuItem>
                             <MenuItem key={'canceled'}>Canceled</MenuItem>
                         </TextField>
                     </Grid>

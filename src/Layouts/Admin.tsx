@@ -11,6 +11,7 @@ import HomeIcon from '@material-ui/icons/HomeOutlined';
 import AllInboxOutlinedIcon from '@material-ui/icons/AllInboxOutlined';
 import Axios, {AxiosError} from 'axios';
 import {AdminContext} from '../Context';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const Overview = loadable(() => import('../Views/Admin/Overview'), {
     fallback: <Loading show={true} />,
@@ -64,6 +65,7 @@ type Props = RouteComponentProps & {};
 const Admin = ({history, location}: Props) => {
     const classes = useStyles();
 
+    const [loading, setLoading] = useState(false);
     const [adminObject, setAdminObject] = useState({
         users: [],
         orders: [],
@@ -93,22 +95,22 @@ const Admin = ({history, location}: Props) => {
 
     useEffect(() => {
         (async () => {
+            setLoading(true);
             try {
                 const {status, data} = await Axios.get('/admin/user');
                 if (status === 200 && data.status === 'success') {
                     const users = data.data.users as Array<User>;
                     const orders = users.flatMap(user => user.orders);
                     setAdminObject(s => ({...s, users, orders}));
+                    try {
+                        const {status, data} = await Axios.get('/admin/exchangeRate');
+                        if (status === 200 && data.status === 'success') {
+                            setAdminObject(s => ({...s, exchangeRate: data.data.exchangeRate}));
+                        }
+                    } catch (e) {}
                 }
             } catch (e) {}
-        })();
-        (async () => {
-            try {
-                const {status, data} = await Axios.get('/admin/exchangeRate');
-                if (status === 200 && data.status === 'success') {
-                    setAdminObject(s => ({...s, exchangeRate: data.data.exchangeRate}));
-                }
-            } catch (e) {}
+            setLoading(false);
         })();
     }, []);
 
