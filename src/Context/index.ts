@@ -1,12 +1,14 @@
 import {createContext, Dispatch, SetStateAction} from 'react';
 
 const userObject = {
+    id: 0,
     firstName: '',
     lastName: '',
     email: '',
     phoneNumber: '',
     address: [],
     gender: '',
+    orders: [],
     birthDate: '',
 };
 export const DashboardContext = createContext({

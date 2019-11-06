@@ -11,6 +11,7 @@ import Axios, {AxiosError} from 'axios';
 import Nav from '../components/nav';
 import PersonIcon from '@material-ui/icons/PersonOutline';
 import OrderIcon from '@material-ui/icons/AllInbox';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const Overview = loadable(() => import('../Views/Dashboard/Overview'), {
     fallback: <Loading show={true} />,
@@ -73,14 +74,19 @@ const Dashboard = ({location, history}: Props) => {
     const classes = useStyles();
 
     const [userObject, setUserObject] = useState({
+        id: 0,
         firstName: '',
         lastName: '',
         birthDate: '',
         gender: '',
         email: '',
         phoneNumber: '',
+        orders: [],
         address: [],
-    });
+        setUserObject: (() => {}) as any,
+    } as DashboardContext);
+
+    const [loading, setLoading] = useState(false);
 
     /**
      * Listen for 403 status error code and redirect to the login page
@@ -101,10 +107,11 @@ const Dashboard = ({location, history}: Props) => {
                 return Promise.reject(error);
             },
         );
-    }, [history, location.pathname, location.search]);
+    }, []);
 
     useEffect(() => {
         (async () => {
+            setLoading(true);
             try {
                 const {status, data} = await Axios.get('/user');
                 if (status === 200 && data.status === 'success') {
@@ -115,11 +122,12 @@ const Dashboard = ({location, history}: Props) => {
                         history.push(`/auth/signin${queryParams}`);
                         return;
                     }
-                    setUserObject(data.data.data);
+                    setUserObject(oldObj => ({...oldObj, ...data.data.data}));
                 }
             } catch (e) {}
+            setLoading(false);
         })();
-    }, [history, location.pathname, location.search]);
+    }, []);
 
     return (
         <>
@@ -133,11 +141,19 @@ const Dashboard = ({location, history}: Props) => {
                             <Sidebar links={links} />
                         </Grid>
                         <Grid item md={8} className={classes.main}>
-                            <Route path={'/dashboard/overview'} component={Overview} />
-                            <Route path={'/dashboard/orders'} component={Orders} />
-                            <Route path={'/dashboard/details'} component={Details} />
-                            <Route path={'/dashboard/address'} component={Address} />
-                            <Route path={'/dashboard/changepass'} component={ChangePass} />
+                            {loading ? (
+                                <div style={{margin: 'auto 0 auto'}}>
+                                    <CircularProgress />
+                                </div>
+                            ) : (
+                                <>
+                                    <Route path={'/dashboard/overview'} component={Overview} />
+                                    <Route path={'/dashboard/orders'} component={Orders} />
+                                    <Route path={'/dashboard/details'} component={Details} />
+                                    <Route path={'/dashboard/address'} component={Address} />
+                                    <Route path={'/dashboard/changepass'} component={ChangePass} />
+                                </>
+                            )}
                         </Grid>
                     </Grid>
                     <Footer />

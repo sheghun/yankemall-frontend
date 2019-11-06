@@ -55,14 +55,7 @@ declare interface Product {
     image?: string;
 }
 
-declare interface DashboardContext {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    email: string;
-    address: Array<Address>;
-    gender: string;
-    birthDate: string;
+declare interface DashboardContext extends User {
     setUserObject: Dispatch<SetStateAction<DashboardContext>>;
 }
 
@@ -92,10 +85,12 @@ declare interface Order {
     shippingFee: number;
     userId: number;
     total: number;
-    paid: Date;
+    dollar: number;
+    paid: Date | null;
     products: Array<OrderProduct>;
-    paymentInfo: string;
-    createdAt: string;
+    addressId: number;
+    updatedAt: Date;
+    createdAt: Date;
 }
 
 declare interface OrderProduct {
@@ -108,5 +103,7 @@ declare interface OrderProduct {
     status: string;
     quantity: string;
     site: string;
+    naira: number;
+    dollar: number;
     orderId: number;
 }

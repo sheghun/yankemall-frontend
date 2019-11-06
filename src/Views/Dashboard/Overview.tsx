@@ -46,7 +46,7 @@ const useStyles = makeStyles(theme => ({
 const Overview = () => {
     const classes = useStyles();
 
-    const {firstName, lastName, address, email} = useContext(DashboardContext);
+    const {firstName, lastName, address, email, orders} = useContext(DashboardContext);
 
     const renderAddress = () => {
         console.log(address);
@@ -141,13 +141,15 @@ const Overview = () => {
                                 Total Orders
                             </Typography>
                             <Typography variant="h6" component="h2">
-                                20
+                                {orders.length}
                             </Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small" color={'primary'}>
-                                View Orders
-                            </Button>
+                            <Link to={'/dashboard/orders'}>
+                                <Button size="small" color={'primary'}>
+                                    View Orders
+                                </Button>
+                            </Link>
                         </CardActions>
                     </Card>
                 </Grid>
