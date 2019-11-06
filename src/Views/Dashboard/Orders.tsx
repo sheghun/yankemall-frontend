@@ -114,7 +114,7 @@ const ViewOrders = ({}: RouteComponentProps) => {
                                 <img key={i} height={'80px'} alt={`${p.name}`} src={p.image} />
                             ))}
                         </Grid>
-                        <Grid item xs={12} sm={9} style={{textAlign: 'center'}}>
+                        <Grid item xs={12} sm={6} style={{textAlign: 'center'}}>
                             <Typography variant={'body2'}>
                                 {or.products.map((p, i) => {
                                     if (i === 4) {
@@ -209,7 +209,14 @@ const OrderDetails = ({match}: RouteComponentProps) => {
                                         Tracking Link:{' '}
                                         <a href={pro.trackingLink}>{pro.trackingLink}</a>
                                         <br />
-                                        STATUS: {pro.status}
+                                        STATUS:{' '}
+                                        {pro.status &&
+                                            (pro.status === 'paid'
+                                                ? 'Payment successful await shipment'
+                                                : pro.status === 'shipped'
+                                                ? 'Shipped awaiting delivery'
+                                                : pro.status === 'canceled' &&
+                                                  'Item shipment has been canceled')}
                                     </Typography>
                                     <Typography variant={'body2'}>
                                         Amount: ₦{pro.naira.toLocaleString()}

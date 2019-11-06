@@ -89,8 +89,8 @@ declare interface Order {
     paid: Date | null;
     products: Array<OrderProduct>;
     addressId: number;
-    updatedAt: Date;
     createdAt: Date;
+    updatedAt: Date;
 }
 
 declare interface OrderProduct {
@@ -100,7 +100,7 @@ declare interface OrderProduct {
     image: string;
     trackingNumber: string;
     trackingLink: string;
-    status: string;
+    status: 'paid' | 'shipped' | 'canceled';
     quantity: string;
     site: string;
     naira: number;
