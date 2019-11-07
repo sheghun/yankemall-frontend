@@ -9,6 +9,7 @@ import Axios from 'axios';
 import styled from 'styled-components';
 import Footer from '../components/Footer';
 import Grid from '@material-ui/core/Grid';
+import TransitionsModal from '../components/Modal';
 
 const Style = styled.div`
     margin-top: 2rem;
@@ -238,6 +239,7 @@ const Home = () => {
     return (
         <>
             <Wrapper>
+                <TransitionsModal />
                 <Nav />
                 <Style>
                     <div>
@@ -249,20 +251,27 @@ const Home = () => {
                         />
                         <div className={'download-our-extension-div'}>
                             <h1>Download Our Chrome Extension</h1>
-                            <Button
-                                style={{
-                                    textAlign: 'center',
-                                    left: '50%',
-                                    marginTop: '3rem',
-                                    position: 'relative',
-                                    transform: 'translateX(-50%)',
-                                }}
-                                color={'secondary'}
-                                variant={'contained'}
-                                size={'large'}
+                            <a
+                                target={'_blank'}
+                                href={
+                                    'https://chrome.google.com/webstore/detail/eromalls/nikondefdlgokmjgmigjjpppfmpalick'
+                                }
                             >
-                                Download
-                            </Button>
+                                <Button
+                                    style={{
+                                        textAlign: 'center',
+                                        left: '50%',
+                                        marginTop: '3rem',
+                                        position: 'relative',
+                                        transform: 'translateX(-50%)',
+                                    }}
+                                    color={'secondary'}
+                                    variant={'contained'}
+                                    size={'large'}
+                                >
+                                    Download
+                                </Button>
+                            </a>
                         </div>
                         <div id={'stores'} className={'inputs-rectangle'}>
                             <h1>Select a Logo To Start Shopping. Click Our Button To CheckOut.</h1>

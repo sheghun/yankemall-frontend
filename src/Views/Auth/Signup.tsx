@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -16,13 +16,19 @@ import {Link} from 'react-router-dom';
 import Snack from '../../components/snack';
 import {RouteComponentProps} from 'react-router';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import MomentUtils from '@date-io/moment';
-import {KeyboardDatePicker, MuiPickersUtilsProvider} from '@material-ui/pickers';
-import {Moment} from 'moment';
+import moment, {Moment} from 'moment';
 import useMediaQuery from '@material-ui/core/useMediaQuery/useMediaQuery';
 import MenuItem from '@material-ui/core/MenuItem';
 import logoImage from '../../assets/images/eromalls-logo.png';
 import Copyright from '../../components/Copyright';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import Input from '@material-ui/core/Input';
+import IconButton from '@material-ui/core/IconButton';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import Visibility from '@material-ui/icons/Visibility';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -66,6 +72,7 @@ const SignUp = ({history}: RouteComponentProps) => {
         message: '',
         variant: 'success',
     });
+    const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -73,7 +80,7 @@ const SignUp = ({history}: RouteComponentProps) => {
     const emailTestString = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const [password, setPassword] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
-    const [birthDate, setBirthDate] = useState('YYY-MM-DD');
+    const [birthDate, setBirthDate] = useState({year: '', month: '', day: ''});
     const [gender, setGender] = useState('');
     const [errors, setErrors] = useState({
         firstName: '',
@@ -129,9 +136,9 @@ const SignUp = ({history}: RouteComponentProps) => {
             pass = false;
             errors.gender = 'Gender is required';
         }
-        if (birthDate === '') {
+        if (birthDate.year === '' || birthDate.month === '' || birthDate.day === '') {
             pass = false;
-            errors.birthDate = 'Date is incorrect';
+            errors.birthDate = 'Make you select your birth, year month and day';
         }
         setErrors(e => ({...e, ...errors}));
         return pass;
@@ -151,7 +158,11 @@ const SignUp = ({history}: RouteComponentProps) => {
             password,
             firstName,
             lastName,
-            birthDate,
+            birthDate: `${birthDate.year}-${
+                String(birthDate.month).length === 1
+                    ? '0' + String(birthDate.month)
+                    : birthDate.month
+            }-${birthDate.day}`,
             phoneNumber: '234' + phoneNumber,
             gender,
         };
@@ -175,6 +186,64 @@ const SignUp = ({history}: RouteComponentProps) => {
         }
         setLoading(false);
     };
+
+    const renderYears = useMemo(() => {
+        const years = [];
+        for (let i = 2001; i >= 1940; i--) {
+            years.push(<MenuItem value={i}>{i}</MenuItem>);
+        }
+        return years;
+    }, []);
+
+    const renderMonths = useMemo(
+        () =>
+            moment
+                .monthsShort()
+                .map((month, index) => <MenuItem value={index + 1}>{month}</MenuItem>),
+        [],
+    );
+
+    const renderDays = useMemo(() => {
+        let menuList = [];
+        if (
+            birthDate.month == '4' ||
+            birthDate.month == '6' ||
+            birthDate.month == '9' ||
+            birthDate.month == '11'
+        ) {
+            // For month with 30 days
+            // April June September November
+            menuList = [];
+            for (let i = 1; i <= 30; i++) {
+                menuList.push(
+                    <MenuItem key={i} value={i}>
+                        {i.toString().length == 2 ? i : 0 + '' + i}
+                    </MenuItem>,
+                );
+            }
+        } else if (birthDate.month == '2') {
+            // For the month of February
+            menuList = [];
+            for (let i = 1; i <= 29; i++) {
+                menuList.push(
+                    <MenuItem key={i} value={i}>
+                        {i.toString().length == 2 ? i : 0 + '' + i}
+                    </MenuItem>,
+                );
+            }
+        } else {
+            // For other months
+            menuList = [];
+            for (let i = 1; i <= 31; i++) {
+                menuList.push(
+                    <MenuItem key={i} value={i}>
+                        {i.toString().length == 2 ? i : 0 + '' + i}
+                    </MenuItem>,
+                );
+            }
+        }
+        return menuList;
+    }, [birthDate.month]);
 
     return (
         <Grid container component="main" className={classes.root}>
@@ -256,39 +325,93 @@ const SignUp = ({history}: RouteComponentProps) => {
                             }}
                             margin="normal"
                         />
-                        <TextField
-                            margin="normal"
-                            error={!!errors.password}
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            helperText={errors.password}
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                            onChange={e => setPassword(e.target.value)}
-                        />
-                        <MuiPickersUtilsProvider utils={MomentUtils}>
-                            <KeyboardDatePicker
-                                style={{width: '100%'}}
-                                margin="normal"
-                                variant={bigScreen ? 'inline' : 'dialog'}
-                                id="birthDate-picker-dialog"
-                                label="Birthday"
-                                onFocus={e => e.target.blur()}
-                                format="YYYY-MM-DD"
-                                error={!!errors.birthDate}
-                                helperText={errors.birthDate}
-                                value={birthDate}
-                                onChange={birthDate =>
-                                    setBirthDate((birthDate as Moment).format('YYYY-MM-DD'))
+                        <FormControl fullWidth error={!!errors.password}>
+                            <InputLabel htmlFor="password">Password</InputLabel>
+                            <Input
+                                id="password"
+                                type={showPassword ? 'text' : 'password'}
+                                value={password}
+                                name={'password'}
+                                required
+                                onChange={e => setPassword(e.target.value)}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                        >
+                                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                                        </IconButton>
+                                    </InputAdornment>
                                 }
-                                KeyboardButtonProps={{
-                                    'aria-label': 'change birthDate',
-                                }}
                             />
-                        </MuiPickersUtilsProvider>
+                            {errors.password && <FormHelperText>{errors.password}</FormHelperText>}
+                        </FormControl>
+
+                        <Grid container>
+                            <Grid item xs={4}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="year">Year</InputLabel>
+                                    <Select
+                                        id="year"
+                                        value={birthDate.year}
+                                        error={!!errors.birthDate}
+                                        onChange={e =>
+                                            setBirthDate(b => ({
+                                                ...b,
+                                                year: e.target.value as string,
+                                            }))
+                                        }
+                                    >
+                                        {renderYears}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="month">Month</InputLabel>
+                                    <Select
+                                        id="month"
+                                        value={birthDate.month}
+                                        error={!!errors.birthDate}
+                                        onChange={e =>
+                                            setBirthDate(b => ({
+                                                ...b,
+                                                month: e.target.value as string,
+                                            }))
+                                        }
+                                    >
+                                        {renderMonths}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="day">Day</InputLabel>
+                                    <Select
+                                        id="day"
+                                        error={!!errors.birthDate}
+                                        value={birthDate.day}
+                                        onChange={e =>
+                                            setBirthDate(b => ({
+                                                ...b,
+                                                day: e.target.value as string,
+                                            }))
+                                        }
+                                    >
+                                        {renderDays}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            {errors.birthDate && (
+                                <Grid item xs={12}>
+                                    <Typography color={'error'} variant={'subtitle2'}>
+                                        {errors.birthDate}
+                                    </Typography>
+                                </Grid>
+                            )}
+                        </Grid>
+
                         <TextField
                             select
                             label="Gender"
