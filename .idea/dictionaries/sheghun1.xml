@@ -2,21 +2,26 @@
   <dictionary name="sheghun1">
     <words>
       <w>axios</w>
+      <w>bestbuy</w>
       <w>byazhin</w>
       <w>changepass</w>
       <w>clsx</w>
       <w>eromalls</w>
+      <w>etsy</w>
       <w>forgotpass</w>
       <w>kubwa</w>
       <w>maryson</w>
       <w>naira</w>
       <w>oladiran</w>
       <w>paystack</w>
+      <w>priceblock</w>
       <w>resetpass</w>
       <w>segun</w>
       <w>signin</w>
       <w>signup</w>
       <w>unica</w>
+      <w>unstyled</w>
+      <w>walmart</w>
       <w>yankeemall</w>
     </words>
   </dictionary>

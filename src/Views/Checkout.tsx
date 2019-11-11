@@ -353,14 +353,19 @@ const ShoppingCart = ({
                                     <img src={p.image} alt={p.title} />
                                     <p style={{flexBasis: '60%'}}>{p.title}</p>
                                 </td>
-                                <td style={{textAlign: 'center'}}>{p.quantity}</td>
+                                <td style={{textAlign: 'center'}}>{p.quantity || 1}</td>
                                 <td>
                                     ${p.dollar} <br />
                                     <Typography variant={'caption'} color={'textPrimary'}>
                                         ₦{p.naira}
                                     </Typography>
                                 </td>
-                                <td>₦{p.naira * Number(p.quantity)}</td>
+                                <td>
+                                    ₦
+                                    {Number(p.quantity) !== 0
+                                        ? p.naira * Number(p.quantity)
+                                        : p.naira}
+                                </td>
                             </tr>
                         ))}
                         <tr className={'order-summary-table-row'}>
