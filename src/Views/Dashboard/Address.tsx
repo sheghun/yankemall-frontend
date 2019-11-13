@@ -58,6 +58,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 const Address = (props: RouteComponentProps) => {
+    const {history} = props;
     return (
         <>
             <Route
@@ -65,7 +66,16 @@ const Address = (props: RouteComponentProps) => {
                 path={'/dashboard/address'}
                 render={() => <ShowAddress {...props} />}
             />
-            <Route path={'/dashboard/address/add'} render={() => <AddAddress {...props} />} />
+            <Route
+                path={'/dashboard/address/add'}
+                render={() => (
+                    <AddAddress
+                        {...props}
+                        elevation
+                        navigate={() => history.push('/dashboard/address')}
+                    />
+                )}
+            />
             <Route path={'/dashboard/address/edit'} render={() => <EditAddress {...props} />} />
         </>
     );
@@ -186,7 +196,12 @@ const ShowAddress = ({}: RouteComponentProps) => {
     );
 };
 
-const AddAddress = ({location, history}: RouteComponentProps) => {
+export const AddAddress = ({
+    location,
+    history,
+    navigate,
+    elevation,
+}: RouteComponentProps & {elevation?: boolean; navigate: any}) => {
     const classes = useStyles();
 
     const context = useContext(DashboardContext);
@@ -336,6 +351,8 @@ const AddAddress = ({location, history}: RouteComponentProps) => {
                     const returnUrl = getReturnUrl(location);
                     if (returnUrl) {
                         history.push(returnUrl);
+                    } else {
+                        navigate();
                     }
                 }, 2000);
             }
@@ -357,7 +374,7 @@ const AddAddress = ({location, history}: RouteComponentProps) => {
     };
 
     return (
-        <Paper className={classes.paper}>
+        <Paper className={classes.paper} elevation={elevation ? 1 : 0}>
             <Helmet>
                 <title>Sign Up</title>
             </Helmet>

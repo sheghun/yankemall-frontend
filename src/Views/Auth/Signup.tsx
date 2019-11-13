@@ -9,10 +9,10 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import {Helmet} from 'react-helmet';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import backgroundImage from '../../assets/images/multiple-shipping-partners.png';
 import Axios, {AxiosError} from 'axios';
-import {Link} from 'react-router-dom';
+import {Link, Route} from 'react-router-dom';
 import Snack from '../../components/snack';
 import {RouteComponentProps} from 'react-router';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -64,8 +64,40 @@ const useStyles = makeStyles(theme => ({
 
 const SignUp = ({history}: RouteComponentProps) => {
     const classes = useStyles();
-    const theme = useTheme();
-    const bigScreen = useMediaQuery(theme.breakpoints.up('sm'));
+
+    return (
+        <Grid container component="main" className={classes.root}>
+            <Helmet>
+                <title>Sign Up</title>
+            </Helmet>
+            <CssBaseline />
+            <Grid item xs={false} sm={4} md={7} className={classes.image} />
+            <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+                <div className={classes.paper}>
+                    <Link to={'/'}>
+                        <Avatar className={classes.avatar}>
+                            <img width={'100px'} src={logoImage} alt={'Yankeemall Logo'} />
+                        </Avatar>
+                    </Link>
+                    <Typography component="h1" variant="h5">
+                        Sign Up
+                    </Typography>
+                    <Route
+                        render={props => (
+                            <SignUpForm
+                                {...props}
+                                navigate={() => history.push('/dashboard/overview')}
+                            />
+                        )}
+                    />
+                </div>
+            </Grid>
+        </Grid>
+    );
+};
+
+export const SignUpForm = ({navigate}: RouteComponentProps & {navigate: any}) => {
+    const classes = useStyles();
 
     const [snackbar, setSnackbar] = useState({
         open: false,
@@ -171,7 +203,7 @@ const SignUp = ({history}: RouteComponentProps) => {
             if (status === 201 && data.status === 'success') {
                 setSnackbar({open: true, variant: 'success', message: 'Sign up Successful'});
                 setTimeout(() => {
-                    history.push('/dashboard/overview');
+                    navigate();
                 }, 2000);
             }
         } catch (e) {
@@ -244,222 +276,200 @@ const SignUp = ({history}: RouteComponentProps) => {
         }
         return menuList;
     }, [birthDate.month]);
-
     return (
-        <Grid container component="main" className={classes.root}>
-            <Helmet>
-                <title>Sign Up</title>
-            </Helmet>
+        <>
             <Snack
                 variant={snackbar.variant as any}
                 open={snackbar.open}
                 message={snackbar.message}
                 onClose={() => setSnackbar(s => ({...s, open: false}))}
             />
-            <CssBaseline />
-            <Grid item xs={false} sm={4} md={7} className={classes.image} />
-            <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-                <div className={classes.paper}>
-                    <Link to={'/'}>
-                        <Avatar className={classes.avatar}>
-                            <img width={'100px'} src={logoImage} alt={'Yankeemall Logo'} />
-                        </Avatar>
-                    </Link>
-                    <Typography component="h1" variant="h5">
-                        Sign Up
-                    </Typography>
-                    <form className={classes.form} onSubmit={submit}>
-                        <Grid container justify={'center'}>
-                            <Grid item={true} xs={12} sm={6}>
-                                <TextField
-                                    margin={'normal'}
-                                    required={true}
-                                    id={'first-name'}
-                                    type={'text'}
-                                    value={firstName}
-                                    error={!!errors.firstName}
-                                    onChange={e => setFirstName(e.target.value)}
-                                    fullWidth
-                                    label={'First Name'}
-                                />
-                            </Grid>
-                            <Grid item={true} xs={12} sm={6}>
-                                <TextField
-                                    id={'last-name'}
-                                    margin={'normal'}
-                                    value={lastName}
-                                    required
-                                    error={!!errors.lastName}
-                                    onChange={e => setLastName(e.target.value)}
-                                    type={'text'}
-                                    fullWidth
-                                    label={'Last Name'}
-                                />
-                            </Grid>
-                        </Grid>
+            <form className={classes.form} onSubmit={submit}>
+                <Grid container justify={'center'}>
+                    <Grid item={true} xs={12} sm={6}>
                         <TextField
+                            margin={'normal'}
                             required={true}
-                            fullWidth
-                            id={'email'}
-                            margin={'normal'}
-                            error={!!errors.email}
-                            value={email}
-                            helperText={errors.email}
-                            onChange={e => setEmail(e.target.value)}
-                            type={'email'}
-                            label={'E-mail'}
-                        />
-                        <TextField
-                            id="Phone Number"
-                            label="Phone Number"
-                            required
+                            id={'first-name'}
                             type={'text'}
-                            value={phoneNumber}
-                            error={!!errors.phoneNumber}
-                            onChange={changePhoneNumber}
+                            value={firstName}
+                            error={!!errors.firstName}
+                            onChange={e => setFirstName(e.target.value)}
                             fullWidth
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">+234</InputAdornment>
-                                ),
-                            }}
-                            margin="normal"
+                            label={'First Name'}
                         />
-                        <FormControl fullWidth error={!!errors.password}>
-                            <InputLabel htmlFor="password">Password</InputLabel>
-                            <Input
-                                id="password"
-                                type={showPassword ? 'text' : 'password'}
-                                value={password}
-                                name={'password'}
-                                required
-                                onChange={e => setPassword(e.target.value)}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="toggle password visibility"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                        >
-                                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                            />
-                            {errors.password && <FormHelperText>{errors.password}</FormHelperText>}
-                        </FormControl>
-
-                        <Grid container>
-                            <Grid item xs={4}>
-                                <FormControl fullWidth>
-                                    <InputLabel id="year">Year</InputLabel>
-                                    <Select
-                                        id="year"
-                                        value={birthDate.year}
-                                        error={!!errors.birthDate}
-                                        onChange={e =>
-                                            setBirthDate(b => ({
-                                                ...b,
-                                                year: e.target.value as string,
-                                            }))
-                                        }
-                                    >
-                                        {renderYears}
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <FormControl fullWidth>
-                                    <InputLabel id="month">Month</InputLabel>
-                                    <Select
-                                        id="month"
-                                        value={birthDate.month}
-                                        error={!!errors.birthDate}
-                                        onChange={e =>
-                                            setBirthDate(b => ({
-                                                ...b,
-                                                month: e.target.value as string,
-                                            }))
-                                        }
-                                    >
-                                        {renderMonths}
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <FormControl fullWidth>
-                                    <InputLabel id="day">Day</InputLabel>
-                                    <Select
-                                        id="day"
-                                        error={!!errors.birthDate}
-                                        value={birthDate.day}
-                                        onChange={e =>
-                                            setBirthDate(b => ({
-                                                ...b,
-                                                day: e.target.value as string,
-                                            }))
-                                        }
-                                    >
-                                        {renderDays}
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                            {errors.birthDate && (
-                                <Grid item xs={12}>
-                                    <Typography color={'error'} variant={'subtitle2'}>
-                                        {errors.birthDate}
-                                    </Typography>
-                                </Grid>
-                            )}
-                        </Grid>
-
+                    </Grid>
+                    <Grid item={true} xs={12} sm={6}>
                         <TextField
-                            select
-                            label="Gender"
-                            fullWidth
+                            id={'last-name'}
                             margin={'normal'}
+                            value={lastName}
                             required
-                            error={!!errors.gender}
-                            helperText={errors.gender}
-                            value={gender}
-                            onChange={e => setGender(e.target.value)}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">Gender:</InputAdornment>
-                                ),
-                            }}
-                        >
-                            {['Male', 'Female'].map((g, i) => (
-                                <MenuItem key={i} value={g}>
-                                    {g}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                        <Button
-                            type="submit"
+                            error={!!errors.lastName}
+                            onChange={e => setLastName(e.target.value)}
+                            type={'text'}
                             fullWidth
-                            variant="contained"
-                            color="primary"
-                            disabled={loading}
-                            className={classes.submit}
-                        >
-                            {loading ? <CircularProgress /> : 'Sign Up'}
-                        </Button>
-                        <Grid container>
-                            <Grid item>
-                                <Link to={'/auth/signin'}>
-                                    <Typography color={'primary'} variant="body2">
-                                        {'Already have an account?     Sign In'}
-                                    </Typography>
-                                </Link>
-                            </Grid>
+                            label={'Last Name'}
+                        />
+                    </Grid>
+                </Grid>
+                <TextField
+                    required={true}
+                    fullWidth
+                    id={'email'}
+                    margin={'normal'}
+                    error={!!errors.email}
+                    value={email}
+                    helperText={errors.email}
+                    onChange={e => setEmail(e.target.value)}
+                    type={'email'}
+                    label={'E-mail'}
+                />
+                <TextField
+                    id="Phone Number"
+                    label="Phone Number"
+                    required
+                    type={'text'}
+                    value={phoneNumber}
+                    error={!!errors.phoneNumber}
+                    onChange={changePhoneNumber}
+                    fullWidth
+                    InputProps={{
+                        startAdornment: <InputAdornment position="start">+234</InputAdornment>,
+                    }}
+                    margin="normal"
+                />
+                <FormControl fullWidth error={!!errors.password}>
+                    <InputLabel htmlFor="password">Password</InputLabel>
+                    <Input
+                        id="password"
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        name={'password'}
+                        required
+                        onChange={e => setPassword(e.target.value)}
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                    />
+                    {errors.password && <FormHelperText>{errors.password}</FormHelperText>}
+                </FormControl>
+
+                <Grid container>
+                    <Grid item xs={4}>
+                        <FormControl fullWidth>
+                            <InputLabel id="year">Year</InputLabel>
+                            <Select
+                                id="year"
+                                value={birthDate.year}
+                                error={!!errors.birthDate}
+                                onChange={e =>
+                                    setBirthDate(b => ({
+                                        ...b,
+                                        year: e.target.value as string,
+                                    }))
+                                }
+                            >
+                                {renderYears}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormControl fullWidth>
+                            <InputLabel id="month">Month</InputLabel>
+                            <Select
+                                id="month"
+                                value={birthDate.month}
+                                error={!!errors.birthDate}
+                                onChange={e =>
+                                    setBirthDate(b => ({
+                                        ...b,
+                                        month: e.target.value as string,
+                                    }))
+                                }
+                            >
+                                {renderMonths}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormControl fullWidth>
+                            <InputLabel id="day">Day</InputLabel>
+                            <Select
+                                id="day"
+                                error={!!errors.birthDate}
+                                value={birthDate.day}
+                                onChange={e =>
+                                    setBirthDate(b => ({
+                                        ...b,
+                                        day: e.target.value as string,
+                                    }))
+                                }
+                            >
+                                {renderDays}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    {errors.birthDate && (
+                        <Grid item xs={12}>
+                            <Typography color={'error'} variant={'subtitle2'}>
+                                {errors.birthDate}
+                            </Typography>
                         </Grid>
-                        <Box mt={5}>
-                            <Copyright />
-                        </Box>
-                    </form>
-                </div>
-            </Grid>
-        </Grid>
+                    )}
+                </Grid>
+
+                <TextField
+                    select
+                    label="Gender"
+                    fullWidth
+                    margin={'normal'}
+                    required
+                    error={!!errors.gender}
+                    helperText={errors.gender}
+                    value={gender}
+                    onChange={e => setGender(e.target.value)}
+                    InputProps={{
+                        startAdornment: <InputAdornment position="start">Gender:</InputAdornment>,
+                    }}
+                >
+                    {['Male', 'Female'].map((g, i) => (
+                        <MenuItem key={i} value={g}>
+                            {g}
+                        </MenuItem>
+                    ))}
+                </TextField>
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    disabled={loading}
+                    className={classes.submit}
+                >
+                    {loading ? <CircularProgress /> : 'Sign Up'}
+                </Button>
+                <Grid container>
+                    <Grid item>
+                        <Link to={'#'}>
+                            <Typography color={'primary'} variant="body2" onClick={navigate}>
+                                {'Already have an account?     Sign In'}
+                            </Typography>
+                        </Link>
+                    </Grid>
+                </Grid>
+                <Box mt={5}>
+                    <Copyright />
+                </Box>
+            </form>
+        </>
     );
 };
 
