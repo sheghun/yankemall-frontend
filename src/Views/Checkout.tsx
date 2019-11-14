@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
         // For target the papers in the grids
         '& .MuiPaper-elevation1': {
             padding: theme.spacing(1),
-            fontWeight: 600 + '!important',
+            fontWeight: 500 + '!important',
         },
     },
     orderDetailsHeader: {
@@ -363,7 +363,9 @@ const Checkout = ({location}: props) => {
                                         <Grid container>
                                             {cart.products.length === 0 ? (
                                                 <Grid item xs={12}>
-                                                    <CircularProgress />
+                                                    <div style={{width: '100%'}}>
+                                                        <CircularProgress />
+                                                    </div>
                                                 </Grid>
                                             ) : (
                                                 cart.products.map((product, i) => (
