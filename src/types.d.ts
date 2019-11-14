@@ -51,6 +51,7 @@ declare interface Product {
     dollar: number;
     naira: number;
     price: number;
+    properties: string;
     condition: string;
     image?: string;
 }

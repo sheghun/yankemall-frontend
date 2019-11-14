@@ -3,7 +3,7 @@ import Nav from '../components/nav';
 import Wrapper from '../components/wrapper';
 import Input from '../components/input';
 import Button from '@material-ui/core/Button';
-import heroImage from '../assets/images/eromalls-banner.png';
+import heroImage from '../assets/images/eromalls-banner.jpg';
 import Select from '../components/select';
 import Axios from 'axios';
 import styled from 'styled-components';

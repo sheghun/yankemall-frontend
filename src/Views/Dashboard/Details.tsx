@@ -75,7 +75,14 @@ const Details = () => {
         setPhoneNumber(context.phoneNumber.substring(3));
         setBirthDate(moment(context.birthDate).format('YYYY-MM-DD'));
         setGender(context.gender);
-    }, [context.firstName]);
+    }, [
+        context.firstName,
+        context.lastName,
+        context.email,
+        context.phoneNumber,
+        context.birthDate,
+        context.gender,
+    ]);
 
     const changePhoneNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;

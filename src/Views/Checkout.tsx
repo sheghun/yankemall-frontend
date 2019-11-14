@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import logoImage from '../assets/images/eromalls-logo.png';
 import queryString from 'query-string';
 import Axios, {AxiosError} from 'axios';
@@ -18,13 +18,17 @@ import {SignUpForm} from './Auth/Signup';
 import {AddAddress} from './Dashboard/Address';
 import CheckIcon from '@material-ui/icons/Check';
 import classNames from 'classnames';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import IconButton from '@material-ui/core/IconButton';
+import Divider from '@material-ui/core/Divider';
 
 const steps = ['Sign in', 'Address', 'Place Order'];
 
 const useStyles = makeStyles(theme => ({
     wrapper: {
         height: '100vh',
-        paddingTop: '48px',
+        paddingTop: '24px',
         width: '100vw',
         boxSizing: 'border-box',
         backgroundColor: '#fafafa',
@@ -32,6 +36,8 @@ const useStyles = makeStyles(theme => ({
     orderDetailsContainer: {
         padding: theme.spacing(1),
         backgroundColor: '#f9f9f9',
+        maxHeight: '300px',
+        overflow: 'scroll',
         // For target the papers in the grids
         '& .MuiPaper-elevation1': {
             padding: theme.spacing(1),
@@ -60,11 +66,18 @@ const useStyles = makeStyles(theme => ({
     selectedAddress: {
         border: `solid 1px #EDEDED`,
     },
+    image: {
+        height: '64px !important',
+    },
+    increments: {
+        display: 'flex',
+        alignItems: 'center',
+    },
     container: {},
 }));
 
 type props = RouteComponentProps & {};
-type cart = {
+type Cart = {
     products: Array<Product>;
     shippingFee: number;
     totalNaira: number;
@@ -82,7 +95,7 @@ const Checkout = ({location}: props) => {
         total: 0,
         totalNaira: 0,
         totalDollar: 0,
-    } as cart);
+    } as Cart);
     const [siteId, setSiteId] = useState(0);
     const [addressId, setAddressId] = useState(0);
     const [exchangeRate, setExchangeRate] = useState(0);
@@ -113,26 +126,30 @@ const Checkout = ({location}: props) => {
     useEffect(() => {
         // Get the cart from the session
         (async () => {
-            const {yankeemallData} = queryString.parse(location.search);
-            if (yankeemallData) {
-                const {status, data} = await Axios.post('/base/decrypt', {yankeemallData});
-                if (status === 200 && data.status === 'success') {
-                    setCart(data.data.cart);
-                    setSiteId(data.data.siteId);
+            setLoading(true);
+            await (async () => {
+                const {yankeemallData} = queryString.parse(location.search);
+                if (yankeemallData) {
+                    const {status, data} = await Axios.post('/base/decrypt', {yankeemallData});
+                    if (status === 200 && data.status === 'success') {
+                        setCart(data.data.cart);
+                        setSiteId(data.data.siteId);
+                    }
                 }
-            }
-        })();
-        (async () => {
-            try {
-                const {status, data} = await Axios.get('/base/exchangeRate');
-                if (status === 200 && data.status === 'success') {
-                    setExchangeRate(Number(data.data.exchangeRate));
-                }
-            } catch (e) {}
+            })();
+            await (async () => {
+                try {
+                    const {status, data} = await Axios.get('/base/exchangeRate');
+                    if (status === 200 && data.status === 'success') {
+                        setExchangeRate(Number(data.data.exchangeRate));
+                    }
+                } catch (e) {}
+            })();
+            setLoading(false);
         })();
     }, [location.search]);
 
-    const selectAddress = (id: number) => (event: any) => {
+    const selectAddress = (id: number) => () => {
         setAddressId(id);
     };
 
@@ -140,6 +157,8 @@ const Checkout = ({location}: props) => {
         try {
             const d = {
                 yankeemallData,
+                cart,
+                addressId,
                 siteId,
             };
             const {status, data} = await Axios.post('/user/place-order', d);
@@ -168,6 +187,74 @@ const Checkout = ({location}: props) => {
         return;
     };
 
+    /**
+     * To reduce the quantity of a product
+     */
+    const reduceQuantity = (productIndex: number) => () => {
+        const productsArray = cart.products.slice();
+        const currentProduct = productsArray[productIndex];
+        currentProduct.quantity =
+            Number(currentProduct.quantity) <= 1
+                ? 1
+                : ((Number(currentProduct.quantity) - 1) as any);
+        productsArray[productIndex] = currentProduct;
+
+        setCart(c => ({...c, products: productsArray}));
+    };
+    /**
+     * To reduce the quantity of a product
+     */
+    const increaseQuantity = (productIndex: number) => () => {
+        const productsArray = cart.products.slice();
+        const currentProduct = productsArray[productIndex];
+        currentProduct.quantity =
+            Number(currentProduct.quantity) >= 10
+                ? 10
+                : ((Number(currentProduct.quantity) + 1) as any);
+        productsArray[productIndex] = currentProduct;
+        let totalDollar = 0;
+        let totalNaira = 0;
+        productsArray.forEach(product => {
+            totalDollar += Number(product.quantity) * product.dollar;
+            totalNaira += Number(product.quantity) * product.naira;
+        });
+        totalNaira = Number(totalNaira.toFixed(2));
+        totalDollar = Number(totalDollar.toFixed(2));
+        setCart(c => ({...c, products: productsArray, totalNaira, totalDollar}));
+    };
+
+    const displayPrice = (price: number | string, quantity: number | string) => {
+        price = (+price * +quantity).toFixed(2);
+        const priceArrayString = price.split('.');
+
+        return `$${Number(priceArrayString[0]).toLocaleString()}.${priceArrayString[1]}`;
+    };
+
+    const displayTotal = useCallback(
+        (showNaira: boolean | any) => {
+            const {totalNaira, totalDollar} = cart;
+            console.log(totalDollar);
+            const nairaArrayString = String(totalNaira).split('.');
+            const dollarArrayString = String(totalDollar).split('.');
+
+            return (
+                <>
+                    ${Number(dollarArrayString[0]).toLocaleString()}.{dollarArrayString[1]}
+                    {showNaira && (
+                        <>
+                            <br />
+                            <Typography variant={'subtitle1'}>
+                                ₦{Number(nairaArrayString[0]).toLocaleString()}.
+                                {nairaArrayString[1]}{' '}
+                            </Typography>
+                        </>
+                    )}
+                </>
+            );
+        },
+        [cart.totalNaira, cart.totalDollar],
+    );
+
     const renderCurrentStep = useMemo(() => {
         switch (activeStep) {
             case 0:
@@ -188,16 +275,16 @@ const Checkout = ({location}: props) => {
                             await loadUserDetails();
                             setActiveStep(activeStep + 1);
                         }}
-                        currentAddress={addressId}
+                        currentAddressId={addressId}
                         selectAddress={selectAddress}
                         addresses={userDetails.address === null ? [] : userDetails.address}
                     />
                 );
 
             case 2:
-                return <Review />;
+                return <Review cart={cart} displayTotal={displayTotal} placeOrder={placeOrder} />;
         }
-    }, [activeStep, userDetails.address, addressId]);
+    }, [activeStep, userDetails.address, addressId, cart.totalNaira]);
 
     return (
         <div className={classes.wrapper}>
@@ -219,13 +306,13 @@ const Checkout = ({location}: props) => {
                             <Grid item xs={12}>
                                 <Stepper activeStep={activeStep} steps={steps} />
                             </Grid>
-                            <Grid item xs={12} sm={8}>
+                            <Grid item xs={12} sm={7}>
                                 {loading ? <CircularProgress /> : renderCurrentStep}
                             </Grid>
                         </Grid>
                     </Paper>
                 </Grid>
-                <Grid item xs={12} sm={6} md={4}>
+                <Grid item xs={12} sm={5}>
                     <Paper elevation={4}>
                         <Grid container>
                             <Grid item xs={12} className={classes.orderDetailsHeader}>
@@ -236,12 +323,203 @@ const Checkout = ({location}: props) => {
                             <Grid item xs={12}>
                                 <Grid container className={classes.orderDetailsContainer}>
                                     <Grid item xs={12}>
-                                        <Paper>
-                                            <Typography align={'left'}>Grand Total</Typography>
-                                            <Typography align={'right'}>Grand Total</Typography>
+                                        <Paper
+                                            style={{
+                                                padding: '24px 16px',
+                                            }}
+                                        >
+                                            <Grid container justify={'space-between'}>
+                                                <Grid
+                                                    item
+                                                    xs={12}
+                                                    sm={3}
+                                                    style={{
+                                                        textAlign: 'left',
+                                                    }}
+                                                >
+                                                    Grand Total
+                                                </Grid>
+                                                <Grid
+                                                    item
+                                                    xs={12}
+                                                    sm={3}
+                                                    style={{
+                                                        textAlign: 'right',
+                                                    }}
+                                                >
+                                                    {displayTotal(true)}
+                                                </Grid>
+                                            </Grid>
                                         </Paper>
                                     </Grid>
                                 </Grid>
+                                <Grid container className={classes.orderDetailsContainer}>
+                                    <Paper
+                                        style={{
+                                            backgroundColor: 'white',
+                                            overflow: 'scroll',
+                                        }}
+                                    >
+                                        <Grid container>
+                                            {cart.products.length === 0 ? (
+                                                <Grid item xs={12}>
+                                                    <CircularProgress />
+                                                </Grid>
+                                            ) : (
+                                                cart.products.map((product, i) => (
+                                                    <Grid key={i} item xs={12}>
+                                                        <Grid
+                                                            container
+                                                            justify={'space-between'}
+                                                            style={{
+                                                                padding: '24px 16px',
+                                                            }}
+                                                        >
+                                                            <Grid
+                                                                item
+                                                                container
+                                                                xs={12}
+                                                                alignItems={'center'}
+                                                            >
+                                                                <Grid item xs={12} sm={3}>
+                                                                    <img
+                                                                        src={product.image}
+                                                                        className={classes.image}
+                                                                    />
+                                                                </Grid>
+                                                                <Grid item xs={12} sm={3}>
+                                                                    <Typography variant={'body1'}>
+                                                                        {product.title}
+                                                                        <br />
+                                                                        {JSON.parse(
+                                                                            product.properties,
+                                                                        ).map(
+                                                                            (
+                                                                                p: string,
+                                                                                index: number,
+                                                                            ) => (
+                                                                                <>
+                                                                                    <Typography
+                                                                                        key={index}
+                                                                                        variant={
+                                                                                            'caption'
+                                                                                        }
+                                                                                    >
+                                                                                        {p.trim()}
+                                                                                    </Typography>
+                                                                                    <br />
+                                                                                </>
+                                                                            ),
+                                                                        )}
+                                                                    </Typography>
+                                                                </Grid>
+                                                                <Grid
+                                                                    item
+                                                                    xs={12}
+                                                                    sm={3}
+                                                                    className={classes.increments}
+                                                                >
+                                                                    <IconButton
+                                                                        color={'primary'}
+                                                                        onClick={reduceQuantity(i)}
+                                                                    >
+                                                                        <RemoveCircleIcon />
+                                                                    </IconButton>
+                                                                    {product.quantity}
+                                                                    <IconButton
+                                                                        color={'primary'}
+                                                                        onClick={increaseQuantity(
+                                                                            i,
+                                                                        )}
+                                                                    >
+                                                                        <AddCircleIcon />
+                                                                    </IconButton>
+                                                                </Grid>
+                                                                <Grid
+                                                                    item
+                                                                    xs={12}
+                                                                    sm={3}
+                                                                    style={{
+                                                                        textAlign: 'right',
+                                                                    }}
+                                                                >
+                                                                    {displayPrice(
+                                                                        product.price,
+                                                                        product.quantity,
+                                                                    )}
+                                                                </Grid>
+                                                            </Grid>
+                                                        </Grid>
+                                                        <Divider />
+                                                    </Grid>
+                                                ))
+                                            )}
+                                        </Grid>
+                                    </Paper>
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={12} className={classes.orderDetailsContainer}>
+                                <Paper
+                                    style={{
+                                        padding: '32px 24px',
+                                    }}
+                                >
+                                    <Grid container>
+                                        <Grid item xs={12}>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <Typography variant={'body2'}>
+                                                        Subtotal
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid
+                                                    item
+                                                    xs={6}
+                                                    style={{
+                                                        textAlign: 'right',
+                                                    }}
+                                                >
+                                                    {displayTotal(false)}
+                                                </Grid>
+                                            </Grid>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <Typography variant={'body2'}>
+                                                        Shipping
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid
+                                                    item
+                                                    xs={6}
+                                                    style={{
+                                                        textAlign: 'right',
+                                                    }}
+                                                >
+                                                    $0
+                                                </Grid>
+                                            </Grid>
+                                            <Grid
+                                                container
+                                                style={{
+                                                    marginTop: '1rem',
+                                                }}
+                                            >
+                                                <Grid item xs={6}>
+                                                    Total
+                                                </Grid>
+                                                <Grid
+                                                    item
+                                                    xs={6}
+                                                    style={{
+                                                        textAlign: 'right',
+                                                    }}
+                                                >
+                                                    {displayTotal(true)}
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Paper>
                             </Grid>
                         </Grid>
                     </Paper>
@@ -389,16 +667,15 @@ const Address = ({
     next,
     addresses,
     selectAddress,
-    currentAddress,
+    currentAddressId,
 }: {
     next: any;
     addresses: Array<Address>;
     selectAddress: any;
-    currentAddress: number;
+    currentAddressId: number;
 }) => {
     const classes = useStyles();
-    console.log(currentAddress);
-    return addresses.length === 0 ? (
+    return addresses && addresses.length === 0 ? (
         <Route render={props => <AddAddress {...props} navigate={next} />} />
     ) : (
         <Grid container spacing={5}>
@@ -410,13 +687,13 @@ const Address = ({
                     xs={12}
                     className={classNames({
                         [classes.addressWrapper]: true,
-                        [classes.selectedAddress]: address.id == currentAddress,
+                        [classes.selectedAddress]: address.id == currentAddressId,
                     })}
                     onClick={selectAddress(address.id)}
                 >
                     <Grid container>
                         <Grid item xs={2}>
-                            {address.id == currentAddress && <CheckIcon />}
+                            {address.id == currentAddressId && <CheckIcon />}
                         </Grid>
                         <Grid item xs={10}>
                             <Typography variant={'body1'}>
@@ -433,7 +710,13 @@ const Address = ({
                 </Grid>
             ))}
             <Grid item xs={12}>
-                <Button fullWidth variant={'contained'} color={'primary'}>
+                <Button
+                    disabled={!currentAddressId}
+                    fullWidth
+                    variant={'contained'}
+                    onClick={() => next()}
+                    color={'primary'}
+                >
                     Continue
                 </Button>
             </Grid>
@@ -441,6 +724,32 @@ const Address = ({
     );
 };
 
-const Review = () => {
-    return <h1>Review</h1>;
+const Review = ({
+    cart,
+    placeOrder,
+    displayTotal,
+}: {
+    cart: Cart;
+    placeOrder: any;
+    displayTotal: any;
+}) => {
+    const [loading, setLoading] = useState(false);
+
+    const onPlaceOrder = async () => {
+        setLoading(true);
+        await placeOrder;
+        setLoading(false);
+    };
+
+    return (
+        <>
+            <Typography variant={'h6'}>Review Your Products At The Right Once More</Typography>
+            <br />
+            <Typography variant={'h5'}>Total: {displayTotal(true)}</Typography>
+            <br />
+            <Button fullWidth color={'primary'} onClick={onPlaceOrder}>
+                Place Order
+            </Button>
+        </>
+    );
 };
