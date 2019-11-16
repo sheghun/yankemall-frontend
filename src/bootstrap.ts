@@ -6,6 +6,6 @@ import Axios from 'axios';
  * Contains the actions to fun first before application is run
  */
 
-// Axios.defaults.baseURL = 'http://localhost:8080';
+// Axios.defaults.baseURL = 'http://l  ocalhost:8080';
 Axios.defaults.baseURL = 'https://api.yankeemall.ng';
 Axios.defaults.withCredentials = true;

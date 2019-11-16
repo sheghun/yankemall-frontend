@@ -124,18 +124,34 @@ const Checkout = ({location}: props) => {
     }, []);
 
     useEffect(() => {
+        Axios.interceptors.response.use(
+            res => Promise.resolve(res),
+            err => {
+                if (err.response) {
+                    if (err.response.status === 403) {
+                        setActiveStep(0);
+                    }
+                }
+                return Promise.reject(err);
+            },
+        );
+    }, []);
+
+    useEffect(() => {
         // Get the cart from the session
         (async () => {
             setLoading(true);
             await (async () => {
-                const {yankeemallData} = queryString.parse(location.search);
-                if (yankeemallData) {
-                    const {status, data} = await Axios.post('/base/decrypt', {yankeemallData});
-                    if (status === 200 && data.status === 'success') {
-                        setCart(data.data.cart);
-                        setSiteId(data.data.siteId);
+                try {
+                    const {yankeemallData} = queryString.parse(location.search);
+                    if (yankeemallData) {
+                        const {status, data} = await Axios.post('/base/decrypt', {yankeemallData});
+                        if (status === 200 && data.status === 'success') {
+                            setCart(data.data.cart);
+                            setSiteId(data.data.siteId);
+                        }
                     }
-                }
+                } catch (err) {}
             })();
             await (async () => {
                 try {
@@ -198,7 +214,14 @@ const Checkout = ({location}: props) => {
                 ? 1
                 : ((Number(currentProduct.quantity) - 1) as any);
         productsArray[productIndex] = currentProduct;
-
+        let totalDollar = 0;
+        let totalNaira = 0;
+        productsArray.forEach(product => {
+            totalDollar += Number(product.quantity) * product.dollar;
+        });
+        totalDollar = Number(totalDollar.toFixed(2));
+        totalNaira = Number((totalDollar * exchangeRate).toFixed(2));
+        setCart(c => ({...c, products: productsArray, totalNaira, totalDollar}));
         setCart(c => ({...c, products: productsArray}));
     };
     /**
@@ -216,10 +239,9 @@ const Checkout = ({location}: props) => {
         let totalNaira = 0;
         productsArray.forEach(product => {
             totalDollar += Number(product.quantity) * product.dollar;
-            totalNaira += Number(product.quantity) * product.naira;
         });
-        totalNaira = Number(totalNaira.toFixed(2));
         totalDollar = Number(totalDollar.toFixed(2));
+        totalNaira = Number((totalDollar * exchangeRate).toFixed(2));
         setCart(c => ({...c, products: productsArray, totalNaira, totalDollar}));
     };
 
@@ -233,7 +255,6 @@ const Checkout = ({location}: props) => {
     const displayTotal = useCallback(
         (showNaira: boolean | any) => {
             const {totalNaira, totalDollar} = cart;
-            console.log(totalDollar);
             const nairaArrayString = String(totalNaira).split('.');
             const dollarArrayString = String(totalDollar).split('.');
 
@@ -264,7 +285,6 @@ const Checkout = ({location}: props) => {
                             await loadUserDetails();
                             setActiveStep(activeStep + 1);
                         }}
-                        setSnackbar={setSnackbar}
                     />
                 );
 
@@ -282,7 +302,7 @@ const Checkout = ({location}: props) => {
                 );
 
             case 2:
-                return <Review cart={cart} displayTotal={displayTotal} placeOrder={placeOrder} />;
+                return <Review displayTotal={displayTotal} placeOrder={placeOrder} />;
         }
     }, [activeStep, userDetails.address, addressId, cart.totalNaira]);
 
@@ -321,38 +341,38 @@ const Checkout = ({location}: props) => {
                                 </Typography>
                             </Grid>
                             <Grid item xs={12}>
-                                <Grid container className={classes.orderDetailsContainer}>
-                                    <Grid item xs={12}>
-                                        <Paper
-                                            style={{
-                                                padding: '24px 16px',
-                                            }}
-                                        >
-                                            <Grid container justify={'space-between'}>
-                                                <Grid
-                                                    item
-                                                    xs={12}
-                                                    sm={3}
-                                                    style={{
-                                                        textAlign: 'left',
-                                                    }}
-                                                >
-                                                    Grand Total
-                                                </Grid>
-                                                <Grid
-                                                    item
-                                                    xs={12}
-                                                    sm={3}
-                                                    style={{
-                                                        textAlign: 'right',
-                                                    }}
-                                                >
-                                                    {displayTotal(true)}
-                                                </Grid>
-                                            </Grid>
-                                        </Paper>
-                                    </Grid>
-                                </Grid>
+                                {/*<Grid container className={classes.orderDetailsContainer}>*/}
+                                {/*    <Grid item xs={12}>*/}
+                                {/*        <Paper*/}
+                                {/*            style={{*/}
+                                {/*                padding: '24px 16px',*/}
+                                {/*            }}*/}
+                                {/*        >*/}
+                                {/*            <Grid container justify={'space-between'}>*/}
+                                {/*                <Grid*/}
+                                {/*                    item*/}
+                                {/*                    xs={12}*/}
+                                {/*                    sm={3}*/}
+                                {/*                    style={{*/}
+                                {/*                        textAlign: 'left',*/}
+                                {/*                    }}*/}
+                                {/*                >*/}
+                                {/*                    Grand Total*/}
+                                {/*                </Grid>*/}
+                                {/*                <Grid*/}
+                                {/*                    item*/}
+                                {/*                    xs={12}*/}
+                                {/*                    sm={3}*/}
+                                {/*                    style={{*/}
+                                {/*                        textAlign: 'right',*/}
+                                {/*                    }}*/}
+                                {/*                >*/}
+                                {/*                    {displayTotal(true)}*/}
+                                {/*                </Grid>*/}
+                                {/*            </Grid>*/}
+                                {/*        </Paper>*/}
+                                {/*    </Grid>*/}
+                                {/*</Grid>*/}
                                 <Grid container className={classes.orderDetailsContainer}>
                                     <Paper
                                         style={{
@@ -385,57 +405,63 @@ const Checkout = ({location}: props) => {
                                                             >
                                                                 <Grid item xs={12} sm={3}>
                                                                     <img
+                                                                        alt={product.title}
                                                                         src={product.image}
                                                                         className={classes.image}
                                                                     />
                                                                 </Grid>
-                                                                <Grid item xs={12} sm={3}>
-                                                                    <Typography variant={'body1'}>
-                                                                        {product.title}
-                                                                        <br />
-                                                                        {JSON.parse(
-                                                                            product.properties,
-                                                                        ).map(
-                                                                            (
-                                                                                p: string,
-                                                                                index: number,
-                                                                            ) => (
-                                                                                <>
-                                                                                    <Typography
-                                                                                        key={index}
-                                                                                        variant={
-                                                                                            'caption'
-                                                                                        }
-                                                                                    >
-                                                                                        {p.trim()}
-                                                                                    </Typography>
-                                                                                    <br />
-                                                                                </>
-                                                                            ),
-                                                                        )}
-                                                                    </Typography>
-                                                                </Grid>
-                                                                <Grid
-                                                                    item
-                                                                    xs={12}
-                                                                    sm={3}
-                                                                    className={classes.increments}
-                                                                >
-                                                                    <IconButton
-                                                                        color={'primary'}
-                                                                        onClick={reduceQuantity(i)}
-                                                                    >
-                                                                        <RemoveCircleIcon />
-                                                                    </IconButton>
-                                                                    {product.quantity}
-                                                                    <IconButton
-                                                                        color={'primary'}
-                                                                        onClick={increaseQuantity(
-                                                                            i,
-                                                                        )}
-                                                                    >
-                                                                        <AddCircleIcon />
-                                                                    </IconButton>
+                                                                <Grid item xs={12} sm={6}>
+                                                                    <Grid container>
+                                                                        <Grid item xs={12}>
+                                                                            <Typography
+                                                                                variant={'body2'}
+                                                                            >
+                                                                                {product.title}
+                                                                                <br />
+                                                                                {JSON.parse(
+                                                                                    product.properties,
+                                                                                ).map(
+                                                                                    (
+                                                                                        p: string,
+                                                                                        index: number,
+                                                                                    ) => (
+                                                                                        <>
+                                                                                            <Typography
+                                                                                                key={
+                                                                                                    index
+                                                                                                }
+                                                                                                variant={
+                                                                                                    'caption'
+                                                                                                }
+                                                                                            >
+                                                                                                {p.trim()}
+                                                                                            </Typography>
+                                                                                            ;{' '}
+                                                                                        </>
+                                                                                    ),
+                                                                                )}
+                                                                            </Typography>
+                                                                        </Grid>
+                                                                        <Grid item xs={12}>
+                                                                            <IconButton
+                                                                                color={'primary'}
+                                                                                onClick={reduceQuantity(
+                                                                                    i,
+                                                                                )}
+                                                                            >
+                                                                                <RemoveCircleIcon />
+                                                                            </IconButton>
+                                                                            {product.quantity}
+                                                                            <IconButton
+                                                                                color={'primary'}
+                                                                                onClick={increaseQuantity(
+                                                                                    i,
+                                                                                )}
+                                                                            >
+                                                                                <AddCircleIcon />
+                                                                            </IconButton>
+                                                                        </Grid>
+                                                                    </Grid>
                                                                 </Grid>
                                                                 <Grid
                                                                     item
@@ -533,11 +559,16 @@ const Checkout = ({location}: props) => {
 
 export default Checkout;
 
-const SignInOrUp = ({setSnackbar, next}: {setSnackbar: any; next: any}) => {
+const SignInOrUp = ({next}: {next: any}) => {
     const [view, setView] = useState(0); // 0 for signIn 1 for signUp
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        variant: 'success',
+    });
     const [errors, setErrors] = useState({email: '', password: ''});
     const emailTestString = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -583,17 +614,11 @@ const SignInOrUp = ({setSnackbar, next}: {setSnackbar: any; next: any}) => {
             }
         } catch (e) {
             const err = e as AxiosError;
-            const {response} = err;
-            if (response) {
-                const {status} = response;
-                if (status === 401) {
-                    setSnackbar({
-                        open: true,
-                        variant: 'error',
-                        message: 'Email or Password incorrect',
-                    });
-                }
-            }
+            setSnackbar({
+                open: true,
+                variant: 'error',
+                message: 'Email or Password incorrect',
+            });
         }
         setLoading(false);
     };
@@ -610,6 +635,12 @@ const SignInOrUp = ({setSnackbar, next}: {setSnackbar: any; next: any}) => {
                 justifyContent: 'space-evenly',
             }}
         >
+            <Snack
+                variant={snackbar.variant as any}
+                open={snackbar.open}
+                message={snackbar.message}
+                onClose={() => setSnackbar(s => ({...s, open: false}))}
+            />
             <TextField
                 margin="normal"
                 required
@@ -677,7 +708,7 @@ const Address = ({
     currentAddressId: number;
 }) => {
     const classes = useStyles();
-    return addresses && addresses.length === 0 ? (
+    return Array.isArray(addresses) && addresses.length === 0 ? (
         <Route render={props => <AddAddress {...props} navigate={next} />} />
     ) : (
         <Grid container spacing={5}>
@@ -726,20 +757,12 @@ const Address = ({
     );
 };
 
-const Review = ({
-    cart,
-    placeOrder,
-    displayTotal,
-}: {
-    cart: Cart;
-    placeOrder: any;
-    displayTotal: any;
-}) => {
+const Review = ({placeOrder, displayTotal}: {placeOrder: any; displayTotal: any}) => {
     const [loading, setLoading] = useState(false);
 
     const onPlaceOrder = async () => {
         setLoading(true);
-        await placeOrder;
+        await placeOrder();
         setLoading(false);
     };
 
@@ -749,8 +772,8 @@ const Review = ({
             <br />
             <Typography variant={'h5'}>Total: {displayTotal(true)}</Typography>
             <br />
-            <Button fullWidth color={'primary'} onClick={onPlaceOrder}>
-                Place Order
+            <Button disabled={loading} fullWidth color={'primary'} onClick={onPlaceOrder}>
+                {loading ? <CircularProgress /> : 'Place Order '}
             </Button>
         </>
     );
