@@ -10,6 +10,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import {Link} from 'react-router-dom';
 import PersonIcon from '@material-ui/icons/PersonOutline';
 import OrderIcon from '@material-ui/icons/AllInbox';
+import Axios from 'axios';
 
 /**
  * The top bar component that comes before the nav bar
@@ -87,6 +88,23 @@ const NativeNav = styled.nav`
 const TopBar = () => {
     const [showDropDown, setShowDropDown] = useState(false);
 
+    const [user, setUser] = useState({} as User);
+
+    // Try getting user details and see if user is logged in
+    useEffect(() => {
+        (async () => {
+            try {
+                const {status, data} = await Axios.get('/user');
+                if (status === 200 && data.status === 'success') {
+                    if (data.data.data === null) {
+                        return;
+                    }
+                    setUser(data.data.data);
+                }
+            } catch (e) {}
+        })();
+    }, []);
+
     useEffect(() => {
         const listener = () => {
             if (showDropDown) {
@@ -111,21 +129,25 @@ const TopBar = () => {
                 </li>
                 <li className={'my-profile'} onClick={_ => setShowDropDown(true)}>
                     <i className={'ion-ios-person-outline icons'} />
-                    My Profile
+                    {user.firstName ? `Hi ${user.firstName}` : 'My Profile'}
                     {showDropDown && (
                         <Paper className={'my-profile-dropdown'}>
-                            <Link to={'/auth/signin'}>
-                                <Button color={'primary'} fullWidth variant={'contained'}>
-                                    Signin
-                                </Button>
-                            </Link>
-                            <Divider variant={'inset'} style={{margin: '2rem 0 1rem'}} />
-                            <Link to={'/auth/signup'}>
-                                <Button fullWidth color={'primary'}>
-                                    Create An Account
-                                </Button>
-                            </Link>
-                            <Divider style={{margin: '1rem 0'}} />
+                            {!user.firstName && (
+                                <>
+                                    <Link to={'/auth/signin'}>
+                                        <Button color={'primary'} fullWidth variant={'contained'}>
+                                            Signin
+                                        </Button>
+                                    </Link>
+                                    <Divider variant={'inset'} style={{margin: '2rem 0 1rem'}} />
+                                    <Link to={'/auth/signup'}>
+                                        <Button fullWidth color={'primary'}>
+                                            Create An Account
+                                        </Button>
+                                    </Link>
+                                    <Divider style={{margin: '1rem 0'}} />
+                                </>
+                            )}
                             <List component="nav" aria-label="main mailbox folders">
                                 <Link to={'/dashboard/overview'}>
                                     <ListItem button>

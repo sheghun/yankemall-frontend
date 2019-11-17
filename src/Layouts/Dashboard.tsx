@@ -11,6 +11,7 @@ import Axios, {AxiosError} from 'axios';
 import Nav from '../components/nav';
 import PersonIcon from '@material-ui/icons/PersonOutline';
 import OrderIcon from '@material-ui/icons/AllInbox';
+import PaymentIcon from '@material-ui/icons/Payment';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 const Overview = loadable(() => import('../Views/Dashboard/Overview'), {
@@ -28,6 +29,9 @@ const Address = loadable(() => import('../Views/Dashboard/Address'), {
 const ChangePass = loadable(() => import('../Views/Dashboard/ChangePass'), {
     fallback: <Loading show={true} />,
 });
+const Payments = loadable(() => import('../Views/Dashboard/Payments'), {
+    fallback: <Loading show={true} />,
+});
 
 const links = [
     {
@@ -39,6 +43,11 @@ const links = [
         path: '/dashboard/orders',
         text: 'Orders',
         icon: <OrderIcon style={{marginRight: '1rem'}} />,
+    },
+    {
+        path: '/dashboard/payments',
+        text: 'Payments',
+        icon: <PaymentIcon style={{marginRight: '1rem'}} />,
     },
     {path: '/dashboard/details', text: 'Details'},
     {path: '/dashboard/changepass', text: 'Change Password'},
@@ -82,6 +91,7 @@ const Dashboard = ({location, history}: Props) => {
         email: '',
         phoneNumber: '',
         orders: [],
+        payments: [],
         address: [],
         setUserObject: (() => {}) as any,
     } as DashboardContext);
@@ -122,7 +132,11 @@ const Dashboard = ({location, history}: Props) => {
                         history.push(`/auth/signin${queryParams}`);
                         return;
                     }
-                    setUserObject(oldObj => ({...oldObj, ...data.data.data}));
+                    setUserObject(oldObj => ({
+                        ...oldObj,
+                        ...data.data.data,
+                        payments: data.data.data.orders.flatMap((order: Order) => order.payments),
+                    }));
                 }
             } catch (e) {}
             setLoading(false);
@@ -152,6 +166,7 @@ const Dashboard = ({location, history}: Props) => {
                                     <Route path={'/dashboard/details'} component={Details} />
                                     <Route path={'/dashboard/address'} component={Address} />
                                     <Route path={'/dashboard/changepass'} component={ChangePass} />
+                                    <Route path={'/dashboard/payments'} component={Payments} />
                                 </>
                             )}
                         </Grid>

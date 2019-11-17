@@ -33,3 +33,10 @@ export const getReturnUrl = (
     }
     return url !== null && typeof url === 'object' ? (url as string[]).join('') : (url as string);
 };
+
+export const displayPrice = (price: number | string) => {
+    price = String(price);
+    const priceArrayString = price.split('.');
+
+    return `${Number(priceArrayString[0]).toLocaleString()}.${priceArrayString[1]}`;
+};

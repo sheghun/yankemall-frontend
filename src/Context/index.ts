@@ -8,6 +8,7 @@ const userObject = {
     phoneNumber: '',
     address: [],
     gender: '',
+    payments: [],
     orders: [],
     birthDate: '',
 };

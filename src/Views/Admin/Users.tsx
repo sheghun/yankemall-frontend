@@ -225,6 +225,7 @@ const UsersDetails = ({match, classes}: RouteComponentProps & {classes: any}) =>
                 phoneNumber,
                 address: currentUser.address,
                 gender,
+                payments: currentUser.payments,
                 orders: currentUser.orders,
                 birthDate: currentUser.birthDate,
             });

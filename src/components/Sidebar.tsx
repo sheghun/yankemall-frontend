@@ -79,7 +79,7 @@ const Sidebar = ({location, links}: props) => {
                 <Grid direction={'column'} alignContent={'center'} container={true} spacing={3}>
                     {links.map((l, i) => (
                         <React.Fragment key={i}>
-                            {i === 2 && <Divider />}
+                            {i === 3 && <Divider />}
                             <Grid item={true} className={applyCssClass(l.path)}>
                                 <NavLink to={l.path}>
                                     <Typography className={classes.linkText} variant={'body1'}>

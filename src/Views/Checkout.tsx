@@ -341,38 +341,6 @@ const Checkout = ({location}: props) => {
                                 </Typography>
                             </Grid>
                             <Grid item xs={12}>
-                                {/*<Grid container className={classes.orderDetailsContainer}>*/}
-                                {/*    <Grid item xs={12}>*/}
-                                {/*        <Paper*/}
-                                {/*            style={{*/}
-                                {/*                padding: '24px 16px',*/}
-                                {/*            }}*/}
-                                {/*        >*/}
-                                {/*            <Grid container justify={'space-between'}>*/}
-                                {/*                <Grid*/}
-                                {/*                    item*/}
-                                {/*                    xs={12}*/}
-                                {/*                    sm={3}*/}
-                                {/*                    style={{*/}
-                                {/*                        textAlign: 'left',*/}
-                                {/*                    }}*/}
-                                {/*                >*/}
-                                {/*                    Grand Total*/}
-                                {/*                </Grid>*/}
-                                {/*                <Grid*/}
-                                {/*                    item*/}
-                                {/*                    xs={12}*/}
-                                {/*                    sm={3}*/}
-                                {/*                    style={{*/}
-                                {/*                        textAlign: 'right',*/}
-                                {/*                    }}*/}
-                                {/*                >*/}
-                                {/*                    {displayTotal(true)}*/}
-                                {/*                </Grid>*/}
-                                {/*            </Grid>*/}
-                                {/*        </Paper>*/}
-                                {/*    </Grid>*/}
-                                {/*</Grid>*/}
                                 <Grid container className={classes.orderDetailsContainer}>
                                     <Paper
                                         style={{

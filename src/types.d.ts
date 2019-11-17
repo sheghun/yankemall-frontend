@@ -21,6 +21,7 @@ declare interface User {
     id: number;
     email: string;
     phoneNumber: string;
+    payments: Array<Payment>;
     address: Array<Address>;
     gender: string;
     orders: Array<Order>;
@@ -90,6 +91,7 @@ declare interface Order {
     paid: Date | null;
     products: Array<OrderProduct>;
     addressId: number;
+    payments: Array<Payment>;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -107,4 +109,16 @@ declare interface OrderProduct {
     naira: number;
     dollar: number;
     orderId: number;
+}
+
+declare interface Payment {
+    id: number;
+    description: string;
+    reference: string;
+    paid: string;
+    amount: number;
+    dollar: number;
+    exchangeRate: number;
+    orderId: number;
+    createdAt: string;
 }
