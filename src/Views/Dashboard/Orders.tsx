@@ -11,6 +11,12 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Divider from '@material-ui/core/Divider';
 import {DashboardContext} from '../../Context';
 import moment from 'moment';
+import {displayPrice} from '../../_helpers';
+import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import TableBody from '@material-ui/core/TableBody';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -30,6 +36,11 @@ const useStyles = makeStyles(theme => ({
     },
     image: {
         height: '104px',
+    },
+    table: {
+        '& tr': {
+            cursor: 'pointer',
+        },
     },
     container: {
         justifyContent: 'center',
@@ -147,7 +158,7 @@ const ViewOrders = ({}: RouteComponentProps) => {
     );
 };
 
-const OrderDetails = ({match}: RouteComponentProps) => {
+const OrderDetails = ({match, history}: RouteComponentProps) => {
     const classes = useStyles();
 
     const {orders} = useContext(DashboardContext);
@@ -169,26 +180,28 @@ const OrderDetails = ({match}: RouteComponentProps) => {
                 <Divider style={{color: 'red', marginTop: '-2rem', marginBottom: '1rem'}} />
                 <Grid container>
                     <Grid item xs={12}>
-                        <Typography variant={'body2'} style={{fontWeight: 600}}>
-                            Order no {order.id}
+                        <Typography variant={'h5'} style={{fontWeight: 600}}>
+                            Order ID {order.id}
                         </Typography>
-                        <Typography variant={'subtitle2'}>
+                        <br />
+                        <Typography variant={'h5'} component={'h5'}>
+                            Total: ₦{displayPrice(order.total)}
+                        </Typography>
+                        <br />
+                        <Typography variant={'body2'} style={{fontSize: '18px'}}>
                             Item(s) {order.products && order.products.length}
+                            <br />
+                            Status: {order.status}
                             <br />
                             {moment(order.createdAt).format('lll')}
                             <br />
+                            <br />
                         </Typography>
-                        <Typography variant={'h5'} component={'h5'}>
-                            Total: ₦{order.total.toLocaleString()}
-                        </Typography>
-                        <Divider />
-                        <Typography variant={'overline'} style={{fontWeight: 600}}>
-                            Items In User Order
-                        </Typography>
+                        <Typography variant={'h6'}>Items Order</Typography>
                     </Grid>
                     {order.products.map((pro, i) => (
                         <Grid item key={i} xs={12} className={classes.orders}>
-                            <Grid container justify={'center'}>
+                            <Grid container justify={'center'} alignItems={'center'}>
                                 <Grid item xs={4} sm={3}>
                                     <img
                                         className={classes.image}
@@ -235,6 +248,54 @@ const OrderDetails = ({match}: RouteComponentProps) => {
                             </Grid>
                         </Grid>
                     ))}
+                    <Grid item xs={12}>
+                        <Typography variant={'h5'} style={{margin: '4rem 0 2rem'}}>
+                            Payment Ticket
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Grid container>
+                            <Table className={classes.table} aria-label="simple table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Reference</TableCell>
+                                        <TableCell align="left">Status</TableCell>
+                                        <TableCell align="left">Date</TableCell>
+                                        <TableCell align="left">Amount</TableCell>
+                                        <TableCell align="left">Order ID</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {order.payments &&
+                                        order.payments.map(payment => (
+                                            <TableRow
+                                                key={payment.id}
+                                                hover
+                                                onClick={() =>
+                                                    history.push(
+                                                        `/dashboard/payments/detail/${payment.id}`,
+                                                    )
+                                                }
+                                            >
+                                                <TableCell scope="row">
+                                                    {payment.reference}
+                                                </TableCell>
+                                                <TableCell align="left">
+                                                    {payment.paid ? 'Successful' : 'Not Successful'}
+                                                </TableCell>
+                                                <TableCell align="left">
+                                                    {moment(payment.createdAt).format('lll')}
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    ₦{displayPrice(payment.amount)}
+                                                </TableCell>
+                                                <TableCell align="left">{order.id}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                </TableBody>
+                            </Table>
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
         </>

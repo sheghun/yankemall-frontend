@@ -169,18 +169,22 @@ const ViewOrders = ({}: RouteComponentProps) => {
 const OrderDetails = ({history, match}: RouteComponentProps) => {
     const classes = useStyles();
 
-    const {orders} = useContext(AdminContext);
+    const {orders, users} = useContext(AdminContext);
 
     const [order, setOrder] = useState(({products: [], total: 0} as unknown) as Order);
+    const [currentUser, setCurrentUser] = useState({} as User);
 
     useEffect(() => {
         const {orderId} = match.params as any;
         console.log(orderId);
         if (orderId) {
             const currentOrder = orders.find(or => or.id == orderId);
-            console.log(currentOrder);
             if (currentOrder) {
                 setOrder(oldObj => ({...oldObj, ...currentOrder}));
+                const user = users.find(user => currentOrder.userId == user.id);
+                if (user) {
+                    setCurrentUser(user);
+                }
             }
         }
     }, []);
@@ -191,10 +195,8 @@ const OrderDetails = ({history, match}: RouteComponentProps) => {
                 <Divider style={{color: 'red', marginTop: '-2rem', marginBottom: '1rem'}} />
                 <Grid container>
                     <Grid item xs={12}>
-                        <Typography variant={'body2'} style={{fontWeight: 600}}>
-                            Order no {order.id}
-                        </Typography>
-                        <Typography variant={'subtitle2'}>
+                        <Typography variant={'h5'}>Order ID {order.id}</Typography>
+                        <Typography variant={'body2'}>
                             Item(s) {order.products && order.products.length}
                             <br />
                             {moment(order.createdAt).format('lll')}
@@ -202,11 +204,28 @@ const OrderDetails = ({history, match}: RouteComponentProps) => {
                         <Typography variant={'h5'} component={'h5'}>
                             Total: ₦ {order.total.toLocaleString()}
                         </Typography>
-                        <Divider />
+                        <br />
+                        <br />
                         <Typography variant={'overline'} style={{fontWeight: 600}}>
                             Item(s) {order.products && order.products.length}
+                            <br />
+                        </Typography>
+                        <Typography variant={'body2'}>
+                            Name:{' '}
+                            <Link to={`/superAdmin/tl/users/detail/${currentUser.id}`}>
+                                {currentUser.firstName} {currentUser.lastName}
+                            </Link>
                         </Typography>
                     </Grid>
+                    <Grid item xs={12}>
+                        <br />
+                        <br />
+                        <Typography variant={'h5'}>Order Items</Typography>
+                        <br />
+                        <br />
+                    </Grid>
+                    <br />
+                    <br />
                     {order.products &&
                         order.products.map((pro, i) => (
                             <Grid key={i} item xs={12} className={classes.orders}>

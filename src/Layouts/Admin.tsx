@@ -11,6 +11,7 @@ import HomeIcon from '@material-ui/icons/HomeOutlined';
 import AllInboxOutlinedIcon from '@material-ui/icons/AllInboxOutlined';
 import Axios, {AxiosError} from 'axios';
 import {AdminContext} from '../Context';
+import PaymentIcon from '@material-ui/icons/Payment';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 const Overview = loadable(() => import('../Views/Admin/Overview'), {
@@ -22,6 +23,9 @@ const Orders = loadable(() => import('../Views/Admin/Orders'), {
 });
 
 const Users = loadable(() => import('../Views/Admin/Users'), {
+    fallback: <Loading show={true} />,
+});
+const Payments = loadable(() => import('../Views/Admin/Payments'), {
     fallback: <Loading show={true} />,
 });
 
@@ -40,6 +44,11 @@ const links = [
         path: '/superAdmin/tl/orders',
         text: 'Orders',
         icon: <AllInboxOutlinedIcon style={{marginRight: '1rem'}} />,
+    },
+    {
+        path: '/superAdmin/tl/payments',
+        text: 'Payments',
+        icon: <PaymentIcon style={{marginRight: '1rem'}} />,
     },
 ];
 
@@ -69,6 +78,7 @@ const Admin = ({history, location}: Props) => {
     const [adminObject, setAdminObject] = useState({
         users: [],
         orders: [],
+        payments: [],
         exchangeRate: 0,
     } as AdminContext);
 
@@ -101,7 +111,8 @@ const Admin = ({history, location}: Props) => {
                 if (status === 200 && data.status === 'success') {
                     const users = data.data.users as Array<User>;
                     const orders = users.flatMap(user => user.orders);
-                    setAdminObject(s => ({...s, users, orders}));
+                    const payments = orders.flatMap(order => order.payments);
+                    setAdminObject(s => ({...s, users, orders, payments}));
                     try {
                         const {status, data} = await Axios.get('/admin/exchangeRate');
                         if (status === 200 && data.status === 'success') {
@@ -123,9 +134,16 @@ const Admin = ({history, location}: Props) => {
                             <Sidebar links={links} />
                         </Grid>
                         <Grid item md={8} xs={12}>
-                            <Route path={'/superAdmin/tl/overview'} component={Overview} />
-                            <Route path={'/superAdmin/tl/orders'} component={Orders} />
-                            <Route path={'/superAdmin/tl/users'} component={Users} />
+                            {loading ? (
+                                <CircularProgress />
+                            ) : (
+                                <>
+                                    <Route path={'/superAdmin/tl/overview'} component={Overview} />
+                                    <Route path={'/superAdmin/tl/orders'} component={Orders} />
+                                    <Route path={'/superAdmin/tl/users'} component={Users} />
+                                    <Route path={'/superAdmin/tl/payments'} component={Payments} />
+                                </>
+                            )}
                         </Grid>
                     </Grid>
                     <Footer />

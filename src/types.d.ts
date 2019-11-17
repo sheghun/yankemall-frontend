@@ -77,6 +77,7 @@ declare interface Address {
 declare interface AdminContext {
     users: Array<User>;
     orders: Array<Order>;
+    payments: Array<Payments>;
     exchangeRate: number;
 }
 

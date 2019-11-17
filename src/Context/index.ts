@@ -19,6 +19,7 @@ export const DashboardContext = createContext({
 
 const adminObject: AdminContext = {
     users: [],
+    payments: [],
     orders: [],
     exchangeRate: 0,
 };

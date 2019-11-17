@@ -8,7 +8,7 @@ import {Route, RouteComponentProps} from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import {DashboardContext} from '../../Context';
+import {AdminContext, DashboardContext} from '../../Context';
 import moment from 'moment';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
@@ -16,6 +16,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import Table from '@material-ui/core/Table';
 import {displayPrice} from '../../_helpers';
+import Admin from '../../Layouts/Admin';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -55,12 +56,12 @@ const Payments = () => {
     return (
         <Paper className={classes.paper}>
             <Route
-                path={'/dashboard/payments'}
+                path={'/superAdmin/tl/payments'}
                 exact
                 render={props => <ShowPayments {...props} />}
             />
             <Route
-                path={'/dashboard/payments/detail/:paymentId'}
+                path={'/superAdmin/tl/payments/detail/:paymentId'}
                 render={props => <PaymentDetails {...props} />}
             />
         </Paper>
@@ -70,7 +71,7 @@ const Payments = () => {
 const ShowPayments = ({history}: RouteComponentProps) => {
     const classes = useStyles();
 
-    const {orders} = useContext(DashboardContext);
+    const {orders} = useContext(AdminContext);
 
     return (
         <>
@@ -92,7 +93,7 @@ const ShowPayments = ({history}: RouteComponentProps) => {
                                     <TableCell align="left">Status</TableCell>
                                     <TableCell align="left">Date</TableCell>
                                     <TableCell align="left">Amount</TableCell>
-                                    <TableCell align="left">Order ID</TableCell>
+                                    <TableCell align="left">User</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -103,7 +104,7 @@ const ShowPayments = ({history}: RouteComponentProps) => {
                                             hover
                                             onClick={() =>
                                                 history.push(
-                                                    `/dashboard/payments/detail/${payment.id}`,
+                                                    `/superAdmin/tl/payments/detail/${payment.id}`,
                                                 )
                                             }
                                         >
@@ -133,7 +134,7 @@ const ShowPayments = ({history}: RouteComponentProps) => {
 const PaymentDetails = ({history, match}: RouteComponentProps) => {
     const classes = useStyles();
 
-    const {payments, orders} = useContext(DashboardContext);
+    const {payments, orders} = useContext(AdminContext);
 
     const [currentPaymentDetails, setCurrentPaymentDetails] = useState({} as Payment);
     const [currentOrderDetails, setCurrentOrderDetails] = useState({} as Order);
@@ -251,7 +252,7 @@ const PaymentDetails = ({history, match}: RouteComponentProps) => {
                                     )}
                                     <Grid item xs={12} sm={3} style={{textAlign: 'center'}}>
                                         <Link
-                                            to={`/dashboard/orders/detail/${currentOrderDetails.id}`}
+                                            to={`/superAdmin/tl/orders/detail/${currentOrderDetails.id}`}
                                         >
                                             <Button color={'primary'}>See details</Button>
                                         </Link>
