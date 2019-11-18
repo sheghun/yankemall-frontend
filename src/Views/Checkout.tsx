@@ -386,28 +386,29 @@ const Checkout = ({location}: props) => {
                                                                             >
                                                                                 {product.title}
                                                                                 <br />
-                                                                                {JSON.parse(
-                                                                                    product.properties,
-                                                                                ).map(
-                                                                                    (
-                                                                                        p: string,
-                                                                                        index: number,
-                                                                                    ) => (
-                                                                                        <>
-                                                                                            <Typography
-                                                                                                key={
-                                                                                                    index
-                                                                                                }
-                                                                                                variant={
-                                                                                                    'caption'
-                                                                                                }
-                                                                                            >
-                                                                                                {p.trim()}
-                                                                                            </Typography>
-                                                                                            ;{' '}
-                                                                                        </>
-                                                                                    ),
-                                                                                )}
+                                                                                {product.properties &&
+                                                                                    JSON.parse(
+                                                                                        product.properties,
+                                                                                    ).map(
+                                                                                        (
+                                                                                            p: string,
+                                                                                            index: number,
+                                                                                        ) => (
+                                                                                            <>
+                                                                                                <Typography
+                                                                                                    key={
+                                                                                                        index
+                                                                                                    }
+                                                                                                    variant={
+                                                                                                        'caption'
+                                                                                                    }
+                                                                                                >
+                                                                                                    {p.trim()}
+                                                                                                </Typography>
+                                                                                                ;{' '}
+                                                                                            </>
+                                                                                        ),
+                                                                                    )}
                                                                             </Typography>
                                                                         </Grid>
                                                                         <Grid item xs={12}>

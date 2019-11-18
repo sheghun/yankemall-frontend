@@ -310,7 +310,9 @@ const OrderItem = ({match}: RouteComponentProps) => {
                             label="Status"
                             fullWidth
                             margin={'normal'}
-                            value={item.status}
+                            onChange={e => setStatus(e.target.value)}
+                            value={status}
+                            defaultValue={item.status}
                             required
                             InputProps={{
                                 startAdornment: (
@@ -318,9 +320,13 @@ const OrderItem = ({match}: RouteComponentProps) => {
                                 ),
                             }}
                         >
-                            <MenuItem key={'paid'}>Payment successfull await shippment</MenuItem>
-                            <MenuItem key={'shipped'}>Shipped awaiting delivery</MenuItem>
-                            <MenuItem key={'canceled'}>Canceled</MenuItem>
+                            <MenuItem value={'Payment successful await shipment'}>
+                                Payment successful await shipment
+                            </MenuItem>
+                            <MenuItem value={'Shipped awaiting delivery'}>
+                                Shipped awaiting delivery
+                            </MenuItem>
+                            <MenuItem value={'Canceled'}>Canceled</MenuItem>
                         </TextField>
                     </Grid>
                     <Grid item xs={12} sm={6}>
