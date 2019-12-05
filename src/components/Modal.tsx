@@ -68,7 +68,7 @@ const TransitionsModal = () => {
                             <Grid item xs={12}>
                                 <Grid container justify={'center'}>
                                     <Grid item>
-                                        <img src={logo} height={74} alt={'Yankeemall Logo'} />
+                                        <img src={logo} height={74} alt={'Eromalls Logo'} />
                                     </Grid>
                                     <Divider />
                                 </Grid>

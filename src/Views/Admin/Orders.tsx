@@ -3,8 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import {makeStyles} from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import {Link} from 'react-router-dom';
-import {Route, RouteComponentProps} from 'react-router-dom';
+import {Link, Route, RouteComponentProps} from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -14,6 +13,8 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import MenuItem from '@material-ui/core/MenuItem';
 import {AdminContext} from '../../Context';
 import moment from 'moment';
+import Axios from 'axios';
+import Snack from '../../components/snack';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -53,6 +54,8 @@ const useStyles = makeStyles(theme => ({
 }));
 const Orders = ({location, history}: RouteComponentProps) => {
     const classes = useStyles();
+
+    const [loading, setLoading] = useState(false);
 
     const navigateBackArrow = () => {
         history.goBack();
@@ -107,7 +110,12 @@ const Orders = ({location, history}: RouteComponentProps) => {
 const ViewOrders = ({}: RouteComponentProps) => {
     const classes = useStyles();
 
-    const {orders, users} = useContext(AdminContext);
+    const {orders, users, setAdminObject} = useContext(AdminContext);
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        variant: 'success',
+    });
 
     /**
      * The order's user firstname and lastname
@@ -123,8 +131,42 @@ const ViewOrders = ({}: RouteComponentProps) => {
         return '';
     };
 
+    /**
+     * Responsible for deleting an order
+     */
+    const deleteOrder = (id: number) => async () => {
+        const newOrderArray = orders.slice();
+        const newUsersArray = users.slice();
+        const filteredOrders = newOrderArray.filter(order => order.id != id);
+        const user = users.find(user => user.orders.find(order => order.id == id));
+        if (user) {
+            const userIndex = users.findIndex(u => u.id == user.id);
+            //  Filter user order
+            user.orders = user.orders.filter(order => order.id == id);
+            // Replace the old user with the new user object
+            newUsersArray[userIndex] = user;
+            setAdminObject(obj => ({...obj, users: newUsersArray, orders: filteredOrders}));
+
+            // Send the delete request to the server
+            const {status, data} = await Axios.delete(`/admin/order/${id}`);
+            if (status === 200 && data.status === 'success') {
+                setSnackbar({
+                    open: true,
+                    message: 'Order deleted successfully',
+                    variant: 'success',
+                });
+            }
+        }
+    };
+
     return (
         <>
+            <Snack
+                variant={snackbar.variant as any}
+                open={snackbar.open}
+                message={snackbar.message}
+                onClose={() => setSnackbar(s => ({...s, open: false}))}
+            />
             {orders.map((or, i) => (
                 <Grid key={i} item xs={12} className={classes.orders}>
                     <Grid container justify={'center'}>
@@ -154,11 +196,28 @@ const ViewOrders = ({}: RouteComponentProps) => {
                                 {moment(or.createdAt).format('lll')}
                             </Typography>
                         </Grid>
-                        <Grid item xs={12} sm={3} style={{textAlign: 'center'}}>
+                        <Grid
+                            item
+                            xs={12}
+                            sm={3}
+                            style={{textAlign: 'center'}}
+                            justify={'space-between'}
+                            direction={'column'}
+                            container
+                        >
                             <Link to={`/superAdmin/tl/orders/detail/${or.id}`}>
                                 <Button color={'primary'}>See details</Button>
                             </Link>
                         </Grid>
+                    </Grid>
+                    <Grid item xs={12} style={{marginTop: '2rem'}} container justify={'center'}>
+                        <Button
+                            color={'primary'}
+                            variant={'contained'}
+                            onClick={deleteOrder(or.id)}
+                        >
+                            Delete order
+                        </Button>
                     </Grid>
                 </Grid>
             ))}

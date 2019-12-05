@@ -247,7 +247,7 @@ const Home = () => {
                             ref={ref => (imgRef.current = ref as HTMLImageElement)}
                             width={'100%'}
                             src={heroImage}
-                            alt={'yankeemall-hero'}
+                            alt={'eromall-hero'}
                         />
                         <div className={'download-our-extension-div'}>
                             <h1>Download Our Chrome Extension</h1>
