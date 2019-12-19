@@ -15,6 +15,7 @@ import {AdminContext} from '../../Context';
 import moment from 'moment';
 import Axios from 'axios';
 import Snack from '../../components/snack';
+import {displayPrice} from '../../_helpers';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -261,7 +262,7 @@ const OrderDetails = ({history, match}: RouteComponentProps) => {
                             {moment(order.createdAt).format('lll')}
                         </Typography>
                         <Typography variant={'h5'} component={'h5'}>
-                            Total: ₦ {order.total.toLocaleString()}
+                            Total: ₦ {displayPrice(order.total)}
                         </Typography>
                         <br />
                         <br />

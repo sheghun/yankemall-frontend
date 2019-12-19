@@ -219,7 +219,7 @@ const Checkout = ({location}: props) => {
         productsArray.forEach(product => {
             totalDollar += Number(product.quantity) * product.dollar;
         });
-        totalDollar = Number(totalDollar.toFixed(2));
+        totalDollar = Number((totalDollar + cart.shippingFee).toFixed(2));
         totalNaira = Number((totalDollar * exchangeRate).toFixed(2));
         setCart(c => ({...c, products: productsArray, totalNaira, totalDollar}));
         setCart(c => ({...c, products: productsArray}));
@@ -240,7 +240,7 @@ const Checkout = ({location}: props) => {
         productsArray.forEach(product => {
             totalDollar += Number(product.quantity) * product.dollar;
         });
-        totalDollar = Number(totalDollar.toFixed(2));
+        totalDollar = Number((totalDollar + cart.shippingFee).toFixed(2));
         totalNaira = Number((totalDollar * exchangeRate).toFixed(2));
         setCart(c => ({...c, products: productsArray, totalNaira, totalDollar}));
     };
@@ -253,8 +253,14 @@ const Checkout = ({location}: props) => {
     };
 
     const displayTotal = useCallback(
-        (showNaira: boolean | any) => {
-            const {totalNaira, totalDollar} = cart;
+        (showNaira: boolean | any, subtractShipping = false) => {
+            let {totalNaira, totalDollar} = cart;
+            const {shippingFee} = cart;
+
+            if (subtractShipping) {
+                totalDollar = +(Number(totalDollar) - Number(shippingFee)).toFixed(2);
+                totalNaira = +((totalDollar * 100 * Number(exchangeRate * 100)) / 10000).toFixed(2);
+            }
             const nairaArrayString = String(totalNaira).split('.');
             const dollarArrayString = String(totalDollar).split('.');
 
@@ -476,13 +482,13 @@ const Checkout = ({location}: props) => {
                                                         textAlign: 'right',
                                                     }}
                                                 >
-                                                    {displayTotal(false)}
+                                                    {displayTotal(false, true)}
                                                 </Grid>
                                             </Grid>
                                             <Grid container>
                                                 <Grid item xs={6}>
                                                     <Typography variant={'body2'}>
-                                                        Shipping
+                                                        Shipping, Convenience Fees And tax
                                                     </Typography>
                                                 </Grid>
                                                 <Grid
@@ -492,7 +498,7 @@ const Checkout = ({location}: props) => {
                                                         textAlign: 'right',
                                                     }}
                                                 >
-                                                    $0
+                                                    ${cart.shippingFee}
                                                 </Grid>
                                             </Grid>
                                             <Grid
@@ -741,6 +747,9 @@ const Review = ({placeOrder, displayTotal}: {placeOrder: any; displayTotal: any}
             <br />
             <Typography variant={'h5'}>Total: {displayTotal(true)}</Typography>
             <br />
+            <Typography variant={'caption'}>
+                * Order total may vary at the payment gateway
+            </Typography>
             <Button disabled={loading} fullWidth color={'primary'} onClick={onPlaceOrder}>
                 {loading ? <CircularProgress /> : 'Place Order '}
             </Button>
