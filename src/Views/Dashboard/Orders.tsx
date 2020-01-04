@@ -17,6 +17,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
+import {Helmet} from 'react-helmet';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -70,6 +71,9 @@ const Orders = ({location, history}: RouteComponentProps) => {
 
     return (
         <Paper className={classes.paper}>
+            <Helmet>
+                <title>Orders</title>
+            </Helmet>
             <Typography
                 variant={'h5'}
                 className={classes.pageTitle}
@@ -220,16 +224,15 @@ const OrderDetails = ({match, history}: RouteComponentProps) => {
                                         <a href={pro.trackingLink}>{pro.trackingNumber}</a>
                                         <br />
                                         Tracking Link:{' '}
-                                        <a href={pro.trackingLink}>{pro.trackingLink}</a>
+                                        <a href={pro.trackingLink}>
+                                            <span style={{textTransform: 'lowercase'}}>
+                                                {pro.trackingLink !== null
+                                                    ? pro.trackingLink.slice(0, 30) + '...'
+                                                    : ''}
+                                            </span>
+                                        </a>
                                         <br />
-                                        STATUS:{' '}
-                                        {pro.status &&
-                                            (pro.status === 'paid'
-                                                ? 'Payment successful await shipment'
-                                                : pro.status === 'shipped'
-                                                ? 'Shipped awaiting delivery'
-                                                : pro.status === 'canceled' &&
-                                                  'Item shipment has been canceled')}
+                                        STATUS:{pro.status || ''}
                                     </Typography>
                                     <Typography variant={'body2'}>
                                         Amount: ₦{pro.naira.toLocaleString()}

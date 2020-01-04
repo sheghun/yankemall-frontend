@@ -83,7 +83,7 @@ declare interface AdminContext {
 
 declare interface Order {
     id: number;
-    siteId: number;
+    siteHost: number;
     status: string;
     shippingFee: number;
     userId: number;
@@ -104,6 +104,7 @@ declare interface OrderProduct {
     image: string;
     trackingNumber: string;
     trackingLink: string;
+    properties: any;
     status: 'paid' | 'shipped' | 'canceled';
     quantity: string;
     site: string;

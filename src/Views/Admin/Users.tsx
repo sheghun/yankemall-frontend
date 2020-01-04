@@ -25,6 +25,7 @@ import {KeyboardDatePicker, MuiPickersUtilsProvider} from '@material-ui/pickers'
 import MomentUtils from '@date-io/moment';
 import moment, {Moment} from 'moment';
 import useMediaQuery from '@material-ui/core/useMediaQuery/useMediaQuery';
+import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -87,13 +88,24 @@ const Users = () => {
 export default Users;
 
 const ViewUsers = ({history, classes}: RouteComponentProps & {classes: any}) => {
-    const {users} = useContext(AdminContext);
+    const {users, orders} = useContext(AdminContext);
 
     const [rows, setRows] = useState([] as Array<User>);
 
     useEffect(() => {
         setRows(users);
     }, [users]);
+
+    const getOrdersLength = (userId: number | string) => {
+        let ordersLength = 0;
+        orders.forEach(or => {
+            if (or.userId == userId) {
+                ordersLength++;
+            }
+        });
+
+        return ordersLength;
+    };
 
     return (
         <>
@@ -125,7 +137,7 @@ const ViewUsers = ({history, classes}: RouteComponentProps & {classes: any}) => 
                                 </TableCell>
                                 <TableCell align="left">{user.email}</TableCell>
                                 <TableCell align="left">{user.phoneNumber}</TableCell>
-                                <TableCell align="center">{user.orders.length}</TableCell>
+                                <TableCell align="center">{getOrdersLength(user.id)}</TableCell>
                                 <TableCell align="left">{user.gender}</TableCell>
                             </TableRow>
                         ))}
@@ -137,7 +149,7 @@ const ViewUsers = ({history, classes}: RouteComponentProps & {classes: any}) => 
 };
 
 const UsersDetails = ({match, classes}: RouteComponentProps & {classes: any}) => {
-    const {users, setAdminObject} = useContext(AdminContext);
+    const {users, orders, setAdminObject} = useContext(AdminContext);
     const theme = useTheme();
     const bigScreen = useMediaQuery(theme.breakpoints.up('sm'));
 
@@ -154,22 +166,14 @@ const UsersDetails = ({match, classes}: RouteComponentProps & {classes: any}) =>
     const [firstName, setFirstName] = useState('');
     const [email, setEmail] = useState('');
     const [lastName, setLastName] = useState('');
-    const [orders, setOrders] = useState([] as Array<Order>);
+    const [userOrders, setUserOrders] = useState([] as Array<Order>);
     const [phoneNumber, setPhoneNumber] = useState('');
     const [gender, setGender] = useState();
     const [birthDate, setBirthDate] = useState('YYY-MM-DD');
-    const [addresses, setAddresses] = useState('');
     const [address, setAddress] = useState([] as Array<Address>);
-    const [adFirstName, setAdFirstName] = useState('');
-    const [adLastName, setAdLastName] = useState('');
-    const [adPhoneNumber, setAdPhoneNumber] = useState('');
-    const [adPostCode, setPostCode] = useState('');
-    const [adState, adSetState] = useState('');
-    const [adRegion, adSetRegion] = useState('');
 
     useEffect(() => {
         const {userId} = match.params as any;
-        console.log(userId);
         if (userId) {
             const u = users.find(user => Number(user.id) === Number(userId));
             if (u) {
@@ -179,11 +183,26 @@ const UsersDetails = ({match, classes}: RouteComponentProps & {classes: any}) =>
                 setFirstName(u.firstName);
                 setLastName(u.lastName);
                 setPhoneNumber(u.phoneNumber);
-                setOrders(u.orders);
+                setUserOrders(u.orders);
                 setEmail(u.email);
                 setGender(u.gender.toLowerCase());
                 setBirthDate(u.birthDate);
             }
+        }
+    }, [users, orders]);
+
+    useEffect(() => {
+        const {userId} = match.params as any;
+        if (userId) {
+            (async () => {
+                setLoading(true);
+                const {status, data} = await axios.get(`/admin/orders?userId=${userId}`);
+                if (status === 200 && data.status === 'success') {
+                    console.log(data);
+                    setUserOrders(data.data.orders || []);
+                }
+                setLoading(false);
+            })();
         }
     }, [users]);
 
@@ -450,12 +469,12 @@ const UsersDetails = ({match, classes}: RouteComponentProps & {classes: any}) =>
                 ))}
             </Grid>
             <Typography variant={'h5'} style={{margin: '2rem 0'}} align={'center'}>
-                Orders ({user.orders ? user.orders.length : '0'})
+                Orders ({userOrders ? userOrders.length : '0'})
             </Typography>
             <Grid container justify={'center'} spacing={3}>
                 <Grid item xs={12} className={classes.orders}>
-                    {user.orders &&
-                        user.orders.map(or => (
+                    {userOrders &&
+                        userOrders.map(or => (
                             <Grid style={{marginTop: '2rem'}} container justify={'center'}>
                                 <Grid item xs={4} sm={3}>
                                     {or.products.map(p => (
@@ -482,7 +501,7 @@ const UsersDetails = ({match, classes}: RouteComponentProps & {classes: any}) =>
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={12} sm={3} style={{textAlign: 'center'}}>
-                                    <Link to={'/superAdmin/tl/orders/detail/123'}>
+                                    <Link to={`/superAdmin/tl/orders/detail/${or.id}`}>
                                         <Button color={'primary'}>See details</Button>
                                     </Link>
                                 </Grid>

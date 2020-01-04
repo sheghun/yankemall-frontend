@@ -110,15 +110,37 @@ const Admin = ({history, location}: Props) => {
                 const {status, data} = await Axios.get('/admin/user');
                 if (status === 200 && data.status === 'success') {
                     const users = data.data.users as Array<User>;
-                    const orders = users.flatMap(user => user.orders);
+                    setAdminObject(ad => ({...ad, users: users || []}));
+                }
+            } catch (e) {}
+            setLoading(false);
+        })();
+
+        (async () => {
+            setLoading(true);
+            try {
+                const {status, data} = await Axios.get('/admin/orders');
+                console.log(data);
+                if (status === 200 && data.status === 'success') {
+                    const orders = data.data.orders as Array<Order>;
                     const payments = orders.flatMap(order => order.payments);
-                    setAdminObject(s => ({...s, users, orders, payments}));
-                    try {
-                        const {status, data} = await Axios.get('/admin/exchangeRate');
-                        if (status === 200 && data.status === 'success') {
-                            setAdminObject(s => ({...s, exchangeRate: data.data.exchangeRate}));
-                        }
-                    } catch (e) {}
+                    setAdminObject(ad => ({
+                        ...ad,
+                        orders: orders || [],
+                        payments: payments || [],
+                    }));
+                }
+            } catch (e) {}
+            setLoading(false);
+        })();
+
+        (async () => {
+            setLoading(true);
+            try {
+                const {status, data} = await Axios.get('/admin/exchangeRate');
+                if (status === 200 && data.status === 'success') {
+                    const {exchangeRate} = data.data as {exchangeRate: number};
+                    setAdminObject(a => ({...a, exchangeRate: exchangeRate || 0}));
                 }
             } catch (e) {}
             setLoading(false);

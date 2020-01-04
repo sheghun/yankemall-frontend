@@ -16,6 +16,12 @@ import moment from 'moment';
 import Axios from 'axios';
 import Snack from '../../components/snack';
 import {displayPrice} from '../../_helpers';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import TableBody from '@material-ui/core/TableBody';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -124,7 +130,7 @@ const ViewOrders = ({}: RouteComponentProps) => {
      */
     const getUserFirstAndLastName = (id: string | number) => {
         // get the user
-        const user = users.find(user => user.orders.find(order => order.id == id));
+        const user = users.find(user => user.id == id);
 
         if (user) {
             return `${user.firstName} ${user.lastName}`;
@@ -247,87 +253,142 @@ const OrderDetails = ({history, match}: RouteComponentProps) => {
                 }
             }
         }
-    }, []);
+    }, [orders, users]);
 
     return (
         <>
-            <Grid item xs={12}>
+            <Grid item xs={12} container>
                 <Divider style={{color: 'red', marginTop: '-2rem', marginBottom: '1rem'}} />
-                <Grid container>
-                    <Grid item xs={12}>
-                        <Typography variant={'h5'}>Order ID {order.id}</Typography>
-                        <Typography variant={'body2'}>
-                            Item(s) {order.products && order.products.length}
-                            <br />
-                            {moment(order.createdAt).format('lll')}
-                        </Typography>
-                        <Typography variant={'h5'} component={'h5'}>
-                            Total: ₦ {displayPrice(order.total)}
-                        </Typography>
+                <Grid item xs={12}>
+                    <Typography variant={'h5'}>Order ID {order.id}</Typography>
+                    <Typography variant={'body2'}>
+                        Item(s) {order.products && order.products.length}
                         <br />
-                        <br />
-                        <Typography variant={'overline'} style={{fontWeight: 600}}>
-                            Item(s) {order.products && order.products.length}
-                            <br />
-                        </Typography>
-                        <Typography variant={'body2'}>
-                            Name:{' '}
-                            <Link to={`/superAdmin/tl/users/detail/${currentUser.id}`}>
-                                {currentUser.firstName} {currentUser.lastName}
-                            </Link>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <br />
-                        <br />
-                        <Typography variant={'h5'}>Order Items</Typography>
-                        <br />
-                        <br />
-                    </Grid>
+                        {moment(order.createdAt).format('lll')}
+                    </Typography>
+                    <Typography variant={'h5'} component={'h5'}>
+                        Total: ₦ {displayPrice(order.total)}
+                    </Typography>
                     <br />
                     <br />
-                    {order.products &&
-                        order.products.map((pro, i) => (
-                            <Grid key={i} item xs={12} className={classes.orders}>
-                                <Grid container justify={'center'}>
-                                    <Grid item xs={4} sm={3}>
-                                        <img
-                                            className={classes.image}
-                                            alt={pro.name}
-                                            src={pro.image}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} style={{textAlign: 'center'}}>
-                                        <Typography variant={'body2'}>{pro.name}</Typography>
-                                        <Typography variant={'overline'}>
-                                            Qty: {pro.quantity}
-                                            <br />
-                                            Site: <span style={{fontWeight: 600}}>ebay</span>
-                                            <br />
-                                            Tracking Number: {pro.trackingNumber || 'Not set yet'}
-                                            <br />
-                                            Tracking Link:{' '}
-                                            <a href={pro.trackingLink}>pro.trackingLink</a>
-                                            <br />
-                                            STATUS: {pro.status}
-                                        </Typography>
-                                        <Typography variant={'body2'}>
-                                            Amount: ₦{pro.naira.toLocaleString()}
-                                        </Typography>
-                                        <Typography variant={'caption'}>
-                                            {moment(order.createdAt).format('lll')}
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs={12} sm={3} style={{textAlign: 'center'}}>
-                                        <Link
-                                            to={`/superAdmin/tl/orders/detail/${order.id}/item/${pro.id}`}
-                                        >
-                                            <Button color={'primary'}>Edit Item</Button>
-                                        </Link>
-                                    </Grid>
+                    <Typography variant={'overline'} style={{fontWeight: 600}}>
+                        Item(s) {order.products && order.products.length}
+                        <br />
+                    </Typography>
+                    <Typography variant={'body2'}>
+                        Name:{' '}
+                        <Link to={`/superAdmin/tl/users/detail/${currentUser.id}`}>
+                            {currentUser.firstName} {currentUser.lastName}
+                        </Link>
+                    </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <br />
+                    <br />
+                    <Typography variant={'h5'}>Order Items</Typography>
+                    <br />
+                    <br />
+                </Grid>
+                <br />
+                <br />
+                {order.products &&
+                    order.products.map((pro, i) => (
+                        <Grid key={i} item xs={12} className={classes.orders}>
+                            <Grid container justify={'center'}>
+                                <Grid item xs={4} sm={3}>
+                                    <img className={classes.image} alt={pro.name} src={pro.image} />
+                                </Grid>
+                                <Grid item xs={12} sm={6} style={{textAlign: 'center'}}>
+                                    <Typography variant={'body2'}>{pro.name}</Typography>
+                                    <Typography variant={'body2'}>
+                                        {(pro.properties as Array<string>).map(property => {
+                                            return (
+                                                <>
+                                                    <br />
+                                                    {property.trim()}
+                                                </>
+                                            );
+                                        })}
+                                    </Typography>
+                                    <Typography variant={'overline'} style={{marginTop: '-1rem'}}>
+                                        Site:{' '}
+                                        <span style={{fontWeight: 600}}>{order.siteHost}</span>
+                                        <br />
+                                        Tracking Number: {pro.trackingNumber || 'Not set yet'}
+                                        <br />
+                                        Tracking Link:{' '}
+                                        <a href={pro.trackingLink}>
+                                            <span style={{textTransform: 'lowercase'}}>
+                                                {pro.trackingLink !== null
+                                                    ? pro.trackingLink.slice(0, 30) + '...'
+                                                    : ''}
+                                            </span>
+                                        </a>
+                                        <br />
+                                        STATUS: {pro.status}
+                                    </Typography>
+                                    <Typography variant={'body2'}>
+                                        Amount: ₦{pro.naira.toLocaleString()}
+                                    </Typography>
+                                    <Typography variant={'caption'}>
+                                        {moment(order.createdAt).format('lll')}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={3} style={{textAlign: 'center'}}>
+                                    <Link
+                                        to={`/superAdmin/tl/orders/detail/${order.id}/item/${pro.id}`}
+                                    >
+                                        <Button color={'primary'}>Edit Item</Button>
+                                    </Link>
                                 </Grid>
                             </Grid>
-                        ))}
+                        </Grid>
+                    ))}
+                <Grid item xs={12}>
+                    <Typography variant={'h5'} style={{margin: '4rem 0 2rem'}}>
+                        Payment Ticket
+                    </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid container>
+                        <Table className={classes.table} aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Reference</TableCell>
+                                    <TableCell align="left">Status</TableCell>
+                                    <TableCell align="left">Date</TableCell>
+                                    <TableCell align="left">Amount</TableCell>
+                                    <TableCell align="left">Order ID</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {order.payments &&
+                                    order.payments.map(payment => (
+                                        <TableRow
+                                            key={payment.id}
+                                            hover
+                                            onClick={() =>
+                                                history.push(
+                                                    `/superAdmin/tl/payments/detail/${payment.id}`,
+                                                )
+                                            }
+                                        >
+                                            <TableCell scope="row">{payment.reference}</TableCell>
+                                            <TableCell align="left">
+                                                {payment.paid ? 'Successful' : 'Not Successful'}
+                                            </TableCell>
+                                            <TableCell align="left">
+                                                {moment(payment.createdAt).format('lll')}
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                ₦{displayPrice(payment.amount)}
+                                            </TableCell>
+                                            <TableCell align="left">{order.id}</TableCell>
+                                        </TableRow>
+                                    ))}
+                            </TableBody>
+                        </Table>
+                    </Grid>
                 </Grid>
             </Grid>
         </>
@@ -337,7 +398,14 @@ const OrderDetails = ({history, match}: RouteComponentProps) => {
 const OrderItem = ({match}: RouteComponentProps) => {
     const classes = useStyles();
 
-    const {orders} = useContext(AdminContext);
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        variant: 'success',
+    });
+
+    const {orders, setAdminObject} = useContext(AdminContext);
+    const [loading, setLoading] = useState(false);
     const [item, setItem] = useState({} as OrderProduct);
     const [status, setStatus] = useState('');
     const [trackingNumber, setTrackingNumber] = useState('');
@@ -348,16 +416,75 @@ const OrderItem = ({match}: RouteComponentProps) => {
         if (orderId) {
             const currentOrder = orders.find(order => order.id == orderId);
             if (currentOrder) {
-                const currentItem = currentOrder.products.find(product => product.id == itemId);
-                if (currentItem) {
-                    setItem(currentItem);
+                const ordPro = currentOrder.products.find(product => product.id == itemId);
+                if (ordPro) {
+                    setItem(ordPro);
+                    setStatus(ordPro.status);
+                    setTrackingNumber(ordPro.trackingNumber);
+                    setTrackingLink(ordPro.trackingLink);
                 }
             }
         }
-    }, []);
+    }, [orders]);
+
+    /**
+     * Update the tracking link, tracking number and status of a product
+     */
+    const update = async () => {
+        // Validated if one of the inputs are missing
+        if (!trackingLink || !trackingNumber || !status) return;
+
+        // Try updated it at the server
+        setLoading(true);
+        const {orderId, itemId} = match.params as any;
+        const res = await Axios.put(`/admin/order/product`, {
+            trackingLink,
+            trackingNumber,
+            status,
+            id: itemId,
+        });
+        if (!(res.status === 200 && res.data.status === 'success')) return; // Exit if not successful
+        setSnackbar({
+            open: true,
+            message: 'Product updated successfully',
+            variant: 'success',
+        });
+        // Get the order index
+        const orderIndex = orders.findIndex(order => order.id == orderId);
+        if (!(orderIndex > -1)) return; // If order is not found exit
+
+        const currentOrder = orders[orderIndex];
+        if (!currentOrder) return; // If current order is not found exit
+
+        // The product index
+        const productIndex = currentOrder.products.findIndex(product => product.id == itemId);
+        if (!(productIndex > -1)) return; // If product index is not found exit
+
+        const product = currentOrder.products[productIndex];
+        if (!product) return; // If product is not found exit
+
+        // Set the values for the product
+        product.trackingNumber = trackingNumber;
+        product.trackingLink = trackingLink;
+        product.status = status as any;
+
+        // Add them back to the array
+        currentOrder.products[productIndex] = product;
+        orders[orderIndex] = currentOrder;
+
+        setAdminObject(ad => ({...ad, orders}));
+
+        setLoading(false);
+    };
 
     return (
         <>
+            <Snack
+                variant={snackbar.variant as any}
+                open={snackbar.open}
+                message={snackbar.message}
+                onClose={() => setSnackbar(s => ({...s, open: false}))}
+            />
             <Grid item xs={12}>
                 <Grid container component={'form'} alignContent={'center'} direction={'column'}>
                     <Grid item xs={12}>
@@ -372,7 +499,6 @@ const OrderItem = ({match}: RouteComponentProps) => {
                             margin={'normal'}
                             onChange={e => setStatus(e.target.value)}
                             value={status}
-                            defaultValue={item.status}
                             required
                             InputProps={{
                                 startAdornment: (
@@ -390,14 +516,32 @@ const OrderItem = ({match}: RouteComponentProps) => {
                         </TextField>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <TextField fullWidth type={'text'} label={'Tracking Number'} />
+                        <TextField
+                            fullWidth
+                            type={'text'}
+                            value={trackingNumber}
+                            label={'Tracking Number'}
+                            onChange={e => setTrackingNumber(e.target.value)}
+                        />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <TextField fullWidth type={'text'} label={'Tracking Link'} />
+                        <TextField
+                            fullWidth
+                            type={'text'}
+                            value={trackingLink}
+                            label={'Tracking Link'}
+                            onChange={e => setTrackingLink(e.target.value)}
+                        />
                     </Grid>
                     <Grid item xs={12} style={{marginTop: '2rem'}}>
-                        <Button fullWidth color={'primary'} variant={'contained'}>
-                            Save
+                        <Button
+                            fullWidth
+                            color={'primary'}
+                            disabled={loading}
+                            onClick={update}
+                            variant={'contained'}
+                        >
+                            {loading ? <CircularProgress /> : 'Save'}
                         </Button>
                     </Grid>
                 </Grid>

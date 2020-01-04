@@ -8,7 +8,7 @@ import {Route, RouteComponentProps} from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import {AdminContext, DashboardContext} from '../../Context';
+import {AdminContext} from '../../Context';
 import moment from 'moment';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
@@ -16,7 +16,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import Table from '@material-ui/core/Table';
 import {displayPrice} from '../../_helpers';
-import Admin from '../../Layouts/Admin';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -144,15 +143,16 @@ const PaymentDetails = ({history, match}: RouteComponentProps) => {
         const getPaymentDetails = payments.find(payment => payment.id == paymentId);
 
         if (getPaymentDetails) {
-            const getOrderDetails = orders.find(order =>
+            const orderDetails = orders.find(order =>
                 order.payments.find(payment => payment.id == paymentId),
             );
-            if (getOrderDetails) {
-                setCurrentOrderDetails(getOrderDetails);
-            }
+            console.log(orderDetails);
+            if (!orderDetails) return; // If order does not exists exit;
+
+            setCurrentOrderDetails(orderDetails);
             setCurrentPaymentDetails(getPaymentDetails);
         }
-    }, [match.params]);
+    }, [match.params, orders, payments]);
 
     return (
         <>
