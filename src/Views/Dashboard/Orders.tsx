@@ -32,6 +32,7 @@ const useStyles = makeStyles(theme => ({
     },
     orders: {
         border: '1px solid #ededed',
+        padding: '1rem 2rem',
         marginBottom: '1rem',
         borderRadius: '1.5%',
     },
@@ -39,7 +40,10 @@ const useStyles = makeStyles(theme => ({
         height: '104px',
     },
     table: {
+        maxWidth: '300px',
+        overflow: 'scroll',
         '& tr': {
+            fontSize: '14px !important',
             cursor: 'pointer',
         },
     },
@@ -57,6 +61,12 @@ const useStyles = makeStyles(theme => ({
         image: {
             width: 'auto',
             height: '104px',
+        },
+    },
+    [theme.breakpoints.down('sm')]: {
+        tableContainer: {
+            width: '70vw',
+            overflow: 'scroll',
         },
     },
 }));
@@ -180,7 +190,7 @@ const OrderDetails = ({match, history}: RouteComponentProps) => {
 
     return (
         <>
-            <Grid item xs={12}>
+            <Grid item xs={12} container>
                 <Divider style={{color: 'red', marginTop: '-2rem', marginBottom: '1rem'}} />
                 <Grid container>
                     <Grid item xs={12}>
@@ -194,8 +204,6 @@ const OrderDetails = ({match, history}: RouteComponentProps) => {
                         <br />
                         <Typography variant={'body2'} style={{fontSize: '18px'}}>
                             Item(s) {order.products && order.products.length}
-                            <br />
-                            Status: {order.status}
                             <br />
                             {moment(order.createdAt).format('lll')}
                             <br />
@@ -224,7 +232,7 @@ const OrderDetails = ({match, history}: RouteComponentProps) => {
                                         <a href={pro.trackingLink}>{pro.trackingNumber}</a>
                                         <br />
                                         Tracking Link:{' '}
-                                        <a href={pro.trackingLink}>
+                                        <a target={'_blank'} href={pro.trackingLink}>
                                             <span style={{textTransform: 'lowercase'}}>
                                                 {pro.trackingLink !== null
                                                     ? pro.trackingLink.slice(0, 30) + '...'
@@ -257,7 +265,7 @@ const OrderDetails = ({match, history}: RouteComponentProps) => {
                         </Typography>
                     </Grid>
                     <Grid item xs={12}>
-                        <Grid container>
+                        <Grid container className={classes.tableContainer}>
                             <Table className={classes.table} aria-label="simple table">
                                 <TableHead>
                                     <TableRow>

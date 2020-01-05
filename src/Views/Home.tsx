@@ -37,7 +37,7 @@ const Style = styled.div`
         font-family: 'Quicksand';
     }
     & .inputs-rectangle {
-        background-color: #D10065;
+        background-color: #fff;
         padding: 2rem;
         display: flex;
         flex-direction: column;
@@ -45,7 +45,7 @@ const Style = styled.div`
     }
     & .inputs-rectangle > h1 {
         text-align: center;
-        color: white;
+        color: #FCBF00;
         font-weight: 50;
         font-family: 'Quicksand';
     }
@@ -339,11 +339,6 @@ const Home = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className={'all-stores-button'}>
-                        <Button color={'secondary'} variant={'contained'} size={'large'}>
-                            View All Stores
-                        </Button>
                     </div>
                     <Footer />
                 </Style>

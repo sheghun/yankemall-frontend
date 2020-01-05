@@ -47,6 +47,12 @@ const useStyles = makeStyles(theme => ({
         maxWidth: '90vw',
         overflow: 'hidden',
     },
+    [theme.breakpoints.down('sm')]: {
+        tableContainer: {
+            width: '80vw',
+            overflow: 'scroll',
+        },
+    },
 }));
 
 const Payments = () => {
@@ -84,7 +90,7 @@ const ShowPayments = ({history}: RouteComponentProps) => {
             </Typography>
             <Grid container className={classes.container}>
                 <Grid item xs={12}>
-                    <Grid container>
+                    <Grid container className={classes.tableContainer}>
                         <Table className={classes.table} aria-label="simple table">
                             <TableHead>
                                 <TableRow>

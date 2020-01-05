@@ -10,18 +10,18 @@ type Props = React.DetailedHTMLProps<
 
 const InputNative = styled.input`
     background-color: transparent;
-    border: solid 1.5px rgba(255, 255, 255, 0.8);
+    border: solid 1px rgba(0, 0, 0, 0.8);
     border-radius: 2.5%;
     padding: 0.8rem 4px;
     height: 2.8rem;
-    color: white;
+    color: rgba(0, 0, 0, 0.8);
     font-weight: 600;
     font-size: 14px;
     &:focus {
         outline: none;
     }
     ::placeholder {
-        color: rgba(255, 255, 255, 0.5);
+        color: rgba(0, 0, 0, 0.5);
     }
 `;
 

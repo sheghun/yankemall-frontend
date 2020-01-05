@@ -181,7 +181,6 @@ export default function SignIn({history, location}: RouteComponentProps) {
                     </Typography>
                     <form className={classes.form} onSubmit={submit}>
                         <TextField
-                            variant="outlined"
                             margin="normal"
                             required
                             fullWidth
@@ -194,7 +193,6 @@ export default function SignIn({history, location}: RouteComponentProps) {
                             onChange={e => setEmail(e.target.value)}
                         />
                         <TextField
-                            variant="outlined"
                             margin="normal"
                             error={!!errors.password}
                             required
@@ -209,8 +207,7 @@ export default function SignIn({history, location}: RouteComponentProps) {
                         <Button
                             type="submit"
                             fullWidth
-                            variant="contained"
-                            color="primary"
+                            color={'secondary'}
                             disabled={loading}
                             className={classes.submit}
                         >

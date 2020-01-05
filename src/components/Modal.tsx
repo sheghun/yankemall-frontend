@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
 import Slide from '@material-ui/core/Slide';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -9,7 +8,6 @@ import Divider from '@material-ui/core/Divider';
 import logo from '../assets/images/eromalls-logo.png';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -21,11 +19,24 @@ const useStyles = makeStyles(theme => ({
     },
     paper: {
         padding: theme.spacing(2),
+        outline: 'none',
         position: 'relative',
         maxWidth: '720px',
     },
+    text: {
+        color: 'rgba(0, 0, 0, 0.7) !important',
+        padding: '0 4rem',
+    },
     icon: {
         position: 'absolute',
+    },
+    [theme.breakpoints.down('xs')]: {
+        paper: {
+            width: '90vw',
+            height: '80vh',
+            overflow: 'scroll',
+            padding: '0',
+        },
     },
 }));
 
@@ -54,13 +65,11 @@ const TransitionsModal = () => {
                 onClose={() => {}}
                 style={{outline: 'none'}}
                 closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                    timeout: 500,
-                }}
+                disableAutoFocus={true}
+                hideBackdrop={true}
             >
                 <Slide direction={'down'} in={open}>
-                    <Paper className={classes.paper}>
+                    <Paper className={classes.paper} elevation={8}>
                         <IconButton onClick={handleClose}>
                             <CloseIcon className={classes.icon} />
                         </IconButton>
@@ -73,10 +82,21 @@ const TransitionsModal = () => {
                                     <Divider />
                                 </Grid>
                                 <Grid item>
-                                    <Typography variant={'body2'} align={'center'}>
+                                    <Typography
+                                        variant={'body1'}
+                                        align={'center'}
+                                        className={classes.text}
+                                    >
                                         Eromalls is a shopping app that makes shopping easier for
                                         you.
-                                        <Typography variant={'h6'} align={'center'}>
+                                        <Divider style={{margin: '2rem 0'}} />
+                                        <Typography
+                                            variant={'h6'}
+                                            style={{fontWeight: 600}}
+                                            align={'center'}
+                                            color={'secondary'}
+                                            gutterBottom
+                                        >
                                             How does it work
                                         </Typography>
                                         All you need to do is download our chrome extension select a
@@ -84,7 +104,14 @@ const TransitionsModal = () => {
                                         cart you will see a popup from our extension click it to
                                         checkout and we will have the items shipped to you in no
                                         time
-                                        <Typography variant={'h6'} align={'center'}>
+                                        <Divider style={{margin: '2rem 0'}} />
+                                        <Typography
+                                            variant={'h6'}
+                                            style={{fontWeight: 600}}
+                                            color={'secondary'}
+                                            align={'center'}
+                                            gutterBottom
+                                        >
                                             Why?
                                         </Typography>
                                         At times if you want to buy items from these sites you may
@@ -93,21 +120,18 @@ const TransitionsModal = () => {
                                         matter the product you add to cart it will always be shipped
                                         to you
                                     </Typography>
-                                    <a
-                                        target={'_blank'}
-                                        href={
-                                            'https://chrome.google.com/webstore/detail/eromalls/nikondefdlgokmjgmigjjpppfmpalick'
-                                        }
-                                    >
-                                        <Button
-                                            style={{marginTop: '2rem'}}
-                                            fullWidth
-                                            variant={'contained'}
-                                            color={'primary'}
+                                    <Grid container justify={'center'}>
+                                        <a
+                                            target={'_blank'}
+                                            href={
+                                                'https://chrome.google.com/webstore/detail/eromalls/nikondefdlgokmjgmigjjpppfmpalick'
+                                            }
                                         >
-                                            Download Our Extension
-                                        </Button>
-                                    </a>
+                                            <Button style={{marginTop: '2rem'}} color={'primary'}>
+                                                Download Our Extension
+                                            </Button>
+                                        </a>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>

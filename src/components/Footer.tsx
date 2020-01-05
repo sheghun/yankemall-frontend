@@ -7,13 +7,9 @@ const Wrapper = styled.div`
     background-color: white;
     .pre-footer {
         margin-top: 5rem;
-        width: 100%;
         color: rgba(0, 0, 0, 0.6);
         line-height: 2;
         font-size: 14px;
-        text-transform: capitalize;
-        align-items: start;
-        justify-content: center;
     }
     & .pre-footer .follow-us img {
         margin-top: 1rem;
@@ -41,7 +37,7 @@ const Footer = () => {
     return (
         <Wrapper>
             <div id={'contact-us'} className={'pre-footer'}>
-                <Grid container justify={'center'} spacing={3}>
+                <Grid container justify={'center'}>
                     <Grid item xs={10} sm={4} md={3}>
                         <div className={'pre-footer-blocks follow-us'}>
                             <h3>Follow Us</h3>
