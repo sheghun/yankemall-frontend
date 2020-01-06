@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Route, Switch} from 'react-router-dom';
+import {Route, RouteComponentProps, Switch} from 'react-router-dom';
 import loadable from '@loadable/component';
 import Home from './Views/Home';
 import {ThemeProvider} from '@material-ui/styles';
@@ -8,6 +8,9 @@ import theme from './theme';
 import Auth from './Layouts/Auth';
 import Axios from 'axios';
 import Snack from './components/snack';
+import Grid from '@material-ui/core/Grid';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import axios from 'axios';
 
 const Checkout = loadable(() => import('./Views/Checkout'), {
     fallback: <Loading show={true} />,
@@ -24,6 +27,21 @@ const NotFound = loadable(() => import('./Views/404'), {
 const AdminSignIn = loadable(() => import('./Views/Admin/Signin'), {
     fallback: <Loading show={true} />,
 });
+const Logout = loadable(() => import('./Views/Dashboard/Logout'), {
+    fallback: <Loading show={true} />,
+});
+const SuperAdminLogout = ({history}: RouteComponentProps) => {
+    useEffect(() => {
+        axios.get('/admin/logout');
+        history.push(`/`);
+    }, []);
+
+    return (
+        <Grid container justify={'center'} alignItems={'center'} style={{height: '100vh'}}>
+            <CircularProgress />
+        </Grid>
+    );
+};
 
 const App: React.FC = () => {
     const [snackbar, setSnackbar] = useState({
@@ -73,6 +91,9 @@ const App: React.FC = () => {
                     <Route path={'/dashboard/*'} component={Dashboard} />
                     <Route path={'/superAdmin/signin'} component={AdminSignIn} />
                     <Route path={'/superAdmin/*'} component={Admin} />
+                    <Route path={'/logout'} component={Logout} />
+                    <Route path={'/superAdminLogout'} component={SuperAdminLogout} />
+
                     <Route component={NotFound} />
                 </Switch>
             </ThemeProvider>

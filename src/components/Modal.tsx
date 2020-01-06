@@ -70,9 +70,6 @@ const TransitionsModal = () => {
             >
                 <Slide direction={'down'} in={open}>
                     <Paper className={classes.paper} elevation={8}>
-                        <IconButton onClick={handleClose}>
-                            <CloseIcon className={classes.icon} />
-                        </IconButton>
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
                                 <Grid container justify={'center'}>
@@ -120,6 +117,16 @@ const TransitionsModal = () => {
                                         matter the product you add to cart it will always be shipped
                                         to you
                                     </Typography>
+                                    <Grid container justify={'center'}>
+                                        <Button
+                                            style={{marginTop: '2rem'}}
+                                            variant={'contained'}
+                                            color={'secondary'}
+                                            onClick={handleClose}
+                                        >
+                                            Close
+                                        </Button>
+                                    </Grid>
                                     <Grid container justify={'center'}>
                                         <a
                                             target={'_blank'}

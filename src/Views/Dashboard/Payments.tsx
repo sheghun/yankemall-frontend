@@ -115,7 +115,9 @@ const ShowPayments = ({history}: RouteComponentProps) => {
                                         >
                                             <TableCell scope="row">{payment.reference}</TableCell>
                                             <TableCell align="left">
-                                                {payment.paid ? 'Successful' : 'Not Successful'}
+                                                {payment.paid
+                                                    ? 'Successful'
+                                                    : 'Payment is being verified'}
                                             </TableCell>
                                             <TableCell align="left">
                                                 {moment(payment.createdAt).format('lll')}

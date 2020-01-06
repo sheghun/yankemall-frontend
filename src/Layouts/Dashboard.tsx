@@ -52,6 +52,7 @@ const links = [
     {path: '/dashboard/details', text: 'Details'},
     {path: '/dashboard/changepass', text: 'Change Password'},
     {path: '/dashboard/address', text: 'Address'},
+    {path: '/logout', text: 'Logout'},
 ];
 
 const useStyles = makeStyles(theme => ({
@@ -102,7 +103,7 @@ const Dashboard = ({location, history}: Props) => {
      * Listen for 403 status error code and redirect to the login page
      */
     useEffect(() => {
-        Axios.interceptors.response.use(
+        const interceptorId = Axios.interceptors.response.use(
             response => Promise.resolve(response),
             error => {
                 const err = error as AxiosError;
@@ -117,6 +118,9 @@ const Dashboard = ({location, history}: Props) => {
                 return Promise.reject(error);
             },
         );
+        return () => {
+            Axios.interceptors.response.eject(interceptorId);
+        };
     }, []);
 
     useEffect(() => {

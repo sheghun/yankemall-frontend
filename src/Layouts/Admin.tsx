@@ -13,6 +13,7 @@ import Axios, {AxiosError} from 'axios';
 import {AdminContext} from '../Context';
 import PaymentIcon from '@material-ui/icons/Payment';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import axios from 'axios';
 
 const Overview = loadable(() => import('../Views/Admin/Overview'), {
     fallback: <Loading show={true} />,
@@ -50,6 +51,10 @@ const links = [
         text: 'Payments',
         icon: <PaymentIcon style={{marginRight: '1rem'}} />,
     },
+    {
+        path: '/superAdminLogout',
+        text: 'Logout',
+    },
 ];
 
 const useStyles = makeStyles(theme => ({
@@ -86,12 +91,18 @@ const Admin = ({history, location}: Props) => {
      * Listen for 403 status error code and redirect to the login page
      */
     useEffect(() => {
-        Axios.interceptors.response.use(
+        const interceptorId = Axios.interceptors.response.use(
             response => Promise.resolve(response),
             error => {
                 const err = error as AxiosError;
                 if (err.response) {
-                    if (err.response.status === 403 && location.pathname !== '/superAdmin/signin') {
+                    const {pathname} = location;
+                    console.log(pathname);
+                    if (
+                        err.response.status === 403 &&
+                        pathname !== '/superAdmin/signin' &&
+                        pathname !== '/superAdminLogout'
+                    ) {
                         const queryParams = `?returnUrl=${
                             location.pathname
                         }&${location.search.replace('?', '')}`;
@@ -101,6 +112,10 @@ const Admin = ({history, location}: Props) => {
                 return Promise.reject(error);
             },
         );
+
+        return () => {
+            Axios.interceptors.response.eject(interceptorId);
+        };
     }, [history, location.pathname, location.search]);
 
     useEffect(() => {

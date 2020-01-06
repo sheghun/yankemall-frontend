@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import Footer from '../components/Footer';
 import Grid from '@material-ui/core/Grid';
 import TransitionsModal from '../components/Modal';
+import chromeImage from '../assets/images/chrome.png';
 
 const Style = styled.div`
     margin-top: 2rem;
@@ -35,6 +36,9 @@ const Style = styled.div`
         color: white;
         font-weight: 50;
         font-family: 'Quicksand';
+    }
+    .download-hero {
+        margin-top: 4rem;
     }
     & .inputs-rectangle {
         background-color: #fff;
@@ -98,6 +102,12 @@ const Style = styled.div`
     }
     & .shipping-infos img {
         width: 80%;
+    }
+    
+    @media screen and (max-width: 500px) {
+        & .inputs-rectangle > h1 {
+           font-size: 24px;
+        }
     }
 `;
 const Home = () => {
@@ -249,30 +259,28 @@ const Home = () => {
                             src={heroImage}
                             alt={'eromall-hero'}
                         />
-                        <div className={'download-our-extension-div'}>
-                            <h1>Download Our Chrome Extension</h1>
-                            <a
-                                target={'_blank'}
-                                href={
-                                    'https://chrome.google.com/webstore/detail/eromalls/nikondefdlgokmjgmigjjpppfmpalick'
-                                }
-                            >
-                                <Button
-                                    style={{
-                                        textAlign: 'center',
-                                        left: '50%',
-                                        marginTop: '3rem',
-                                        position: 'relative',
-                                        transform: 'translateX(-50%)',
-                                    }}
-                                    color={'secondary'}
-                                    variant={'contained'}
-                                    size={'large'}
+                        <Grid container alignItems={'center'} className={'download-hero'}>
+                            <Grid item xs={12} sm={6}>
+                                <img src={chromeImage} style={{width: '100%'}} />
+                            </Grid>
+                            <Grid item container justify={'center'} xs={12} sm={6}>
+                                <a
+                                    target={'_blank'}
+                                    href={
+                                        'https://chrome.google.com/webstore/detail/eromalls/nikondefdlgokmjgmigjjpppfmpalick'
+                                    }
                                 >
-                                    Download
-                                </Button>
-                            </a>
-                        </div>
+                                    <Button
+                                        style={{marginTop: '2rem'}}
+                                        color={'primary'}
+                                        variant={'outlined'}
+                                        size={'small'}
+                                    >
+                                        Download Extension
+                                    </Button>
+                                </a>
+                            </Grid>
+                        </Grid>
                         <div id={'stores'} className={'inputs-rectangle'}>
                             <h1>Select a Logo To Start Shopping. Click Our Button To CheckOut.</h1>
                             <div className={'inputs'}>
